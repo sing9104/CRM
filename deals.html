@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM - Deals</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * {
+      font-family: 'DM Sans', sans-serif;
+    }
+    body {
+      background-color: #f8f8fa;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Left Sidebar -->
+    <aside class="w-[76px] flex flex-col items-center py-4 space-y-1 border-r border-gray-800" style="background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%);">
+      <!-- Home -->
+      <a href="index.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Home</span>
+      </a>
+      <!-- Mari AI -->
+      <a href="mari-ai.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="sparkles" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Mari AI</span>
+      </a>
+      <!-- Search -->
+      <a href="search.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="search" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Search</span>
+      </a>
+      <div class="w-8 border-t border-gray-700/50 my-1"></div>
+      <!-- Accounts -->
+      <a href="accounts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="building-2" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Accounts</span>
+      </a>
+      <!-- Contacts -->
+      <a href="contacts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Contacts</span>
+      </a>
+      <!-- Opps -->
+      <a href="opportunities.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="target" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Opps</span>
+      </a>
+      <!-- Deals -->
+      <a href="deals.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg bg-white/15 text-white transition-colors">
+        <i data-lucide="handshake" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Deals</span>
+      </a>
+      <!-- Leads -->
+      <a href="leads.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="megaphone" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Leads</span>
+      </a>
+      <!-- Reports -->
+      <a href="reports.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Reports</span>
+      </a>
+
+      <!-- Spacer -->
+      <div class="flex-1"></div>
+
+      <!-- Logout -->
+      <a href="#" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="log-out" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Logout</span>
+      </a>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Top Header Bar -->
+      <header class="bg-white border-b border-gray-200 border-t-2 border-gray-900 h-14 flex items-center justify-between px-6">
+        <h1 class="text-gray-900 font-semibold">Deals</h1>
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold rounded" style="border-radius: 8px;">JS</div>
+          <span class="text-sm text-gray-700">Jaspinder Singh</span>
+        </div>
+      </header>
+
+      <!-- Main Content Area -->
+      <main class="flex-1 overflow-y-auto p-6">
+        <div class="w-full">
+          <!-- Header with Actions -->
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center">
+              <h2 class="text-xl font-bold text-gray-900">Active Deals</h2>
+            </div>
+            <div class="flex gap-3">
+              <a href="deal-create.html" class="px-3 h-8 bg-gray-900 text-white text-xs font-medium rounded hover:bg-gray-800 flex items-center gap-1.5">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                New
+              </a>
+              <button class="px-3 h-8 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded hover:bg-gray-50">
+                Deactivate
+              </button>
+              <button class="px-3 h-8 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded hover:bg-gray-50">
+                Delete
+              </button>
+            </div>
+          </div>
+
+          <!-- Search and Table -->
+          <div class="bg-white rounded-3xl border border-gray-200 overflow-hidden">
+            <!-- Search -->
+            <div class="border-b border-gray-200 p-4">
+              <div class="relative">
+                <i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 text-gray-400"></i>
+                <input type="text" placeholder="Search deals..." class="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-gray-300" />
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="text-left text-[11px] uppercase tracking-wider font-semibold text-gray-400 border-b border-gray-100 bg-gray-50/50">
+                    <th class="px-6 py-3">Name</th>
+                    <th class="px-6 py-3">Lead Sales Person</th>
+                    <th class="px-6 py-3">Property</th>
+                    <th class="px-6 py-3">Customer</th>
+                    <th class="px-6 py-3">Probability</th>
+                    <th class="px-6 py-3">Deal Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3"><a href="deal-detail.html" class="font-medium text-blue-600 hover:text-blue-700">TOL26: RED GLOBAL x30 WED EVE</a></td>
+                    <td class="px-6 py-3 text-gray-600">Mollie Stoneham</td>
+                    <td class="px-6 py-3 text-gray-600">Taste of London</td>
+                    <td class="px-6 py-3 text-gray-600">Red Global</td>
+                    <td class="px-6 py-3 text-gray-600">10%</td>
+                    <td class="px-6 py-3"><span class="inline-flex items-center px-2.5 py-1 bg-amber-50 text-amber-700 text-xs font-medium rounded border border-amber-200"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mr-1.5"></span>In Play</span></td>
+                  </tr>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3"><a href="deal-detail.html" class="font-medium text-blue-600 hover:text-blue-700">TOL25: RED GLOBAL x20 SAT</a></td>
+                    <td class="px-6 py-3 text-gray-600">Jessamy Dunning</td>
+                    <td class="px-6 py-3 text-gray-600">Taste of London</td>
+                    <td class="px-6 py-3 text-gray-600">Red Global</td>
+                    <td class="px-6 py-3 text-gray-600">85%</td>
+                    <td class="px-6 py-3"><span class="inline-flex items-center px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium rounded border border-emerald-200"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5"></span>Signed Agreement</span></td>
+                  </tr>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3"><a href="deal-detail.html" class="font-medium text-blue-600 hover:text-blue-700">FL26: TECH INNOVATIONS x50 FRI</a></td>
+                    <td class="px-6 py-3 text-gray-600">Mollie Stoneham</td>
+                    <td class="px-6 py-3 text-gray-600">Frieze London</td>
+                    <td class="px-6 py-3 text-gray-600">Tech Innovations Ltd</td>
+                    <td class="px-6 py-3 text-gray-600">95%</td>
+                    <td class="px-6 py-3"><span class="inline-flex items-center px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded border border-blue-200"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mr-1.5"></span>Fully Contracted</span></td>
+                  </tr>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3"><a href="deal-detail.html" class="font-medium text-blue-600 hover:text-blue-700">HYPARK24: BRAND SOLUTIONS x35</a></td>
+                    <td class="px-6 py-3 text-gray-600">Alex Kumar</td>
+                    <td class="px-6 py-3 text-gray-600">Hyde Park Winter</td>
+                    <td class="px-6 py-3 text-gray-600">Brand Solutions</td>
+                    <td class="px-6 py-3 text-gray-600">70%</td>
+                    <td class="px-6 py-3"><span class="inline-flex items-center px-2.5 py-1 bg-amber-50 text-amber-700 text-xs font-medium rounded border border-amber-200"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mr-1.5"></span>In Play</span></td>
+                  </tr>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3"><a href="deal-detail.html" class="font-medium text-blue-600 hover:text-blue-700">SUMMIT26: CREATIVE STUDIOS x25</a></td>
+                    <td class="px-6 py-3 text-gray-600">Jessamy Dunning</td>
+                    <td class="px-6 py-3 text-gray-600">Summer Summit</td>
+                    <td class="px-6 py-3 text-gray-600">Creative Studios</td>
+                    <td class="px-6 py-3 text-gray-600">45%</td>
+                    <td class="px-6 py-3"><span class="inline-flex items-center px-2.5 py-1 bg-amber-50 text-amber-700 text-xs font-medium rounded border border-amber-200"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mr-1.5"></span>In Play</span></td>
+                  </tr>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3"><a href="deal-detail.html" class="font-medium text-blue-600 hover:text-blue-700">GL26: GLOBAL EVENTS x40 ANNUAL</a></td>
+                    <td class="px-6 py-3 text-gray-600">Mollie Stoneham</td>
+                    <td class="px-6 py-3 text-gray-600">Gala London</td>
+                    <td class="px-6 py-3 text-gray-600">Global Events Co</td>
+                    <td class="px-6 py-3 text-gray-600">100%</td>
+                    <td class="px-6 py-3"><span class="inline-flex items-center px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded border border-blue-200"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full mr-1.5"></span>Fully Contracted</span></td>
+                  </tr>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3"><a href="deal-detail.html" class="font-medium text-blue-600 hover:text-blue-700">VENT26: ENTERPRISE x60 CORP</a></td>
+                    <td class="px-6 py-3 text-gray-600">Sarah Johnson</td>
+                    <td class="px-6 py-3 text-gray-600">Ventures Event</td>
+                    <td class="px-6 py-3 text-gray-600">Enterprise Solutions</td>
+                    <td class="px-6 py-3 text-gray-600">55%</td>
+                    <td class="px-6 py-3"><span class="inline-flex items-center px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium rounded border border-emerald-200"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5"></span>Signed Agreement</span></td>
+                  </tr>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3"><a href="deal-detail.html" class="font-medium text-blue-600 hover:text-blue-700">DIN26: DIGITAL x30 TECH WEEK</a></td>
+                    <td class="px-6 py-3 text-gray-600">Marcus Lee</td>
+                    <td class="px-6 py-3 text-gray-600">Digital Innovation</td>
+                    <td class="px-6 py-3 text-gray-600">Digital Innovations</td>
+                    <td class="px-6 py-3 text-gray-600">80%</td>
+                    <td class="px-6 py-3"><span class="inline-flex items-center px-2.5 py-1 bg-amber-50 text-amber-700 text-xs font-medium rounded border border-amber-200"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mr-1.5"></span>In Play</span></td>
+                  </tr>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3"><a href="deal-detail.html" class="font-medium text-blue-600 hover:text-blue-700">PREM26: PREMIUM PARTNERS VIP</a></td>
+                    <td class="px-6 py-3 text-gray-600">David Chen</td>
+                    <td class="px-6 py-3 text-gray-600">Premium Event</td>
+                    <td class="px-6 py-3 text-gray-600">Premium Partners</td>
+                    <td class="px-6 py-3 text-gray-600">65%</td>
+                    <td class="px-6 py-3"><span class="inline-flex items-center px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium rounded border border-emerald-200"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5"></span>Signed Agreement</span></td>
+                  </tr>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3"><a href="deal-detail.html" class="font-medium text-blue-600 hover:text-blue-700">CORP26: SUMMIT CORPORATION x45</a></td>
+                    <td class="px-6 py-3 text-gray-600">Mollie Stoneham</td>
+                    <td class="px-6 py-3 text-gray-600">Corporate Summit</td>
+                    <td class="px-6 py-3 text-gray-600">Summit Corporation</td>
+                    <td class="px-6 py-3 text-gray-600">30%</td>
+                    <td class="px-6 py-3"><span class="inline-flex items-center px-2.5 py-1 bg-amber-50 text-amber-700 text-xs font-medium rounded border border-amber-200"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mr-1.5"></span>In Play</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Footer -->
+            <div class="border-t border-gray-100 px-6 py-3 bg-gray-50/50">
+              <p class="text-xs text-gray-500">1 - 100 of 10,238 items</p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

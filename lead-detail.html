@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM - Lead Detail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * { font-family: 'DM Sans', sans-serif; }
+    body { background-color: #f8f8fa; }
+  </style>
+</head>
+<body class="flex h-screen bg-gray-50">
+  <!-- Sidebar -->
+  <aside class="w-[76px] flex flex-col items-center py-4 space-y-1 border-r border-gray-800" style="background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%);">
+    <!-- Home -->
+    <a href="index.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+      <i data-lucide="home" class="w-5 h-5"></i>
+      <span class="text-[9px] font-medium leading-none">Home</span>
+    </a>
+    <!-- Mari AI -->
+    <a href="mari-ai.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+      <i data-lucide="sparkles" class="w-5 h-5"></i>
+      <span class="text-[9px] font-medium leading-none">Mari AI</span>
+    </a>
+    <!-- Search -->
+    <a href="search.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+      <i data-lucide="search" class="w-5 h-5"></i>
+      <span class="text-[9px] font-medium leading-none">Search</span>
+    </a>
+    <!-- Separator -->
+    <div class="w-8 border-t border-gray-700/50 my-1"></div>
+    <!-- Accounts -->
+    <a href="accounts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+      <i data-lucide="building-2" class="w-5 h-5"></i>
+      <span class="text-[9px] font-medium leading-none">Accounts</span>
+    </a>
+    <!-- Contacts -->
+    <a href="contacts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+      <i data-lucide="users" class="w-5 h-5"></i>
+      <span class="text-[9px] font-medium leading-none">Contacts</span>
+    </a>
+    <!-- Opportunities -->
+    <a href="opportunities.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+      <i data-lucide="target" class="w-5 h-5"></i>
+      <span class="text-[9px] font-medium leading-none">Opps</span>
+    </a>
+    <!-- Deals -->
+    <a href="deals.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+      <i data-lucide="handshake" class="w-5 h-5"></i>
+      <span class="text-[9px] font-medium leading-none">Deals</span>
+    </a>
+    <!-- Leads (Active) -->
+    <a href="leads.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg bg-white/15 text-white transition-colors">
+      <i data-lucide="megaphone" class="w-5 h-5"></i>
+      <span class="text-[9px] font-medium leading-none">Leads</span>
+    </a>
+    <!-- Reports -->
+    <a href="reports.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+      <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+      <span class="text-[9px] font-medium leading-none">Reports</span>
+    </a>
+    <!-- Spacer -->
+    <div class="flex-1"></div>
+    <!-- Logout -->
+    <a href="#" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+      <i data-lucide="log-out" class="w-5 h-5"></i>
+      <span class="text-[9px] font-medium leading-none">Logout</span>
+    </a>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col">
+    <!-- Header -->
+    <header class="sticky top-0 z-40 bg-white border-b border-gray-100 border-t-2 border-gray-900 h-14 flex items-center justify-between px-6">
+      <div class="flex items-center gap-4">
+        <a href="leads.html" class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          <span class="font-medium">Leads</span>
+        </a>
+        <div class="h-5 border-l border-gray-200"></div>
+        <span class="text-xs text-gray-400 font-mono">LEAD-2026-0087</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="bg-emerald-600 text-white text-xs font-medium h-8 px-3 rounded flex items-center gap-1.5 hover:bg-emerald-700">
+          <i data-lucide="arrow-right-circle" class="w-3.5 h-3.5"></i>
+          Convert to Opportunity
+        </button>
+        <button class="bg-gray-900 text-white text-xs font-medium h-8 px-3 rounded flex items-center gap-1.5 hover:bg-gray-800">
+          <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+          Edit Lead
+        </button>
+        <button class="text-red-500 hover:text-red-600 text-xs font-medium h-8 px-3 flex items-center gap-1.5">
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          Delete
+        </button>
+        <div class="w-9 h-9 bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold rounded" style="border-radius: 8px;">JS</div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto">
+      <div class="w-full px-6 py-6 space-y-6">
+
+        <!-- Lead Header Section -->
+        <div class="bg-white rounded-3xl border border-gray-200 p-6 flex items-start justify-between">
+          <div class="flex items-start gap-4 flex-1">
+            <div class="w-16 h-16 bg-gray-900 rounded-2xl flex items-center justify-center flex-shrink-0">
+              <i data-lucide="megaphone" class="w-8 h-8 text-white"></i>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center gap-3 mb-2">
+                <h1 class="text-2xl font-bold text-gray-900">TOL26 Summer Campaign</h1>
+                <span class="px-2.5 py-1 text-xs font-medium bg-amber-100 text-amber-700 rounded-full">Qualified</span>
+              </div>
+              <div class="flex items-center gap-4 text-xs text-gray-600">
+                <div class="flex items-center gap-1">
+                  <span class="text-gray-500">Account:</span>
+                  <a href="accounts.html" class="text-blue-600 hover:text-blue-700 font-medium">Red Global</a>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="text-gray-500">Owner:</span>
+                  <span class="font-medium">Mollie Stoneham</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="text-gray-500">Property:</span>
+                  <span class="font-medium">Taste of London</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="text-gray-500">Source:</span>
+                  <span class="font-medium">Inbound</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col items-center gap-2">
+            <svg class="w-24 h-24" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" stroke-width="8"/>
+              <circle cx="50" cy="50" r="45" fill="none" stroke="#06b6d4" stroke-width="8" stroke-dasharray="198.9 314" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+              <text x="50" y="50" text-anchor="middle" dy="0.3em" class="text-xl font-bold fill-gray-900">72</text>
+              <text x="50" y="65" text-anchor="middle" dy="0.3em" class="text-xs fill-gray-500">/100</text>
+            </svg>
+            <span class="text-xs font-medium text-gray-600">Lead Score</span>
+          </div>
+        </div>
+
+        <!-- KPI Strip -->
+        <div class="grid grid-cols-4 gap-4">
+          <div class="bg-white rounded-3xl border border-gray-200 p-6">
+            <div class="text-xs text-gray-500 font-medium mb-2">Lead Score</div>
+            <div class="flex items-end gap-2 mb-3">
+              <span class="text-2xl font-bold text-gray-900">72</span>
+              <span class="text-sm text-gray-500">/100</span>
+            </div>
+            <div class="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+              <div class="h-full bg-cyan-500 rounded-full" style="width: 72%"></div>
+            </div>
+          </div>
+          <div class="bg-white rounded-3xl border border-gray-200 p-6">
+            <div class="text-xs text-gray-500 font-medium mb-2">Days in Pipeline</div>
+            <div class="text-3xl font-bold text-gray-900">18</div>
+            <div class="text-xs text-gray-500 mt-1">days</div>
+          </div>
+          <div class="bg-white rounded-3xl border border-gray-200 p-6">
+            <div class="text-xs text-gray-500 font-medium mb-2">Touchpoints</div>
+            <div class="text-3xl font-bold text-gray-900">7</div>
+            <div class="text-xs text-gray-500 mt-1">interactions</div>
+          </div>
+          <div class="bg-white rounded-3xl border border-gray-200 p-6">
+            <div class="text-xs text-gray-500 font-medium mb-2">Estimated Value</div>
+            <div class="text-2xl font-bold text-gray-900">£12,500</div>
+            <div class="text-xs text-gray-500 mt-1">potential deal</div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="bg-white rounded-3xl border border-gray-200">
+          <div class="border-b border-gray-200 px-6">
+            <div class="flex gap-8">
+              <button data-tab-trigger="overview" class="border-b-2 border-gray-900 px-1 py-3 text-sm font-medium cursor-pointer transition-colors text-gray-900" onclick="switchTab('overview')">Overview</button>
+              <button data-tab-trigger="activity" class="border-b-2 border-transparent px-1 py-3 text-sm font-medium cursor-pointer transition-colors text-gray-500 hover:text-gray-900" onclick="switchTab('activity')">Activity</button>
+              <button data-tab-trigger="notes" class="border-b-2 border-transparent px-1 py-3 text-sm font-medium cursor-pointer transition-colors text-gray-500 hover:text-gray-900" onclick="switchTab('notes')">Notes</button>
+              <button data-tab-trigger="insights" class="border-b-2 border-transparent px-1 py-3 text-sm font-medium cursor-pointer transition-colors text-gray-500 hover:text-gray-900" onclick="switchTab('insights')">Insights</button>
+            </div>
+          </div>
+
+          <!-- Overview Tab -->
+          <div data-tab-content="overview" class="p-6 grid grid-cols-3 gap-6">
+            <!-- Left Column -->
+            <div class="col-span-2 space-y-6">
+              <!-- Lead Information -->
+              <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                <h3 class="text-sm font-bold text-gray-900 mb-5">Lead Information</h3>
+                <div class="space-y-4">
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <div class="text-xs text-gray-500 font-medium mb-1">Campaign Name</div>
+                      <div class="text-sm font-medium text-gray-900">TOL26 Summer Campaign</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 font-medium mb-1">Source</div>
+                      <div class="text-sm font-medium text-gray-900">Inbound</div>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <div class="text-xs text-gray-500 font-medium mb-1">Channel</div>
+                      <div class="text-sm font-medium text-gray-900">Website</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 font-medium mb-1">Property</div>
+                      <div class="text-sm font-medium text-gray-900">Taste of London</div>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <div class="text-xs text-gray-500 font-medium mb-1">Account</div>
+                      <div class="text-sm font-medium text-blue-600 hover:text-blue-700 cursor-pointer">Red Global</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 font-medium mb-1">Primary Contact</div>
+                      <div class="text-sm font-medium text-gray-900">Sarah Mitchell, Marketing Director</div>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <div class="text-xs text-gray-500 font-medium mb-1">Phone</div>
+                      <div class="text-sm font-medium text-gray-900">+44 7700 900123</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 font-medium mb-1">Email</div>
+                      <div class="text-sm font-medium text-gray-900">s.mitchell@redglobal.com</div>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <div class="text-xs text-gray-500 font-medium mb-1">Created Date</div>
+                      <div class="text-sm font-medium text-gray-900">15 Mar 2026</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 font-medium mb-1">Last Activity</div>
+                      <div class="text-sm font-medium text-gray-900">10 Apr 2026</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Qualification Criteria -->
+              <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                <h3 class="text-sm font-bold text-gray-900 mb-5">Qualification Criteria</h3>
+                <div class="space-y-3">
+                  <div class="flex items-start gap-3">
+                    <div class="w-5 h-5 bg-emerald-100 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <i data-lucide="check" class="w-3 h-3 text-emerald-600"></i>
+                    </div>
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">Budget confirmed</div>
+                      <div class="text-xs text-gray-500">£10,000-15,000 range</div>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-3">
+                    <div class="w-5 h-5 bg-emerald-100 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <i data-lucide="check" class="w-3 h-3 text-emerald-600"></i>
+                    </div>
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">Decision maker identified</div>
+                      <div class="text-xs text-gray-500">VP Marketing</div>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-3">
+                    <div class="w-5 h-5 bg-emerald-100 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <i data-lucide="check" class="w-3 h-3 text-emerald-600"></i>
+                    </div>
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">Timeline established</div>
+                      <div class="text-xs text-gray-500">Q3 2026</div>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-3">
+                    <div class="w-5 h-5 bg-emerald-100 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <i data-lucide="check" class="w-3 h-3 text-emerald-600"></i>
+                    </div>
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">Need identified</div>
+                      <div class="text-xs text-gray-500">Brand visibility at food events</div>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-3">
+                    <div class="w-5 h-5 bg-red-100 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <i data-lucide="x" class="w-3 h-3 text-red-600"></i>
+                    </div>
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">Competitor evaluation</div>
+                      <div class="text-xs text-gray-500">Unknown</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-span-1 space-y-6">
+              <!-- Lead Scoring Breakdown -->
+              <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                <h3 class="text-sm font-bold text-gray-900 mb-5">Lead Scoring Breakdown</h3>
+                <div class="space-y-4">
+                  <div>
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-xs font-medium text-gray-900">Engagement</span>
+                      <span class="text-xs font-bold text-gray-900">25/30</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div class="h-full bg-blue-500 rounded-full" style="width: 83%"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-xs font-medium text-gray-900">Fit</span>
+                      <span class="text-xs font-bold text-gray-900">20/25</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div class="h-full bg-emerald-500 rounded-full" style="width: 80%"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-xs font-medium text-gray-900">Intent</span>
+                      <span class="text-xs font-bold text-gray-900">15/25</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div class="h-full bg-amber-500 rounded-full" style="width: 60%"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-xs font-medium text-gray-900">Recency</span>
+                      <span class="text-xs font-bold text-gray-900">12/20</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div class="h-full bg-purple-500 rounded-full" style="width: 60%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Related Records -->
+              <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                <h3 class="text-sm font-bold text-gray-900 mb-5">Related Records</h3>
+                <div class="space-y-3">
+                  <div>
+                    <div class="text-xs text-gray-500 font-medium mb-1">Account</div>
+                    <div class="text-sm font-medium text-blue-600 hover:text-blue-700 cursor-pointer">Red Global</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-gray-500 font-medium mb-1">Contact</div>
+                    <div class="text-sm font-medium text-blue-600 hover:text-blue-700 cursor-pointer">Sarah Mitchell</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-gray-500 font-medium mb-1">Property</div>
+                    <div class="text-sm font-medium text-gray-900">Taste of London</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-gray-500 font-medium mb-1">Campaign</div>
+                    <div class="text-sm font-medium text-gray-900">TOL26 Summer Push</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-gray-500 font-medium mb-1">Opportunity</div>
+                    <div class="text-sm font-medium text-gray-400">— (none yet)</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Source Details -->
+              <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                <h3 class="text-sm font-bold text-gray-900 mb-5">Source Details</h3>
+                <div class="space-y-3">
+                  <div>
+                    <div class="text-xs text-gray-500 font-medium mb-1">Original Source</div>
+                    <div class="text-sm font-medium text-gray-900">Website</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-gray-500 font-medium mb-1">Source Detail</div>
+                    <div class="text-sm font-medium text-gray-900">Blog — "Top Food Events 2026"</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-gray-500 font-medium mb-1">UTM Campaign</div>
+                    <div class="text-sm font-medium text-gray-900">tol26-summer</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-gray-500 font-medium mb-1">UTM Medium</div>
+                    <div class="text-sm font-medium text-gray-900">organic</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-gray-500 font-medium mb-1">First Touch</div>
+                    <div class="text-sm font-medium text-gray-900">28 Feb 2026</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-gray-500 font-medium mb-1">Last Touch</div>
+                    <div class="text-sm font-medium text-gray-900">10 Apr 2026</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity Tab -->
+          <div data-tab-content="activity" class="p-6 hidden">
+            <div class="space-y-6 max-w-2xl">
+              <!-- Timeline Item 1 -->
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="mail" class="w-4 h-4 text-blue-600"></i>
+                  </div>
+                  <div class="w-0.5 h-12 bg-gray-200 mt-2"></div>
+                </div>
+                <div class="pb-6">
+                  <h4 class="text-sm font-bold text-gray-900">Email Opened</h4>
+                  <p class="text-sm text-gray-600 mt-1">"Summer Events Lookbook" email opened 3 times</p>
+                  <div class="text-xs text-gray-500 mt-2">10 Apr 2026</div>
+                </div>
+              </div>
+
+              <!-- Timeline Item 2 -->
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="calendar" class="w-4 h-4 text-purple-600"></i>
+                  </div>
+                  <div class="w-0.5 h-12 bg-gray-200 mt-2"></div>
+                </div>
+                <div class="pb-6">
+                  <h4 class="text-sm font-bold text-gray-900">Meeting Scheduled</h4>
+                  <p class="text-sm text-gray-600 mt-1">Discovery call booked with Mollie Stoneham</p>
+                  <div class="text-xs text-gray-500 mt-2">8 Apr 2026</div>
+                </div>
+              </div>
+
+              <!-- Timeline Item 3 -->
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="download" class="w-4 h-4 text-emerald-600"></i>
+                  </div>
+                  <div class="w-0.5 h-12 bg-gray-200 mt-2"></div>
+                </div>
+                <div class="pb-6">
+                  <h4 class="text-sm font-bold text-gray-900">Form Submission</h4>
+                  <p class="text-sm text-gray-600 mt-1">Downloaded "Taste of London 2026 Sponsorship Deck"</p>
+                  <div class="text-xs text-gray-500 mt-2">2 Apr 2026</div>
+                </div>
+              </div>
+
+              <!-- Timeline Item 4 -->
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-8 h-8 bg-cyan-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="eye" class="w-4 h-4 text-cyan-600"></i>
+                  </div>
+                  <div class="w-0.5 h-12 bg-gray-200 mt-2"></div>
+                </div>
+                <div class="pb-6">
+                  <h4 class="text-sm font-bold text-gray-900">Page Visit</h4>
+                  <p class="text-sm text-gray-600 mt-1">Viewed pricing page (3 min 42s)</p>
+                  <div class="text-xs text-gray-500 mt-2">28 Mar 2026</div>
+                </div>
+              </div>
+
+              <!-- Timeline Item 5 -->
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="send" class="w-4 h-4 text-blue-600"></i>
+                  </div>
+                  <div class="w-0.5 h-12 bg-gray-200 mt-2"></div>
+                </div>
+                <div class="pb-6">
+                  <h4 class="text-sm font-bold text-gray-900">Email Sent</h4>
+                  <p class="text-sm text-gray-600 mt-1">Welcome sequence email #1 delivered</p>
+                  <div class="text-xs text-gray-500 mt-2">15 Mar 2026</div>
+                </div>
+              </div>
+
+              <!-- Timeline Item 6 (Last) -->
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="star" class="w-4 h-4 text-yellow-600"></i>
+                  </div>
+                </div>
+                <div>
+                  <h4 class="text-sm font-bold text-gray-900">Lead Created</h4>
+                  <p class="text-sm text-gray-600 mt-1">Inbound via website form</p>
+                  <div class="text-xs text-gray-500 mt-2">15 Mar 2026</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes Tab -->
+          <div data-tab-content="notes" class="p-6 hidden">
+            <div class="space-y-4 max-w-2xl">
+              <!-- Note 1 -->
+              <div class="border border-gray-200 rounded-2xl p-5 bg-gray-50">
+                <div class="flex items-center justify-between mb-3">
+                  <div>
+                    <h4 class="text-sm font-bold text-gray-900">Mollie Stoneham</h4>
+                    <div class="text-xs text-gray-500 mt-0.5">10 Apr 2026, 2:30 PM</div>
+                  </div>
+                  <button class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                  </button>
+                </div>
+                <p class="text-sm text-gray-700">Great conversation with Sarah today. She confirmed the budget for Q3 sponsorship is approved. Next step: prepare proposal with activation ideas for the summer campaign.</p>
+              </div>
+
+              <!-- Note 2 -->
+              <div class="border border-gray-200 rounded-2xl p-5 bg-gray-50">
+                <div class="flex items-center justify-between mb-3">
+                  <div>
+                    <h4 class="text-sm font-bold text-gray-900">James Chen</h4>
+                    <div class="text-xs text-gray-500 mt-0.5">2 Apr 2026, 4:15 PM</div>
+                  </div>
+                  <button class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                  </button>
+                </div>
+                <p class="text-sm text-gray-700">Lead downloaded sponsorship deck from blog post. High engagement - viewed 5 pages on our site in the past week. Strong indicator of qualified lead.</p>
+              </div>
+
+              <!-- Note 3 -->
+              <div class="border border-gray-200 rounded-2xl p-5 bg-gray-50">
+                <div class="flex items-center justify-between mb-3">
+                  <div>
+                    <h4 class="text-sm font-bold text-gray-900">Mollie Stoneham</h4>
+                    <div class="text-xs text-gray-500 mt-0.5">15 Mar 2026, 10:00 AM</div>
+                  </div>
+                  <button class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                  </button>
+                </div>
+                <p class="text-sm text-gray-700">New lead from inbound form on website. Contact: Sarah Mitchell, Marketing Director at Red Global. Looking for sponsorship opportunities for upcoming food events. Initial qualification looks promising.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Insights Tab -->
+          <div data-tab-content="insights" class="p-6 hidden">
+            <div class="max-w-2xl">
+              <div class="border-l-4 border-violet-500 bg-violet-50 rounded-2xl p-6">
+                <div class="flex items-center gap-2 mb-4">
+                  <i data-lucide="sparkles" class="w-5 h-5 text-violet-600"></i>
+                  <span class="text-xs font-bold text-violet-700 bg-violet-100 px-2.5 py-1 rounded-full">Mari AI</span>
+                </div>
+                <h3 class="text-sm font-bold text-gray-900 mb-3">Lead Analysis & Recommendations</h3>
+                <div class="text-sm text-gray-700 space-y-3">
+                  <p>
+                    <strong>Conversion Likelihood:</strong> This lead shows strong indicators of qualified status with a 72/100 score. The combination of confirmed budget, identified decision maker, and clear timeline suggests an estimated 68% probability of conversion to opportunity within the next 30 days.
+                  </p>
+                  <p>
+                    <strong>Next Steps:</strong> Schedule the discovery call with Sarah Mitchell as planned. Prepare a customized sponsorship proposal highlighting brand visibility opportunities at Taste of London 2026. Follow up with competitive positioning analysis to address the one incomplete qualification criterion.
+                  </p>
+                  <p>
+                    <strong>Account Pattern:</strong> Red Global has a positive history with similar sponsorship initiatives. Their engagement level is consistent with accounts that typically close deals in 45-60 days. Consider accelerating the proposal timeline to align with their Q3 planning cycle.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function switchTab(tabName) {
+      document.querySelectorAll('[data-tab-trigger]').forEach(btn => {
+        btn.classList.remove('border-gray-900', 'text-gray-900');
+        btn.classList.add('border-transparent', 'text-gray-500');
+      });
+      document.querySelector(`[data-tab-trigger="${tabName}"]`).classList.add('border-gray-900', 'text-gray-900');
+      document.querySelector(`[data-tab-trigger="${tabName}"]`).classList.remove('border-transparent', 'text-gray-500');
+      document.querySelectorAll('[data-tab-content]').forEach(c => c.classList.add('hidden'));
+      document.querySelector(`[data-tab-content="${tabName}"]`).classList.remove('hidden');
+    }
+    lucide.createIcons();
+  </script>
+</body>
+</html>

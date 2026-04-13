@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM - New Deal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * { font-family: 'DM Sans', sans-serif; }
+    body { background-color: #f8f8fa; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    /* Account Search Autocomplete */
+    .account-search-wrap { position: relative; }
+    .account-dropdown {
+      position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
+      background: white; border: 1px solid #e5e7eb; border-top: none;
+      border-radius: 0 0 8px 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      max-height: 260px; overflow-y: auto; display: none;
+    }
+    .account-dropdown.open { display: block; }
+    .account-dropdown-item {
+      padding: 10px 12px; cursor: pointer; display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid #f5f5f5; transition: background 0.1s;
+    }
+    .account-dropdown-item:last-child { border-bottom: none; }
+    .account-dropdown-item:hover, .account-dropdown-item.focused { background: #f0f5ff; }
+    .account-dropdown-item .adi-avatar {
+      width: 32px; height: 32px; border-radius: 8px; background: #111827; color: white;
+      display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0;
+    }
+    .account-dropdown-item .adi-name { font-size: 13px; font-weight: 600; color: #111; }
+    .account-dropdown-item .adi-meta { font-size: 10px; color: #888; }
+    .account-dropdown-item .adi-deals {
+      margin-left: auto; font-size: 10px; font-weight: 600; color: #6366f1;
+      background: #eef2ff; padding: 2px 6px; border-radius: 4px; flex-shrink: 0;
+    }
+    .account-dropdown-empty {
+      padding: 16px; text-align: center; font-size: 12px; color: #999;
+    }
+    .account-dropdown-create {
+      padding: 10px 12px; cursor: pointer; display: flex; align-items: center; gap: 8px;
+      border-top: 1px solid #e5e7eb; background: #fafafa; transition: background 0.1s;
+      font-size: 12px; font-weight: 600; color: #111;
+    }
+    .account-dropdown-create:hover { background: #f0f0f0; }
+    .account-selected-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #f0f5ff; border: 1px solid #c7d7f5; border-radius: 8px;
+      padding: 5px 10px 5px 6px; font-size: 13px; font-weight: 600; color: #1e3a5f;
+    }
+    .account-selected-chip .asc-avatar {
+      width: 22px; height: 22px; border-radius: 5px; background: #111827; color: white;
+      display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700;
+    }
+    .account-selected-chip .asc-remove {
+      margin-left: 4px; cursor: pointer; color: #999; font-size: 14px; line-height: 1;
+      transition: color 0.15s;
+    }
+    .account-selected-chip .asc-remove:hover { color: #c00; }
+    /* Account History Panel */
+    .account-history-panel {
+      background: white; border-radius: 24px; border: 1px solid #e5e7eb;
+      overflow: hidden; margin-bottom: 16px; display: none;
+    }
+    .account-history-panel.visible { display: block; animation: fadeIn 0.4s ease-out forwards; }
+    .ahp-header {
+      padding: 16px 20px; border-bottom: 1px solid #f0f0f0;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .ahp-header-avatar {
+      width: 36px; height: 36px; border-radius: 10px; background: #111827; color: white;
+      display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;
+    }
+    .ahp-header-name { font-size: 14px; font-weight: 700; color: #111; }
+    .ahp-header-meta { font-size: 11px; color: #999; }
+    .ahp-tabs {
+      display: flex; border-bottom: 1px solid #f0f0f0; padding: 0 16px;
+    }
+    .ahp-tab {
+      padding: 10px 14px; font-size: 11px; font-weight: 600; color: #999;
+      cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .ahp-tab:hover { color: #555; }
+    .ahp-tab.active { color: #111827; border-bottom-color: #111827; }
+    .ahp-body { padding: 12px 16px; max-height: 340px; overflow-y: auto; }
+    .ahp-deal-card {
+      padding: 10px 12px; border: 1px solid #f0f0f0; border-radius: 10px;
+      margin-bottom: 8px; transition: all 0.15s; cursor: pointer;
+    }
+    .ahp-deal-card:hover { border-color: #d0d0d0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .ahp-deal-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 4px; }
+    .ahp-deal-name { font-size: 12px; font-weight: 600; color: #111; flex: 1; }
+    .ahp-deal-value { font-size: 12px; font-weight: 700; color: #111; }
+    .ahp-deal-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .ahp-deal-badge {
+      font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px;
+      text-transform: uppercase; letter-spacing: 0.3px;
+    }
+    .ahp-deal-badge.signed { background: #dcfce7; color: #166534; }
+    .ahp-deal-badge.in-play { background: #dbeafe; color: #1e40af; }
+    .ahp-deal-badge.contracted { background: #e0e7ff; color: #3730a3; }
+    .ahp-deal-badge.lost { background: #fee2e2; color: #991b1b; }
+    .ahp-deal-badge.opp { background: #fef3c7; color: #92400e; }
+    .ahp-deal-badge.qualified { background: #d1fae5; color: #065f46; }
+    .ahp-deal-badge.proposal { background: #ede9fe; color: #5b21b6; }
+    .ahp-deal-prop { font-size: 10px; color: #999; }
+    .ahp-deal-date { font-size: 10px; color: #bbb; }
+    .ahp-empty {
+      padding: 20px; text-align: center; font-size: 12px; color: #bbb;
+    }
+    .ahp-summary-strip {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: #f0f0f0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .ahp-summary-stat {
+      background: white; padding: 10px 12px; text-align: center;
+    }
+    .ahp-summary-val { font-size: 16px; font-weight: 700; color: #111; }
+    .ahp-summary-label { font-size: 9px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* Inventory category pills */
+    .inv-cat-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 12px; border-radius: 999px; font-size: 11px; font-weight: 600;
+      border: 1px solid #e5e7eb; background: #fff; color: #6b7280;
+      cursor: pointer; transition: all 0.15s ease; white-space: nowrap;
+    }
+    .inv-cat-pill:hover { border-color: #d1d5db; background: #f9fafb; color: #374151; }
+    .inv-cat-pill.active { background: #111827; color: #fff; border-color: #111827; }
+    .inv-cat-pill .pill-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 18px; height: 18px; border-radius: 999px;
+      font-size: 10px; font-weight: 700; padding: 0 5px;
+      background: rgba(0,0,0,0.06); color: inherit;
+    }
+    .inv-cat-pill.active .pill-count { background: rgba(255,255,255,0.2); }
+
+    /* Inventory browse table */
+    #inv-browse-table { border-collapse: separate; border-spacing: 0; }
+    #inv-browse-table thead th {
+      position: sticky; top: 0; z-index: 2;
+      background: #f9fafb; font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.5px; color: #9ca3af;
+      padding: 8px 10px; border-bottom: 1px solid #e5e7eb; white-space: nowrap;
+    }
+    #inv-browse-table tbody tr { transition: background 0.1s; }
+    #inv-browse-table tbody tr:hover { background: #f3f4f6; }
+    #inv-browse-table tbody tr.selected-row { background: #eff6ff; }
+    #inv-browse-table tbody td { padding: 8px 10px; font-size: 12px; color: #374151; border-bottom: 1px solid #f3f4f6; white-space: nowrap; }
+    #inv-browse-table tbody td:first-child { width: 32px; text-align: center; }
+
+    /* Inventory basket */
+    .inv-basket-item {
+      display: grid; grid-template-columns: 1fr auto auto auto auto;
+      align-items: center; gap: 12px; padding: 8px 12px;
+      border: 1px solid #e5e7eb; border-radius: 8px; background: #fff;
+      font-size: 12px; transition: border-color 0.15s;
+    }
+    .inv-basket-item:hover { border-color: #d1d5db; }
+    .inv-basket-item .item-name { font-weight: 600; color: #111827; }
+    .inv-basket-item .item-meta { font-size: 10px; color: #9ca3af; }
+    .inv-basket-item input[type="number"] {
+      width: 56px; padding: 4px 6px; border: 1px solid #e5e7eb; border-radius: 6px;
+      font-size: 12px; text-align: center; background: #f9fafb;
+    }
+    .inv-basket-item input[type="number"]:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 2px rgba(99,102,241,0.15); }
+    .inv-basket-remove {
+      width: 24px; height: 24px; border-radius: 6px; border: none;
+      background: transparent; color: #d1d5db; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+    }
+    .inv-basket-remove:hover { background: #fee2e2; color: #ef4444; }
+
+    /* Availability badges */
+    .avail-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; }
+    .avail-badge .dot { width: 6px; height: 6px; border-radius: 50%; }
+    .avail-badge.high .dot { background: #22c55e; }
+    .avail-badge.mid .dot { background: #f59e0b; }
+    .avail-badge.low .dot { background: #ef4444; }
+    .avail-badge.high { color: #16a34a; }
+    .avail-badge.mid { color: #d97706; }
+    .avail-badge.low { color: #dc2626; }
+
+    /* Inventory filter bar */
+    .inv-filter-bar {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid #f3f4f6; margin-bottom: 8px;
+    }
+    .inv-filter-bar select, .inv-filter-bar input[type="text"], .inv-filter-bar input[type="date"] {
+      padding: 6px 10px; border: 1px solid #e5e7eb; border-radius: 8px;
+      font-size: 12px; background: #fff; color: #374151;
+    }
+    .inv-filter-bar select:focus, .inv-filter-bar input:focus {
+      outline: none; border-color: #6366f1; box-shadow: 0 0 0 2px rgba(99,102,241,0.12);
+    }
+    .inv-filter-reset {
+      padding: 5px 10px; border-radius: 8px; border: 1px solid #e5e7eb;
+      background: #fff; color: #6b7280; font-size: 11px; font-weight: 600;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .inv-filter-reset:hover { background: #f3f4f6; color: #374151; }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <aside class="w-[76px] flex flex-col items-center py-4 space-y-1 border-r border-gray-800" style="background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%);">
+      <!-- Home -->
+      <a href="index.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Home</span>
+      </a>
+
+      <!-- Mari AI -->
+      <a href="mari-ai.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="sparkles" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Mari AI</span>
+      </a>
+
+      <!-- Search -->
+      <a href="search.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="search" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Search</span>
+      </a>
+
+      <!-- Separator -->
+      <div class="w-8 border-t border-gray-700/50 my-1"></div>
+
+      <!-- Accounts -->
+      <a href="accounts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="building-2" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Accounts</span>
+      </a>
+
+      <!-- Contacts -->
+      <a href="contacts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Contacts</span>
+      </a>
+
+      <!-- Opportunities -->
+      <a href="opportunities.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="target" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Opps</span>
+      </a>
+
+      <!-- Deals - ACTIVE -->
+      <a href="deals.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg bg-white/15 text-white transition-colors">
+        <i data-lucide="handshake" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Deals</span>
+      </a>
+
+      <!-- Leads -->
+      <a href="leads.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="megaphone" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Leads</span>
+      </a>
+
+      <!-- Reports -->
+      <a href="reports.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Reports</span>
+      </a>
+
+      <!-- Spacer -->
+      <div class="flex-1"></div>
+
+      <!-- Logout -->
+      <a href="#" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="log-out" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Logout</span>
+      </a>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Header -->
+      <header class="sticky top-0 z-40 bg-white border-b border-gray-100 border-t-2 border-gray-900 h-14 px-6 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <a href="deals.html" class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span class="font-medium">Deals</span>
+          </a>
+          <div class="h-5 border-l border-gray-200"></div>
+          <span class="text-xs text-gray-400">New Deal</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="deals.html" class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">Cancel</a>
+          <button onclick="saveDeal()" class="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors">Save Deal</button>
+          <div class="w-9 h-9 bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold rounded" style="border-radius: 8px;">JS</div>
+        </div>
+      </header>
+
+      <!-- Main Content Area -->
+      <main class="flex-1 overflow-y-auto">
+        <div class="p-6">
+          <!-- Breadcrumb + Title -->
+          <div class="mb-6">
+            <div class="flex items-center gap-2 text-xs text-gray-400 mb-3">
+              <span>Deals</span>
+              <i data-lucide="chevron-right" class="w-3 h-3"></i>
+              <span>New Deal</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center">
+                <i data-lucide="handshake" class="w-5 h-5 text-white"></i>
+              </div>
+              <h1 class="text-2xl font-bold text-gray-900">Create New Deal</h1>
+            </div>
+          </div>
+
+          <!-- Two Column Layout: Form Left, AI Right -->
+          <div class="flex gap-6 items-start">
+
+            <!-- LEFT COLUMN: Manual Form -->
+            <div class="flex-1 min-w-0">
+              <div id="manual-form" class="bg-white rounded-3xl border border-gray-200 p-6">
+            <!-- Deal Information -->
+            <div class="mb-6">
+              <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i data-lucide="handshake" class="w-5 h-5 text-gray-600"></i>
+                Deal Information
+              </h2>
+              <div class="grid grid-cols-2 gap-4">
+                <!-- Deal Name -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">
+                    Deal Name <span class="text-red-500">*</span>
+                  </label>
+                  <input id="deal-name" type="text" placeholder="e.g. TOL26: COMPANY x30 WED EVE" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                </div>
+
+                <!-- Account -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">
+                    Account <span class="text-red-500">*</span>
+                  </label>
+                  <div class="account-search-wrap" id="account-search-wrap">
+                    <!-- Selected state (hidden by default) -->
+                    <div id="account-selected" class="hidden">
+                      <div class="account-selected-chip">
+                        <span class="asc-avatar" id="asc-avatar">RG</span>
+                        <span id="asc-name">Red Global</span>
+                        <span class="asc-remove" onclick="clearSelectedAccount()" title="Remove">&times;</span>
+                      </div>
+                    </div>
+                    <!-- Search input (visible by default) -->
+                    <div id="account-input-wrap" class="relative">
+                      <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-2.5 pointer-events-none"></i>
+                      <input id="deal-account" type="text" placeholder="Search accounts..." autocomplete="off" class="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400" oninput="onAccountSearch(this.value)" onfocus="onAccountSearch(this.value)">
+                    </div>
+                    <!-- Dropdown -->
+                    <div class="account-dropdown" id="account-dropdown"></div>
+                  </div>
+                </div>
+
+                <!-- Property -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">
+                    Property <span class="text-red-500">*</span>
+                  </label>
+                  <select id="deal-property" onchange="onPropertyChange(this.value)" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                    <option value="">Select a property</option>
+                    <option value="taste">Taste of London</option>
+                    <option value="frieze">Frieze London</option>
+                    <option value="hyde">Hyde Park Winter Wonderland</option>
+                    <option value="summit">Summer Summit</option>
+                    <option value="gala">Gala London</option>
+                  </select>
+                </div>
+
+                <!-- Event Date -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Event Date</label>
+                  <select id="deal-event-date" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                    <option value="">Select event date</option>
+                    <option value="2026-06-17">17 Jun 2026</option>
+                    <option value="2026-06-18">18 Jun 2026 (Wed Eve)</option>
+                    <option value="2026-06-19">19 Jun 2026</option>
+                    <option value="2026-06-20">20 Jun 2026</option>
+                    <option value="2026-06-21">21 Jun 2026</option>
+                  </select>
+                </div>
+
+                <!-- Lead Sales Person -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">
+                    Lead Sales Person <span class="text-red-500">*</span>
+                  </label>
+                  <input id="deal-owner" type="text" placeholder="Jaspinder Singh" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400" value="Jaspinder Singh">
+                </div>
+
+                <!-- Deal Status -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Deal Status</label>
+                  <select id="deal-status" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                    <option value="">Select status</option>
+                    <option value="in-play">In Play</option>
+                    <option value="signed">Signed Agreement</option>
+                    <option value="fully-contracted">Fully Contracted</option>
+                  </select>
+                </div>
+
+                <!-- Probability -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Probability</label>
+                  <div class="relative">
+                    <input id="deal-probability" type="number" min="0" max="100" placeholder="0" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 pr-6">
+                    <span class="text-gray-400 text-sm absolute right-3 top-2.5">%</span>
+                  </div>
+                </div>
+
+                <!-- Covers/Quantity -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Covers / Quantity</label>
+                  <input id="deal-covers" type="number" min="1" placeholder="0" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                </div>
+
+                <!-- Package -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Package</label>
+                  <select id="deal-package" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                    <option value="">Select package</option>
+                    <option value="standard">Standard</option>
+                    <option value="premium">Premium</option>
+                    <option value="vip">VIP</option>
+                    <option value="custom">Custom</option>
+                  </select>
+                </div>
+
+                <!-- Price Per Head -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Price Per Head</label>
+                  <div class="relative">
+                    <span class="text-gray-400 text-sm absolute left-3 top-2.5">£</span>
+                    <input id="deal-price" type="number" min="0" step="0.01" placeholder="0.00" class="w-full pl-6 pr-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Inventory Items — Redesigned Picker -->
+            <div class="mb-6" id="inventory-section">
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                  <i data-lucide="package" class="w-5 h-5 text-gray-600"></i>
+                  Inventory Items
+                </h2>
+                <div class="flex items-center gap-2">
+                  <span id="inv-property-badge" class="hidden text-[9px] font-medium text-violet-600 bg-violet-50 px-2 py-0.5 rounded border border-violet-100"></span>
+                  <span id="inv-selected-count" class="hidden text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md"></span>
+                </div>
+              </div>
+
+              <!-- No property selected -->
+              <div id="inv-no-property" class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-dashed border-gray-300 text-center">
+                <i data-lucide="info" class="w-4 h-4 text-gray-400 flex-shrink-0"></i>
+                <p class="text-xs text-gray-500">Select a property above to load available inventory items</p>
+              </div>
+
+              <!-- Inventory Picker (hidden until property selected) -->
+              <div id="inv-picker-container" class="hidden">
+
+                <!-- SELECTED ITEMS BASKET -->
+                <div id="inv-basket" class="hidden mb-4">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Selected Items</span>
+                    <button onclick="clearAllInventory()" class="text-[10px] font-medium text-red-400 hover:text-red-600 transition-colors">Clear all</button>
+                  </div>
+                  <div id="inv-basket-body" class="border border-gray-200 rounded-xl overflow-hidden">
+                    <!-- Selected items table rendered by JS -->
+                  </div>
+                  <div class="flex items-center justify-between mt-2 px-3 py-2 bg-gray-900 rounded-lg">
+                    <span class="text-xs font-bold text-white">Grand Total</span>
+                    <span id="inv-grand-total" class="text-sm font-bold text-white">£0.00</span>
+                  </div>
+                </div>
+
+                <!-- ADD ITEMS: Search + Filters -->
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                  <!-- Filter Bar -->
+                  <div class="bg-gray-50 border-b border-gray-200 p-3">
+                    <div class="flex items-center gap-2 mb-2">
+                      <div class="relative flex-1">
+                        <i data-lucide="search" class="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2 pointer-events-none"></i>
+                        <input id="inv-search" type="text" placeholder="Search inventory items..." autocomplete="off" oninput="filterInventory()" class="w-full pl-8 pr-3 py-1.5 text-xs border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                      </div>
+                      <select id="inv-filter-year" onchange="filterInventory()" class="px-2 py-1.5 text-xs border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 cursor-pointer font-medium">
+                        <option value="">All Years</option>
+                        <option value="2026" selected>2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2025">2025</option>
+                      </select>
+                      <select id="inv-filter-category" onchange="filterInventory()" class="px-2 py-1.5 text-xs border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 cursor-pointer font-medium">
+                        <option value="">All Categories</option>
+                        <!-- Populated by JS per property -->
+                      </select>
+                      <select id="inv-filter-date" onchange="filterInventory()" class="hidden px-2 py-1.5 text-xs border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 cursor-pointer font-medium">
+                        <option value="">All Dates</option>
+                        <!-- Populated by JS for date-based inventory -->
+                      </select>
+                      <button onclick="resetInventoryFilters()" class="px-2 py-1.5 text-[10px] font-semibold text-orange-600 bg-orange-50 hover:bg-orange-100 border border-orange-200 rounded-lg transition-colors whitespace-nowrap">Reset</button>
+                    </div>
+                    <!-- Category quick-filter pills -->
+                    <div id="inv-category-pills" class="flex flex-wrap gap-1.5"></div>
+                  </div>
+
+                  <!-- Inventory Table (browsable list with checkboxes) -->
+                  <div class="overflow-x-auto" style="max-height:400px; overflow-y:auto;">
+                    <table class="w-full text-xs" id="inv-browse-table">
+                      <thead class="sticky top-0 z-10">
+                        <tr class="text-left text-[10px] font-bold text-gray-400 uppercase tracking-wider bg-white border-b border-gray-200">
+                          <th class="py-2 px-2 w-8"></th>
+                          <th class="py-2 px-2" style="min-width:180px">Item</th>
+                          <th class="py-2 px-2" style="min-width:50px">Year</th>
+                          <th class="py-2 px-2" style="min-width:100px">Category</th>
+                          <th class="py-2 px-2" style="min-width:65px">Date</th>
+                          <th class="py-2 px-2 text-right" style="min-width:70px">Min Price</th>
+                          <th class="py-2 px-2 text-right" style="min-width:70px">Max Price</th>
+                          <th class="py-2 px-2 text-right" style="min-width:65px">Price</th>
+                          <th class="py-2 px-2 text-center" style="min-width:60px">Avail</th>
+                          <th class="py-2 px-2 text-right" style="min-width:40px">Qty</th>
+                          <th class="py-2 px-2 text-right" style="min-width:75px">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody id="inv-browse-body">
+                        <!-- Rendered by JS -->
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Footer summary -->
+                  <div id="inv-browse-footer" class="bg-gray-50 border-t border-gray-200 px-3 py-2 flex items-center justify-between">
+                    <span id="inv-showing-count" class="text-[10px] text-gray-400"></span>
+                    <span id="inv-select-hint" class="text-[10px] text-gray-400">Tick items to add them to the deal</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Payment Schedule -->
+            <div class="mb-6">
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                  <i data-lucide="credit-card" class="w-5 h-5 text-gray-600"></i>
+                  Payment Schedule
+                </h2>
+                <div class="flex items-center gap-2">
+                  <button class="text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors">
+                    <i data-lucide="divide-horizontal" class="w-3.5 h-3.5"></i>
+                    Split equally
+                  </button>
+                  <button class="text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                    Add Payment
+                  </button>
+                </div>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="text-left text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-200">
+                      <th class="pb-2 pr-3">Payment</th>
+                      <th class="pb-2 pr-3">Due Date</th>
+                      <th class="pb-2 pr-3">Type</th>
+                      <th class="pb-2 pr-3 text-right">Amount</th>
+                      <th class="pb-2 pr-3 w-12">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-t border-gray-200">
+                      <td class="py-2 pr-3">
+                        <input type="text" placeholder="Payment label" class="w-full px-2 py-1 text-xs border border-gray-200 rounded bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                      </td>
+                      <td class="py-2 pr-3">
+                        <input type="date" class="w-full px-2 py-1 text-xs border border-gray-200 rounded bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                      </td>
+                      <td class="py-2 pr-3">
+                        <select class="w-full px-2 py-1 text-xs border border-gray-200 rounded bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                          <option value="">Type</option>
+                          <option value="bank">Bank Transfer</option>
+                          <option value="card">Card Payment</option>
+                          <option value="check">Check</option>
+                        </select>
+                      </td>
+                      <td class="py-2 pr-3">
+                        <div class="relative">
+                          <span class="text-gray-400 text-xs absolute left-2 top-1.5">£</span>
+                          <input type="number" min="0" step="0.01" placeholder="0.00" class="w-full pl-5 pr-2 py-1 text-xs border border-gray-200 rounded bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 text-right">
+                        </div>
+                      </td>
+                      <td class="py-2 pr-3">
+                        <button class="text-gray-400 hover:text-red-500 transition-colors">
+                          <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Notes -->
+            <div>
+              <label class="text-xs font-medium text-gray-500 mb-1.5 block">Deal Notes</label>
+              <textarea placeholder="Add any additional notes about this deal..." rows="4" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 resize-none"></textarea>
+            </div>
+              </div>
+            </div><!-- /left column -->
+
+            <!-- RIGHT COLUMN: Account History + Mari AI Assistant -->
+            <div class="w-[400px] flex-shrink-0 sticky top-6">
+
+              <!-- Account History Panel (hidden until account selected) -->
+              <div class="account-history-panel" id="account-history-panel">
+                <div class="ahp-header">
+                  <div class="ahp-header-avatar" id="ahp-avatar">RG</div>
+                  <div>
+                    <div class="ahp-header-name" id="ahp-name">Red Global</div>
+                    <div class="ahp-header-meta" id="ahp-meta">Health Care / Medical &bull; Canada</div>
+                  </div>
+                  <a href="account-detail.html" style="margin-left:auto;font-size:10px;font-weight:600;color:#6366f1;text-decoration:none">View Account &rarr;</a>
+                </div>
+                <div class="ahp-summary-strip" id="ahp-summary-strip">
+                  <div class="ahp-summary-stat">
+                    <div class="ahp-summary-val" id="ahp-total-val">&pound;0</div>
+                    <div class="ahp-summary-label">Total Value</div>
+                  </div>
+                  <div class="ahp-summary-stat">
+                    <div class="ahp-summary-val" id="ahp-deals-count">0</div>
+                    <div class="ahp-summary-label">Deals</div>
+                  </div>
+                  <div class="ahp-summary-stat">
+                    <div class="ahp-summary-val" id="ahp-opps-count">0</div>
+                    <div class="ahp-summary-label">Opportunities</div>
+                  </div>
+                </div>
+                <div class="ahp-tabs">
+                  <div class="ahp-tab active" onclick="switchHistoryTab('all', this)">All</div>
+                  <div class="ahp-tab" onclick="switchHistoryTab('deals', this)">Deals</div>
+                  <div class="ahp-tab" onclick="switchHistoryTab('opps', this)">Opportunities</div>
+                </div>
+                <div class="ahp-body" id="ahp-body">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+
+              <div class="rounded-3xl border border-gray-200 overflow-hidden" style="background: linear-gradient(135deg, #fafafa 0%, #f5f3ff 100%);">
+                <div class="p-5">
+                  <!-- Header -->
+                  <div class="flex items-center gap-3 mb-4">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #111827, #1f2937);">
+                      <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+                    </div>
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900">Create with Mari AI</h3>
+                      <p class="text-[11px] text-gray-400">Describe the deal naturally</p>
+                    </div>
+                  </div>
+
+                  <!-- Input Area -->
+                  <div class="relative mb-3">
+                    <textarea id="ai-deal-input" rows="4" placeholder="e.g. Red Global want 30 covers for Wednesday evening at Taste of London 2026. They want the premium package at £210 per head. Mollie is the sales lead. Split into 3 payments." class="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:border-violet-300 focus:ring-2 focus:ring-violet-100 resize-none" style="line-height: 1.6;"></textarea>
+                  </div>
+                  <p class="text-[10px] text-gray-400 mb-3">Try: "Book 20 seats for Tech Innovations at Frieze London, standard package"</p>
+                  <button onclick="processAIDeal()" id="ai-submit-btn" class="w-full bg-gray-900 text-white text-xs font-medium h-9 px-4 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                    Generate Deal
+                  </button>
+                </div>
+
+                <!-- AI Processing (hidden by default) -->
+                <div id="ai-processing" class="hidden border-t border-gray-200 px-5 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-4 h-4 rounded-full border-2 border-gray-300 border-t-gray-900 animate-spin"></div>
+                    <span class="text-xs text-gray-500">Mari AI is analysing your request...</span>
+                  </div>
+                </div>
+
+                <!-- AI Results (hidden by default) -->
+                <div id="ai-results" class="hidden border-t border-gray-200">
+                  <div class="p-5">
+                    <!-- AI Message -->
+                    <div class="flex items-start gap-3 mb-4">
+                      <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background: linear-gradient(135deg, #111827, #1f2937);">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
+                      </div>
+                      <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-2">
+                          <span class="text-xs font-semibold text-gray-900">Mari AI</span>
+                          <span class="text-[9px] font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">Ready</span>
+                        </div>
+                        <p class="text-xs text-gray-600 leading-relaxed mb-3">I've matched your request. Review below and confirm to create the deal.</p>
+                      </div>
+                    </div>
+
+                    <!-- Matched Details Cards — stacked single column -->
+                    <div class="space-y-2.5 mb-4">
+                      <!-- Account Card -->
+                      <div class="bg-white rounded-xl border border-gray-200 p-3" id="ai-account-card">
+                        <div class="flex items-center justify-between mb-1.5">
+                          <div class="flex items-center gap-1.5">
+                            <i data-lucide="building-2" class="w-3 h-3 text-gray-400"></i>
+                            <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Account</span>
+                          </div>
+                          <span class="text-[9px] font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">Matched</span>
+                        </div>
+                        <p class="text-sm font-semibold text-gray-900">Red Global</p>
+                        <p class="text-[11px] text-gray-500">Health Care / Medical • Canada</p>
+                      </div>
+
+                      <!-- Property Card -->
+                      <div class="bg-white rounded-xl border border-gray-200 p-3" id="ai-property-card">
+                        <div class="flex items-center justify-between mb-1.5">
+                          <div class="flex items-center gap-1.5">
+                            <i data-lucide="map-pin" class="w-3 h-3 text-gray-400"></i>
+                            <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Property</span>
+                          </div>
+                          <span class="text-[9px] font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">Matched</span>
+                        </div>
+                        <p class="text-sm font-semibold text-gray-900">Taste of London 2026</p>
+                        <p class="text-[11px] text-gray-500">17–21 Jun 2026 • Regent's Park</p>
+                        <p class="text-[10px] text-blue-600 mt-0.5">Wednesday Evening — 18 Jun 2026</p>
+                      </div>
+
+                      <!-- Sales Lead + Deal Summary row -->
+                      <div class="grid grid-cols-2 gap-2">
+                        <div class="bg-white rounded-xl border border-gray-200 p-3" id="ai-owner-card">
+                          <div class="flex items-center gap-1.5 mb-1.5">
+                            <i data-lucide="user" class="w-3 h-3 text-gray-400"></i>
+                            <span class="text-[9px] font-semibold text-gray-400 uppercase tracking-wider">Sales Lead</span>
+                          </div>
+                          <p class="text-xs font-semibold text-gray-900">Mollie Stoneham</p>
+                          <p class="text-[10px] text-gray-500">Senior Sales Exec</p>
+                        </div>
+                        <div class="bg-white rounded-xl border border-gray-200 p-3" id="ai-deal-summary-card">
+                          <div class="flex items-center gap-1.5 mb-1.5">
+                            <i data-lucide="handshake" class="w-3 h-3 text-gray-400"></i>
+                            <span class="text-[9px] font-semibold text-gray-400 uppercase tracking-wider">Deal Total</span>
+                          </div>
+                          <p class="text-sm font-bold text-gray-900">£6,300.00</p>
+                          <p class="text-[10px] text-gray-500">30 × £210</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Inventory Summary (compact) -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-3 mb-3">
+                      <div class="flex items-center gap-1.5 mb-2">
+                        <i data-lucide="package" class="w-3 h-3 text-gray-400"></i>
+                        <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Inventory</span>
+                        <span class="text-[9px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">3 items</span>
+                      </div>
+                      <div class="space-y-1.5">
+                        <div class="flex items-center justify-between text-[11px]">
+                          <span class="text-gray-700">Premium Dining Cover — Wed Eve</span>
+                          <span class="font-semibold text-gray-900">£5,250.00</span>
+                        </div>
+                        <div class="flex items-center justify-between text-[11px]">
+                          <span class="text-gray-700">Premium Drinks Package</span>
+                          <span class="font-semibold text-gray-900">£750.00</span>
+                        </div>
+                        <div class="flex items-center justify-between text-[11px]">
+                          <span class="text-gray-700">VIP Lounge Access</span>
+                          <span class="font-semibold text-gray-900">£300.00</span>
+                        </div>
+                        <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-gray-100">
+                          <span class="font-semibold text-gray-500">Total</span>
+                          <span class="font-bold text-gray-900">£6,300.00</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Payment Summary (compact) -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-3 mb-4">
+                      <div class="flex items-center gap-1.5 mb-2">
+                        <i data-lucide="credit-card" class="w-3 h-3 text-gray-400"></i>
+                        <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Payments</span>
+                        <span class="text-[9px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">3 payments</span>
+                      </div>
+                      <div class="space-y-1.5">
+                        <div class="flex items-center justify-between text-[11px]">
+                          <span class="text-gray-700">Deposit — 15 Apr 2026</span>
+                          <span class="font-semibold text-gray-900">£2,100.00</span>
+                        </div>
+                        <div class="flex items-center justify-between text-[11px]">
+                          <span class="text-gray-700">Interim — 15 May 2026</span>
+                          <span class="font-semibold text-gray-900">£2,100.00</span>
+                        </div>
+                        <div class="flex items-center justify-between text-[11px]">
+                          <span class="text-gray-700">Final — 10 Jun 2026</span>
+                          <span class="font-semibold text-gray-900">£2,100.00</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Confirmation buttons -->
+                    <div class="space-y-2">
+                      <button onclick="confirmAIDeal()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium h-9 px-5 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                        <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                        Confirm & Create Deal
+                      </button>
+                      <div class="flex items-center gap-2">
+                        <button onclick="editAIDeal()" class="flex-1 bg-white hover:bg-gray-50 text-gray-700 text-xs font-medium h-8 rounded-lg border border-gray-200 flex items-center justify-center gap-1.5 transition-colors">
+                          <i data-lucide="edit-3" class="w-3 h-3"></i>
+                          Edit in Form
+                        </button>
+                        <button onclick="resetAI()" class="flex-1 text-gray-400 hover:text-gray-600 text-xs font-medium h-8 flex items-center justify-center gap-1.5 transition-colors">
+                          <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
+                          Start Over
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- AI Confirmed (hidden by default) -->
+                <div id="ai-confirmed" class="hidden border-t border-gray-200 px-5 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0">
+                      <i data-lucide="check" class="w-3.5 h-3.5 text-white"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-xs font-semibold text-emerald-800">Deal created!</p>
+                      <p class="text-[11px] text-emerald-600 truncate">TOL26: RED GLOBAL x30 WED EVE — £6,300.00</p>
+                    </div>
+                  </div>
+                  <a href="deal-detail.html" class="mt-3 w-full text-xs font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors">
+                    <i data-lucide="external-link" class="w-3 h-3"></i>
+                    View Deal
+                  </a>
+                </div>
+              </div>
+            </div><!-- /right column -->
+
+          </div><!-- /two column layout -->
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // ============================
+    // Inventory Data by Property — Full field set matching CRM
+    // ============================
+    // Fields: id, name, year, category, date (optional), minPrice, maxPrice, price (default), available, total, industryExcl
+    const inventoryByProperty = {
+      taste: {
+        label: 'Taste of London',
+        items: [
+          { id:'T01', name:'Associate Partner', year:2026, category:'Sponsorship', minPrice:0, maxPrice:0, price:0, avail:9, total:10 },
+          { id:'T02', name:'Associate Partner', year:2027, category:'Sponsorship', minPrice:0, maxPrice:0, price:0, avail:10, total:10 },
+          { id:'T03', name:'Associate Partner 2025', year:2026, category:'Sponsorship', minPrice:7000, maxPrice:7000, price:0, avail:0, total:1 },
+          { id:'T04', name:'License', year:2026, category:'Supplier', minPrice:0, maxPrice:0, price:0, avail:2, total:2 },
+          { id:'T05', name:'Presenting Partner', year:2026, category:'Sponsorship', minPrice:0, maxPrice:0, price:0, avail:1, total:1 },
+          { id:'T06', name:'Presenting Partner', year:2027, category:'Sponsorship', minPrice:0, maxPrice:0, price:0, avail:1, total:1 },
+          { id:'T07', name:'Value in Kind Sponsorship', year:2026, category:'VIK Budget Relieving', minPrice:0, maxPrice:0, price:0, avail:10, total:10 },
+          { id:'T08', name:'Value in Kind Sponsorship', year:2027, category:'VIK Budget Relieving', minPrice:0, maxPrice:0, price:0, avail:10, total:10 },
+          { id:'T09', name:'Standard Dining Cover', year:2026, category:'Hospitality', minPrice:125, maxPrice:175, price:125, avail:200, total:250 },
+          { id:'T10', name:'Premium Dining Cover', year:2026, category:'Hospitality', minPrice:175, maxPrice:350, price:175, avail:150, total:200 },
+          { id:'T11', name:"Chef's Table Experience", year:2026, category:'Hospitality', minPrice:350, maxPrice:500, price:350, avail:20, total:30 },
+          { id:'T12', name:'Standard Drinks Package', year:2026, category:'Beverage', minPrice:15, maxPrice:25, price:15, avail:300, total:300 },
+          { id:'T13', name:'Premium Drinks Package', year:2026, category:'Beverage', minPrice:25, maxPrice:45, price:25, avail:200, total:200 },
+          { id:'T14', name:'VIP Lounge Access', year:2026, category:'Add-on', minPrice:10, maxPrice:20, price:10, avail:100, total:100 },
+          { id:'T15', name:'Main Stage Sponsor', year:2026, category:'Sponsorship', minPrice:5000, maxPrice:5000, price:5000, avail:1, total:1 },
+          { id:'T16', name:'Bar Sponsor', year:2026, category:'Sponsorship', minPrice:3000, maxPrice:3000, price:3000, avail:1, total:1 },
+          { id:'T17', name:'Menu Sponsor', year:2026, category:'Sponsorship', minPrice:2000, maxPrice:2000, price:2000, avail:1, total:1 },
+          { id:'T18', name:'Standard Dining Cover', year:2027, category:'Hospitality', minPrice:135, maxPrice:190, price:135, avail:250, total:250 },
+          { id:'T19', name:'Premium Dining Cover', year:2027, category:'Hospitality', minPrice:190, maxPrice:375, price:190, avail:200, total:200 },
+        ]
+      },
+      frieze: {
+        label: 'Frieze London',
+        items: [
+          { id:'F01', name:'Gallery Preview Pass', year:2026, category:'Access', minPrice:95, maxPrice:150, price:95, avail:500, total:500 },
+          { id:'F02', name:'VIP Collectors Pass', year:2026, category:'Access', minPrice:250, maxPrice:400, price:250, avail:100, total:100 },
+          { id:'F03', name:'Exhibition Stand — Small', year:2026, category:'Exhibition', minPrice:4500, maxPrice:4500, price:4500, avail:8, total:12 },
+          { id:'F04', name:'Exhibition Stand — Medium', year:2026, category:'Exhibition', minPrice:7500, maxPrice:7500, price:7500, avail:4, total:6 },
+          { id:'F05', name:'Exhibition Stand — Large', year:2026, category:'Exhibition', minPrice:12000, maxPrice:12000, price:12000, avail:2, total:3 },
+          { id:'F06', name:'Private Viewing Room', year:2026, category:'Hospitality', minPrice:2000, maxPrice:3000, price:2000, avail:3, total:5 },
+          { id:'F07', name:'Collectors Dinner Seat', year:2026, category:'Hospitality', minPrice:350, maxPrice:500, price:350, avail:40, total:60 },
+          { id:'F08', name:'Art Talk Ticket', year:2026, category:'Experience', minPrice:45, maxPrice:75, price:45, avail:80, total:100 },
+          { id:'F09', name:'Catalogue Sponsorship', year:2026, category:'Sponsorship', minPrice:8000, maxPrice:8000, price:8000, avail:1, total:1 },
+          { id:'F10', name:'Entrance Sponsor', year:2026, category:'Sponsorship', minPrice:15000, maxPrice:15000, price:15000, avail:1, total:1 },
+          { id:'F11', name:'Gallery Lounge Sponsor', year:2026, category:'Sponsorship', minPrice:6000, maxPrice:6000, price:6000, avail:1, total:1 },
+          { id:'F12', name:'Gallery Preview Pass', year:2027, category:'Access', minPrice:105, maxPrice:165, price:105, avail:500, total:500 },
+          { id:'F13', name:'VIP Collectors Pass', year:2027, category:'Access', minPrice:275, maxPrice:425, price:275, avail:100, total:100 },
+        ]
+      },
+      hyde: {
+        label: 'Hyde Park Winter Wonderland',
+        items: [
+          // Date-based Hospitality packages
+          { id:'H01', name:'VIP Winter Lodge — 10 Guests', year:2026, category:'Hospitality', date:'20 Nov 2026', minPrice:1500, maxPrice:2500, price:1500, avail:4, total:6 },
+          { id:'H02', name:'VIP Winter Lodge — 10 Guests', year:2026, category:'Hospitality', date:'21 Nov 2026', minPrice:1500, maxPrice:2500, price:1500, avail:5, total:6 },
+          { id:'H03', name:'VIP Winter Lodge — 10 Guests', year:2026, category:'Hospitality', date:'27 Nov 2026', minPrice:1800, maxPrice:2800, price:1800, avail:3, total:6 },
+          { id:'H04', name:'VIP Winter Lodge — 10 Guests', year:2026, category:'Hospitality', date:'28 Nov 2026', minPrice:1800, maxPrice:2800, price:1800, avail:6, total:6 },
+          { id:'H05', name:'VIP Winter Lodge — 10 Guests', year:2026, category:'Hospitality', date:'04 Dec 2026', minPrice:2000, maxPrice:3000, price:2000, avail:2, total:6 },
+          { id:'H06', name:'VIP Winter Lodge — 10 Guests', year:2026, category:'Hospitality', date:'05 Dec 2026', minPrice:2000, maxPrice:3000, price:2000, avail:1, total:6 },
+          { id:'H07', name:'VIP Winter Lodge — 10 Guests', year:2026, category:'Hospitality', date:'11 Dec 2026', minPrice:2200, maxPrice:3200, price:2200, avail:4, total:6 },
+          { id:'H08', name:'VIP Winter Lodge — 10 Guests', year:2026, category:'Hospitality', date:'12 Dec 2026', minPrice:2200, maxPrice:3200, price:2200, avail:5, total:6 },
+          { id:'H09', name:'VIP Winter Lodge — 10 Guests', year:2026, category:'Hospitality', date:'18 Dec 2026', minPrice:2500, maxPrice:3500, price:2500, avail:0, total:6 },
+          { id:'H10', name:'VIP Winter Lodge — 10 Guests', year:2026, category:'Hospitality', date:'19 Dec 2026', minPrice:2500, maxPrice:3500, price:2500, avail:3, total:6 },
+          { id:'H11', name:'Festive Dining — Per Head', year:2026, category:'Hospitality', date:'20 Nov 2026', minPrice:85, maxPrice:125, price:85, avail:60, total:80 },
+          { id:'H12', name:'Festive Dining — Per Head', year:2026, category:'Hospitality', date:'27 Nov 2026', minPrice:95, maxPrice:135, price:95, avail:50, total:80 },
+          { id:'H13', name:'Festive Dining — Per Head', year:2026, category:'Hospitality', date:'04 Dec 2026', minPrice:95, maxPrice:135, price:95, avail:40, total:80 },
+          { id:'H14', name:'Festive Dining — Per Head', year:2026, category:'Hospitality', date:'11 Dec 2026', minPrice:110, maxPrice:150, price:110, avail:55, total:80 },
+          { id:'H15', name:'Festive Dining — Per Head', year:2026, category:'Hospitality', date:'18 Dec 2026', minPrice:125, maxPrice:165, price:125, avail:30, total:80 },
+          // Pre-booked Attractions
+          { id:'H16', name:'Ice Rink Session — Per Person', year:2026, category:'Attraction', date:'20 Nov 2026', minPrice:18, maxPrice:25, price:18, avail:150, total:200 },
+          { id:'H17', name:'Ice Rink Session — Per Person', year:2026, category:'Attraction', date:'27 Nov 2026', minPrice:18, maxPrice:25, price:18, avail:120, total:200 },
+          { id:'H18', name:'Ice Rink Session — Per Person', year:2026, category:'Attraction', date:'04 Dec 2026', minPrice:20, maxPrice:28, price:20, avail:100, total:200 },
+          { id:'H19', name:'Ice Rink Session — Per Person', year:2026, category:'Attraction', date:'11 Dec 2026', minPrice:22, maxPrice:30, price:22, avail:80, total:200 },
+          { id:'H20', name:'Ice Rink Session — Per Person', year:2026, category:'Attraction', date:'18 Dec 2026', minPrice:25, maxPrice:35, price:25, avail:50, total:200 },
+          { id:'H21', name:'Giant Wheel — Per Person', year:2026, category:'Attraction', minPrice:10, maxPrice:15, price:10, avail:500, total:500 },
+          { id:'H22', name:'Magical Ice Kingdom — Per Person', year:2026, category:'Attraction', date:'20 Nov 2026', minPrice:12, maxPrice:18, price:12, avail:200, total:250 },
+          { id:'H23', name:'Magical Ice Kingdom — Per Person', year:2026, category:'Attraction', date:'04 Dec 2026', minPrice:14, maxPrice:20, price:14, avail:180, total:250 },
+          { id:'H24', name:'Magical Ice Kingdom — Per Person', year:2026, category:'Attraction', date:'18 Dec 2026', minPrice:16, maxPrice:22, price:16, avail:120, total:250 },
+          { id:'H25', name:'Cirque Berserk — Per Person', year:2026, category:'Attraction', date:'21 Nov 2026', minPrice:22, maxPrice:35, price:22, avail:100, total:150 },
+          { id:'H26', name:'Cirque Berserk — Per Person', year:2026, category:'Attraction', date:'28 Nov 2026', minPrice:22, maxPrice:35, price:22, avail:90, total:150 },
+          { id:'H27', name:'Cirque Berserk — Per Person', year:2026, category:'Attraction', date:'05 Dec 2026', minPrice:25, maxPrice:38, price:25, avail:70, total:150 },
+          { id:'H28', name:'Cirque Berserk — Per Person', year:2026, category:'Attraction', date:'12 Dec 2026', minPrice:25, maxPrice:38, price:25, avail:60, total:150 },
+          { id:'H29', name:'Cirque Berserk — Per Person', year:2026, category:'Attraction', date:'19 Dec 2026', minPrice:28, maxPrice:42, price:28, avail:40, total:150 },
+          // General (no date)
+          { id:'H30', name:'Standard Entry Ticket', year:2026, category:'Access', minPrice:12, maxPrice:18, price:12, avail:5000, total:5000 },
+          { id:'H31', name:'Family Entry Pack (4)', year:2026, category:'Access', minPrice:40, maxPrice:60, price:40, avail:1000, total:1000 },
+          { id:'H32', name:'Christmas Market Stall', year:2026, category:'Exhibition', minPrice:3500, maxPrice:3500, price:3500, avail:8, total:20 },
+          { id:'H33', name:'Main Gate Sponsor', year:2026, category:'Sponsorship', minPrice:20000, maxPrice:20000, price:20000, avail:1, total:1 },
+          { id:'H34', name:'Ice Rink Sponsor', year:2026, category:'Sponsorship', minPrice:10000, maxPrice:10000, price:10000, avail:1, total:1 },
+          { id:'H35', name:'Stage Sponsor', year:2026, category:'Sponsorship', minPrice:7500, maxPrice:7500, price:7500, avail:1, total:1 },
+          { id:'H36', name:'Mulled Wine Partner', year:2026, category:'Sponsorship', minPrice:4000, maxPrice:4000, price:4000, avail:1, total:1 },
+        ]
+      },
+      summit: {
+        label: 'Summer Summit',
+        items: [
+          { id:'S01', name:'Delegate Pass', year:2026, category:'Access', minPrice:495, maxPrice:695, price:495, avail:200, total:300 },
+          { id:'S02', name:'VIP Delegate Pass', year:2026, category:'Access', minPrice:895, maxPrice:1200, price:895, avail:50, total:80 },
+          { id:'S03', name:'Speaker Slot', year:2026, category:'Experience', minPrice:2500, maxPrice:2500, price:2500, avail:3, total:8 },
+          { id:'S04', name:'Workshop Session', year:2026, category:'Experience', minPrice:750, maxPrice:1000, price:750, avail:5, total:10 },
+          { id:'S05', name:'Networking Lunch Cover', year:2026, category:'Hospitality', minPrice:65, maxPrice:95, price:65, avail:150, total:200 },
+          { id:'S06', name:'Gala Dinner Seat', year:2026, category:'Hospitality', minPrice:195, maxPrice:295, price:195, avail:80, total:120 },
+          { id:'S07', name:'Exhibition Booth — Standard', year:2026, category:'Exhibition', minPrice:3000, maxPrice:3000, price:3000, avail:10, total:15 },
+          { id:'S08', name:'Exhibition Booth — Premium', year:2026, category:'Exhibition', minPrice:5500, maxPrice:5500, price:5500, avail:4, total:6 },
+          { id:'S09', name:'Lanyard Sponsor', year:2026, category:'Sponsorship', minPrice:3000, maxPrice:3000, price:3000, avail:1, total:1 },
+          { id:'S10', name:'Main Stage Sponsor', year:2026, category:'Sponsorship', minPrice:12000, maxPrice:12000, price:12000, avail:1, total:1 },
+          { id:'S11', name:'WiFi Sponsor', year:2026, category:'Sponsorship', minPrice:2500, maxPrice:2500, price:2500, avail:1, total:1 },
+        ]
+      },
+      gala: {
+        label: 'Gala London',
+        items: [
+          { id:'G01', name:'Individual Seat', year:2026, category:'Hospitality', minPrice:250, maxPrice:350, price:250, avail:50, total:100 },
+          { id:'G02', name:'Table of 10', year:2026, category:'Hospitality', minPrice:2200, maxPrice:3000, price:2200, avail:8, total:15 },
+          { id:'G03', name:'VIP Table of 10', year:2026, category:'Hospitality', minPrice:3500, maxPrice:4500, price:3500, avail:4, total:8 },
+          { id:'G04', name:'Platinum Table of 10', year:2026, category:'Hospitality', minPrice:5000, maxPrice:7000, price:5000, avail:2, total:4 },
+          { id:'G05', name:'Drinks Package — Standard', year:2026, category:'Beverage', minPrice:35, maxPrice:50, price:35, avail:100, total:100 },
+          { id:'G06', name:'Drinks Package — Premium', year:2026, category:'Beverage', minPrice:65, maxPrice:85, price:65, avail:60, total:60 },
+          { id:'G07', name:'After-Party Access', year:2026, category:'Add-on', minPrice:75, maxPrice:100, price:75, avail:150, total:200 },
+          { id:'G08', name:'Red Carpet Photo Op', year:2026, category:'Add-on', minPrice:50, maxPrice:75, price:50, avail:80, total:100 },
+          { id:'G09', name:'Programme Advert — Full Page', year:2026, category:'Sponsorship', minPrice:2000, maxPrice:2000, price:2000, avail:3, total:5 },
+          { id:'G10', name:'Title Sponsor', year:2026, category:'Sponsorship', minPrice:25000, maxPrice:25000, price:25000, avail:1, total:1 },
+          { id:'G11', name:'Bar Sponsor', year:2026, category:'Sponsorship', minPrice:5000, maxPrice:5000, price:5000, avail:1, total:1 },
+          { id:'G12', name:'Individual Seat', year:2027, category:'Hospitality', minPrice:275, maxPrice:375, price:275, avail:100, total:100 },
+          { id:'G13', name:'Table of 10', year:2027, category:'Hospitality', minPrice:2400, maxPrice:3200, price:2400, avail:15, total:15 },
+        ]
+      }
+    };
+
+    // State: selected inventory items { id: { ...item, qty, customPrice } }
+    let selectedInventory = {};
+
+    function fmtGBP(v) { return '£' + v.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+    function onPropertyChange(propertyValue) {
+      const noPropertyMsg = document.getElementById('inv-no-property');
+      const pickerContainer = document.getElementById('inv-picker-container');
+      const badge = document.getElementById('inv-property-badge');
+
+      if (!propertyValue) {
+        noPropertyMsg.classList.remove('hidden');
+        pickerContainer.classList.add('hidden');
+        badge.classList.add('hidden');
+        return;
+      }
+      const propertyData = inventoryByProperty[propertyValue];
+      if (!propertyData) return;
+
+      noPropertyMsg.classList.add('hidden');
+      pickerContainer.classList.remove('hidden');
+      badge.textContent = propertyData.label;
+      badge.classList.remove('hidden');
+
+      // Reset selection
+      selectedInventory = {};
+      updateBasket();
+
+      // Build category filter options
+      const categories = [...new Set(propertyData.items.map(i => i.category))].sort();
+      const catSelect = document.getElementById('inv-filter-category');
+      catSelect.innerHTML = '<option value="">All Categories</option>';
+      categories.forEach(c => { catSelect.innerHTML += `<option value="${c}">${c}</option>`; });
+
+      // Build category pills with counts
+      const pillsContainer = document.getElementById('inv-category-pills');
+      const allCount = propertyData.items.length;
+      pillsContainer.innerHTML = `<button onclick="setCategoryFilter('')" class="inv-cat-pill active">All <span class="pill-count">${allCount}</span></button>`;
+      categories.forEach(c => {
+        const count = propertyData.items.filter(i => i.category === c).length;
+        pillsContainer.innerHTML += `<button onclick="setCategoryFilter('${c}')" class="inv-cat-pill">${c} <span class="pill-count">${count}</span></button>`;
+      });
+
+      // Build date filter (for date-based properties like Hyde Park)
+      const dates = [...new Set(propertyData.items.filter(i => i.date).map(i => i.date))].sort((a, b) => new Date(a) - new Date(b));
+      const dateSelect = document.getElementById('inv-filter-date');
+      if (dates.length > 0) {
+        dateSelect.classList.remove('hidden');
+        dateSelect.innerHTML = '<option value="">All Dates</option>';
+        dates.forEach(d => { dateSelect.innerHTML += `<option value="${d}">${d}</option>`; });
+      } else {
+        dateSelect.classList.add('hidden');
+      }
+
+      // Default year filter to 2026
+      document.getElementById('inv-filter-year').value = '2026';
+      document.getElementById('inv-search').value = '';
+
+      filterInventory();
+      lucide.createIcons();
+    }
+
+    function setCategoryFilter(cat) {
+      document.getElementById('inv-filter-category').value = cat;
+      document.querySelectorAll('.inv-cat-pill').forEach(p => {
+        p.classList.toggle('active', (cat === '' && p.textContent === 'All') || p.textContent === cat);
+      });
+      filterInventory();
+    }
+
+    function resetInventoryFilters() {
+      document.getElementById('inv-search').value = '';
+      document.getElementById('inv-filter-year').value = '2026';
+      document.getElementById('inv-filter-category').value = '';
+      document.getElementById('inv-filter-date').value = '';
+      document.querySelectorAll('.inv-cat-pill').forEach((p, i) => p.classList.toggle('active', i === 0));
+      filterInventory();
+    }
+
+    function filterInventory() {
+      const propVal = document.getElementById('deal-property').value;
+      const propData = inventoryByProperty[propVal];
+      if (!propData) return;
+
+      const search = document.getElementById('inv-search').value.toLowerCase().trim();
+      const yearFilter = document.getElementById('inv-filter-year').value;
+      const catFilter = document.getElementById('inv-filter-category').value;
+      const dateFilter = document.getElementById('inv-filter-date').value;
+
+      let items = propData.items.filter(item => {
+        if (search && !item.name.toLowerCase().includes(search) && !item.category.toLowerCase().includes(search)) return false;
+        if (yearFilter && item.year !== parseInt(yearFilter)) return false;
+        if (catFilter && item.category !== catFilter) return false;
+        if (dateFilter && (item.date || '') !== dateFilter) return false;
+        return true;
+      });
+
+      renderBrowseTable(items, propData.items.length);
+    }
+
+    function renderBrowseTable(items, totalCount) {
+      const tbody = document.getElementById('inv-browse-body');
+      document.getElementById('inv-showing-count').textContent = `Showing ${items.length} of ${totalCount} items`;
+
+      if (items.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="11" class="py-8 text-center text-xs text-gray-400">No inventory items match your filters</td></tr>`;
+        return;
+      }
+
+      let html = '';
+      items.forEach((item, idx) => {
+        const isSelected = !!selectedInventory[item.id];
+        const sel = selectedInventory[item.id] || {};
+        const qty = sel.qty || 1;
+        const price = sel.customPrice !== undefined ? sel.customPrice : item.price;
+        const rowTotal = isSelected ? qty * price : 0;
+        const availPct = item.total > 0 ? (item.avail / item.total) : 0;
+        const availColor = item.avail === 0 ? 'text-red-500' : availPct <= 0.2 ? 'text-orange-500' : 'text-emerald-600';
+        const soldOut = item.avail === 0;
+        const rowBg = isSelected ? 'bg-blue-50/60' : (idx % 2 === 1 ? 'bg-gray-50/50' : 'bg-white');
+
+        html += `<tr class="border-t border-gray-100 ${rowBg} ${soldOut ? 'opacity-50' : 'hover:bg-blue-50/40'} transition-colors" data-id="${item.id}">
+          <td class="py-2 px-2 text-center">
+            <input type="checkbox" ${isSelected ? 'checked' : ''} ${soldOut ? 'disabled' : ''}
+              onchange="toggleInventoryItem('${item.id}', this.checked)"
+              class="w-3.5 h-3.5 rounded border-gray-300 text-gray-900 focus:ring-gray-900/20 cursor-pointer accent-gray-900">
+          </td>
+          <td class="py-2 px-2">
+            <span class="font-semibold text-gray-900">${item.name}</span>
+            ${item.date ? `<span class="ml-1 text-[9px] font-medium text-violet-600 bg-violet-50 px-1.5 py-0.5 rounded">${item.date}</span>` : ''}
+          </td>
+          <td class="py-2 px-2 text-gray-500">${item.year}</td>
+          <td class="py-2 px-2"><span class="text-[10px] font-medium px-1.5 py-0.5 rounded ${getCatStyle(item.category)}">${item.category}</span></td>
+          <td class="py-2 px-2 text-gray-400">${item.date || '—'}</td>
+          <td class="py-2 px-2 text-right text-gray-400">${item.minPrice > 0 ? fmtGBP(item.minPrice) : '—'}</td>
+          <td class="py-2 px-2 text-right text-gray-400">${item.maxPrice > 0 ? fmtGBP(item.maxPrice) : '—'}</td>
+          <td class="py-2 px-2 text-right">
+            ${isSelected
+              ? `<input type="number" min="0" step="0.01" value="${price.toFixed(2)}" onchange="updateInvPrice('${item.id}', this.value)" class="w-16 px-1 py-0.5 text-xs text-right border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-900/20 font-semibold">`
+              : `<span class="text-gray-500">${item.price > 0 ? fmtGBP(item.price) : '—'}</span>`}
+          </td>
+          <td class="py-2 px-2 text-center"><span class="${availColor} font-semibold">${item.avail}</span><span class="text-gray-300">/${item.total}</span></td>
+          <td class="py-2 px-2 text-right">
+            ${isSelected
+              ? `<input type="number" min="1" max="${item.avail}" value="${qty}" onchange="updateInvQty('${item.id}', this.value)" class="w-12 px-1 py-0.5 text-xs text-right border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-900/20 font-semibold">`
+              : `<span class="text-gray-400">—</span>`}
+          </td>
+          <td class="py-2 px-2 text-right font-semibold ${isSelected ? 'text-gray-900' : 'text-gray-300'}">${isSelected ? fmtGBP(rowTotal) : '—'}</td>
+        </tr>`;
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    function getCatStyle(cat) {
+      const styles = {
+        'Sponsorship': 'bg-blue-50 text-blue-700',
+        'Hospitality': 'bg-amber-50 text-amber-700',
+        'Beverage': 'bg-teal-50 text-teal-700',
+        'Add-on': 'bg-gray-100 text-gray-600',
+        'Access': 'bg-indigo-50 text-indigo-700',
+        'Exhibition': 'bg-pink-50 text-pink-700',
+        'Experience': 'bg-purple-50 text-purple-700',
+        'Supplier': 'bg-orange-50 text-orange-700',
+        'VIK Budget Relieving': 'bg-lime-50 text-lime-700',
+        'Attraction': 'bg-rose-50 text-rose-700',
+      };
+      return styles[cat] || 'bg-gray-50 text-gray-600';
+    }
+
+    function toggleInventoryItem(itemId, checked) {
+      const propVal = document.getElementById('deal-property').value;
+      const propData = inventoryByProperty[propVal];
+      const item = propData.items.find(i => i.id === itemId);
+      if (!item) return;
+
+      if (checked) {
+        selectedInventory[itemId] = { ...item, qty: 1, customPrice: item.price };
+      } else {
+        delete selectedInventory[itemId];
+      }
+      updateBasket();
+      filterInventory(); // Re-render to show inline fields
+    }
+
+    function updateInvQty(itemId, val) {
+      if (!selectedInventory[itemId]) return;
+      selectedInventory[itemId].qty = Math.max(1, parseInt(val) || 1);
+      updateBasket();
+      filterInventory();
+    }
+
+    function updateInvPrice(itemId, val) {
+      if (!selectedInventory[itemId]) return;
+      selectedInventory[itemId].customPrice = Math.max(0, parseFloat(val) || 0);
+      updateBasket();
+      filterInventory();
+    }
+
+    function removeFromBasket(itemId) {
+      delete selectedInventory[itemId];
+      updateBasket();
+      filterInventory();
+    }
+
+    function clearAllInventory() {
+      selectedInventory = {};
+      updateBasket();
+      filterInventory();
+    }
+
+    function updateBasket() {
+      const basket = document.getElementById('inv-basket');
+      const basketBody = document.getElementById('inv-basket-body');
+      const countBadge = document.getElementById('inv-selected-count');
+      const items = Object.values(selectedInventory);
+
+      if (items.length === 0) {
+        basket.classList.add('hidden');
+        countBadge.classList.add('hidden');
+        document.getElementById('inv-grand-total').textContent = fmtGBP(0);
+        return;
+      }
+
+      basket.classList.remove('hidden');
+      countBadge.classList.remove('hidden');
+      countBadge.textContent = items.length + ' item' + (items.length !== 1 ? 's' : '') + ' selected';
+
+      let html = '<table class="w-full text-xs"><thead><tr class="text-left text-[10px] font-bold text-gray-400 uppercase tracking-wider bg-gray-50 border-b border-gray-200">';
+      html += '<th class="py-1.5 px-3">Item</th><th class="py-1.5 px-2">Date</th><th class="py-1.5 px-2 text-right">Price</th><th class="py-1.5 px-2 text-right">Qty</th><th class="py-1.5 px-2 text-right">Total</th><th class="py-1.5 px-1 w-6"></th>';
+      html += '</tr></thead><tbody>';
+
+      let grandTotal = 0;
+      items.forEach((item, idx) => {
+        const total = item.qty * item.customPrice;
+        grandTotal += total;
+        const bg = idx % 2 === 1 ? 'bg-gray-50/50' : '';
+        html += `<tr class="border-t border-gray-100 ${bg}">
+          <td class="py-1.5 px-3 font-semibold text-gray-900">${item.name}</td>
+          <td class="py-1.5 px-2 text-gray-400">${item.date || '—'}</td>
+          <td class="py-1.5 px-2 text-right font-medium">${fmtGBP(item.customPrice)}</td>
+          <td class="py-1.5 px-2 text-right font-medium">${item.qty}</td>
+          <td class="py-1.5 px-2 text-right font-bold text-gray-900">${fmtGBP(total)}</td>
+          <td class="py-1.5 px-1 text-center"><button onclick="removeFromBasket('${item.id}')" class="text-gray-300 hover:text-red-500 transition-colors text-sm leading-none">&times;</button></td>
+        </tr>`;
+      });
+
+      html += '</tbody></table>';
+      basketBody.innerHTML = html;
+      document.getElementById('inv-grand-total').textContent = fmtGBP(grandTotal);
+    }
+
+    // ============================
+    // Existing Functions
+    // ============================
+    function processAIDeal() {
+      const input = document.getElementById('ai-deal-input').value.trim();
+      if (!input) return;
+
+      // Hide input area button, show processing
+      document.getElementById('ai-submit-btn').disabled = true;
+      document.getElementById('ai-submit-btn').innerHTML = '<div class="w-3.5 h-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin"></div> Analysing...';
+      document.getElementById('ai-processing').classList.remove('hidden');
+
+      // After 2 seconds, show results
+      setTimeout(() => {
+        document.getElementById('ai-processing').classList.add('hidden');
+        document.getElementById('ai-results').classList.remove('hidden');
+        document.getElementById('ai-results').classList.add('animate-fade-in');
+        document.getElementById('ai-submit-btn').disabled = false;
+        document.getElementById('ai-submit-btn').innerHTML = '<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Generate Deal';
+        lucide.createIcons();
+      }, 2500);
+    }
+
+    function confirmAIDeal() {
+      document.getElementById('ai-results').classList.add('hidden');
+      document.getElementById('ai-confirmed').classList.remove('hidden');
+      document.getElementById('ai-confirmed').classList.add('animate-fade-in');
+      lucide.createIcons();
+    }
+
+    function editAIDeal() {
+      // Highlight the form and populate fields
+      document.getElementById('manual-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('manual-form').style.boxShadow = '0 0 0 2px #7c3aed40';
+      setTimeout(() => { document.getElementById('manual-form').style.boxShadow = ''; }, 2000);
+      // Populate fields
+      document.getElementById('deal-name').value = 'TOL26: RED GLOBAL x30 WED EVE';
+      selectAccount('acc-001'); // Red Global
+      document.getElementById('deal-property').value = 'taste';
+      onPropertyChange('taste'); // Load inventory for Taste of London
+      document.getElementById('deal-owner').value = 'Mollie Stoneham';
+      document.getElementById('deal-status').value = 'in-play';
+      document.getElementById('deal-probability').value = '10';
+      document.getElementById('deal-covers').value = '30';
+      document.getElementById('deal-package').value = 'premium';
+      document.getElementById('deal-price').value = '210';
+    }
+
+    function resetAI() {
+      document.getElementById('ai-results').classList.add('hidden');
+      document.getElementById('ai-confirmed').classList.add('hidden');
+      document.getElementById('ai-processing').classList.add('hidden');
+      document.getElementById('ai-deal-input').value = '';
+      document.getElementById('ai-submit-btn').disabled = false;
+      document.getElementById('ai-submit-btn').innerHTML = '<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Generate Deal';
+      lucide.createIcons();
+    }
+
+    function saveDeal() {
+      // Just redirect to deals page for demo
+      window.location.href = 'deals.html';
+    }
+
+    // ============================
+    // Account Data & Search
+    // ============================
+    const ACCOUNTS = [
+      {
+        id: 'acc-001', name: 'Red Global', initials: 'RG', industry: 'Health Care / Medical', country: 'Canada',
+        deals: [
+          { name: 'TOL25: RED GLOBAL x20 SAT LUNCH', value: 4200, status: 'signed', property: 'Taste of London 2025', date: '14 Mar 2025', type: 'deal' },
+          { name: 'TOL24: RED GLOBAL x15 FRI EVE', value: 3150, status: 'contracted', property: 'Taste of London 2024', date: '22 Feb 2024', type: 'deal' },
+          { name: 'GALA25: RED GLOBAL TABLE x1', value: 2200, status: 'signed', property: 'Gala London 2025', date: '10 Jan 2025', type: 'deal' },
+        ],
+        opps: [
+          { name: 'TOL26: Red Global — Sponsorship Interest', value: 15000, status: 'qualified', property: 'Taste of London 2026', date: '02 Apr 2026', type: 'opp' },
+          { name: 'Frieze London 2026 — VIP Preview', value: 5000, status: 'proposal', property: 'Frieze London 2026', date: '28 Mar 2026', type: 'opp' },
+        ]
+      },
+      {
+        id: 'acc-002', name: 'Barclays Corporate', initials: 'BC', industry: 'Financial Services', country: 'United Kingdom',
+        deals: [
+          { name: 'TOL25: BARCLAYS x50 WED EVE PREMIUM', value: 12500, status: 'contracted', property: 'Taste of London 2025', date: '05 Apr 2025', type: 'deal' },
+          { name: 'FRIEZE25: BARCLAYS COLLECTORS DINNER', value: 7000, status: 'signed', property: 'Frieze London 2025', date: '18 Sep 2025', type: 'deal' },
+          { name: 'GALA24: BARCLAYS VIP TABLE x2', value: 7000, status: 'contracted', property: 'Gala London 2024', date: '12 Nov 2024', type: 'deal' },
+          { name: 'HYDE24: BARCLAYS VIP LODGE x10', value: 1500, status: 'signed', property: 'Hyde Park Winter 2024', date: '03 Oct 2024', type: 'deal' },
+        ],
+        opps: [
+          { name: 'Taste of London 2026 — Title Sponsor', value: 50000, status: 'proposal', property: 'Taste of London 2026', date: '01 Apr 2026', type: 'opp' },
+        ]
+      },
+      {
+        id: 'acc-003', name: 'Samsung Electronics', initials: 'SE', industry: 'Technology', country: 'South Korea',
+        deals: [
+          { name: 'FRIEZE25: SAMSUNG EXHIBITION STAND LG', value: 12000, status: 'contracted', property: 'Frieze London 2025', date: '20 Jul 2025', type: 'deal' },
+          { name: 'SUMMIT25: SAMSUNG SPEAKER + BOOTH', value: 8000, status: 'signed', property: 'Summer Summit 2025', date: '10 May 2025', type: 'deal' },
+        ],
+        opps: [
+          { name: 'Frieze Seoul 2026 — Platinum Sponsor', value: 80000, status: 'qualified', property: 'Frieze Seoul 2026', date: '05 Apr 2026', type: 'opp' },
+          { name: 'Summer Summit 2026 — Main Stage', value: 12000, status: 'proposal', property: 'Summer Summit 2026', date: '15 Mar 2026', type: 'opp' },
+        ]
+      },
+      {
+        id: 'acc-004', name: 'Diageo PLC', initials: 'DG', industry: 'Beverages / Spirits', country: 'United Kingdom',
+        deals: [
+          { name: 'TOL25: DIAGEO BAR SPONSOR', value: 3000, status: 'contracted', property: 'Taste of London 2025', date: '01 Mar 2025', type: 'deal' },
+          { name: 'TOL24: DIAGEO DRINKS PARTNER', value: 2800, status: 'contracted', property: 'Taste of London 2024', date: '15 Mar 2024', type: 'deal' },
+          { name: 'GALA25: DIAGEO PREMIUM BAR', value: 5000, status: 'signed', property: 'Gala London 2025', date: '20 Jan 2025', type: 'deal' },
+          { name: 'HYDE25: DIAGEO MULLED WINE PARTNER', value: 4000, status: 'in-play', property: 'Hyde Park Winter 2025', date: '08 Sep 2025', type: 'deal' },
+        ],
+        opps: [
+          { name: 'Taste of London 2026 — Bar Sponsor', value: 3500, status: 'qualified', property: 'Taste of London 2026', date: '10 Apr 2026', type: 'opp' },
+        ]
+      },
+      {
+        id: 'acc-005', name: 'Goldman Sachs', initials: 'GS', industry: 'Financial Services', country: 'United States',
+        deals: [
+          { name: 'FRIEZE25: GOLDMAN SACHS VIP LOUNGE', value: 6000, status: 'contracted', property: 'Frieze London 2025', date: '05 Aug 2025', type: 'deal' },
+          { name: 'GALA25: GOLDMAN SACHS PLATINUM TABLE', value: 5000, status: 'signed', property: 'Gala London 2025', date: '28 Jan 2025', type: 'deal' },
+        ],
+        opps: [
+          { name: 'Frieze London 2026 — Gallery Lounge Sponsor', value: 6000, status: 'qualified', property: 'Frieze London 2026', date: '20 Mar 2026', type: 'opp' },
+        ]
+      },
+      {
+        id: 'acc-006', name: 'BMW Group UK', initials: 'BM', industry: 'Automotive', country: 'Germany',
+        deals: [
+          { name: 'FRIEZE25: BMW ENTRANCE SPONSOR', value: 15000, status: 'contracted', property: 'Frieze London 2025', date: '12 Jul 2025', type: 'deal' },
+        ],
+        opps: [
+          { name: 'Frieze London 2026 — Entrance Sponsor Renewal', value: 15000, status: 'proposal', property: 'Frieze London 2026', date: '25 Mar 2026', type: 'opp' },
+          { name: 'Summer Summit 2026 — EV Showcase', value: 8000, status: 'qualified', property: 'Summer Summit 2026', date: '01 Apr 2026', type: 'opp' },
+        ]
+      },
+      {
+        id: 'acc-007', name: 'Tech Innovations Ltd', initials: 'TI', industry: 'Technology / SaaS', country: 'United Kingdom',
+        deals: [
+          { name: 'SUMMIT25: TECH INNOVATIONS BOOTH STD', value: 3000, status: 'signed', property: 'Summer Summit 2025', date: '18 Apr 2025', type: 'deal' },
+        ],
+        opps: [
+          { name: 'Summer Summit 2026 — Premium Booth', value: 5500, status: 'proposal', property: 'Summer Summit 2026', date: '08 Apr 2026', type: 'opp' },
+        ]
+      },
+      {
+        id: 'acc-008', name: 'Heineken International', initials: 'HI', industry: 'Beverages', country: 'Netherlands',
+        deals: [],
+        opps: [
+          { name: 'Taste of London 2026 — Drinks Partner', value: 8000, status: 'qualified', property: 'Taste of London 2026', date: '12 Apr 2026', type: 'opp' },
+        ]
+      },
+      {
+        id: 'acc-009', name: 'Deloitte', initials: 'DL', industry: 'Professional Services', country: 'United Kingdom',
+        deals: [
+          { name: 'GALA24: DELOITTE TABLE x3', value: 6600, status: 'contracted', property: 'Gala London 2024', date: '05 Nov 2024', type: 'deal' },
+          { name: 'SUMMIT25: DELOITTE SPEAKER + VIP', value: 3395, status: 'signed', property: 'Summer Summit 2025', date: '22 Apr 2025', type: 'deal' },
+        ],
+        opps: []
+      },
+      {
+        id: 'acc-010', name: 'Rolls-Royce Motor Cars', initials: 'RR', industry: 'Automotive / Luxury', country: 'United Kingdom',
+        deals: [
+          { name: 'FRIEZE25: ROLLS-ROYCE COLLECTORS DINNER', value: 7000, status: 'signed', property: 'Frieze London 2025', date: '01 Sep 2025', type: 'deal' },
+          { name: 'GALA25: ROLLS-ROYCE PLATINUM TABLE', value: 5000, status: 'contracted', property: 'Gala London 2025', date: '15 Feb 2025', type: 'deal' },
+        ],
+        opps: [
+          { name: 'Frieze London 2026 — Private Viewing Sponsor', value: 10000, status: 'proposal', property: 'Frieze London 2026', date: '18 Mar 2026', type: 'opp' },
+        ]
+      },
+    ];
+
+    let selectedAccount = null;
+    let focusedIndex = -1;
+
+    function onAccountSearch(query) {
+      const dropdown = document.getElementById('account-dropdown');
+      const q = query.toLowerCase().trim();
+
+      if (!q) {
+        dropdown.classList.remove('open');
+        hideAccountHistory();
+        return;
+      }
+
+      const matches = ACCOUNTS.filter(a =>
+        a.name.toLowerCase().includes(q) ||
+        a.industry.toLowerCase().includes(q) ||
+        a.country.toLowerCase().includes(q)
+      );
+
+      let html = '';
+      if (matches.length > 0) {
+        matches.forEach((a, i) => {
+          const totalDeals = a.deals.length + a.opps.length;
+          html += `<div class="account-dropdown-item" onclick="selectAccount('${a.id}')" onmouseenter="focusedIndex=${i}">
+            <div class="adi-avatar">${a.initials}</div>
+            <div>
+              <div class="adi-name">${highlightMatch(a.name, q)}</div>
+              <div class="adi-meta">${a.industry} &bull; ${a.country}</div>
+            </div>
+            ${totalDeals > 0 ? `<div class="adi-deals">${totalDeals} record${totalDeals !== 1 ? 's' : ''}</div>` : ''}
+          </div>`;
+        });
+      } else {
+        html = `<div class="account-dropdown-empty">No accounts found for "${query}"</div>`;
+      }
+
+      html += `<div class="account-dropdown-create" onclick="createNewAccount('${query}')">
+        <span style="font-size:14px">+</span> Create new account: <strong>${query}</strong>
+      </div>`;
+
+      dropdown.innerHTML = html;
+      dropdown.classList.add('open');
+      focusedIndex = -1;
+    }
+
+    function highlightMatch(text, query) {
+      const idx = text.toLowerCase().indexOf(query.toLowerCase());
+      if (idx === -1) return text;
+      return text.substring(0, idx) + '<span style="background:#fef3c7;font-weight:700">' + text.substring(idx, idx + query.length) + '</span>' + text.substring(idx + query.length);
+    }
+
+    function selectAccount(accountId) {
+      const account = ACCOUNTS.find(a => a.id === accountId);
+      if (!account) return;
+
+      selectedAccount = account;
+
+      // Show selected chip, hide input
+      document.getElementById('account-input-wrap').classList.add('hidden');
+      const sel = document.getElementById('account-selected');
+      sel.classList.remove('hidden');
+      document.getElementById('asc-avatar').textContent = account.initials;
+      document.getElementById('asc-name').textContent = account.name;
+
+      // Close dropdown
+      document.getElementById('account-dropdown').classList.remove('open');
+
+      // Show account history panel
+      showAccountHistory(account);
+    }
+
+    function clearSelectedAccount() {
+      selectedAccount = null;
+      document.getElementById('account-selected').classList.add('hidden');
+      document.getElementById('account-input-wrap').classList.remove('hidden');
+      document.getElementById('deal-account').value = '';
+      document.getElementById('deal-account').focus();
+      hideAccountHistory();
+    }
+
+    function createNewAccount(name) {
+      // For demo, just set the name and close
+      document.getElementById('account-dropdown').classList.remove('open');
+      document.getElementById('account-input-wrap').classList.add('hidden');
+      const sel = document.getElementById('account-selected');
+      sel.classList.remove('hidden');
+      const initials = name.split(/\s+/).map(w => w[0]).join('').substring(0, 2).toUpperCase();
+      document.getElementById('asc-avatar').textContent = initials;
+      document.getElementById('asc-name').textContent = name;
+      hideAccountHistory();
+    }
+
+    // Close dropdown on outside click
+    document.addEventListener('click', function(e) {
+      const wrap = document.getElementById('account-search-wrap');
+      if (wrap && !wrap.contains(e.target)) {
+        document.getElementById('account-dropdown').classList.remove('open');
+      }
+    });
+
+    // Keyboard navigation
+    document.getElementById('deal-account').addEventListener('keydown', function(e) {
+      const dropdown = document.getElementById('account-dropdown');
+      const items = dropdown.querySelectorAll('.account-dropdown-item');
+      if (!dropdown.classList.contains('open') || items.length === 0) return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        focusedIndex = Math.min(focusedIndex + 1, items.length - 1);
+        items.forEach((el, i) => el.classList.toggle('focused', i === focusedIndex));
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        focusedIndex = Math.max(focusedIndex - 1, 0);
+        items.forEach((el, i) => el.classList.toggle('focused', i === focusedIndex));
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (focusedIndex >= 0 && focusedIndex < items.length) {
+          items[focusedIndex].click();
+        }
+      } else if (e.key === 'Escape') {
+        dropdown.classList.remove('open');
+      }
+    });
+
+    // ============================
+    // Account History Panel
+    // ============================
+    function showAccountHistory(account) {
+      const panel = document.getElementById('account-history-panel');
+      document.getElementById('ahp-avatar').textContent = account.initials;
+      document.getElementById('ahp-name').textContent = account.name;
+      document.getElementById('ahp-meta').innerHTML = account.industry + ' &bull; ' + account.country;
+
+      // Summary stats
+      const allItems = [...account.deals, ...account.opps];
+      const totalValue = allItems.reduce((s, d) => s + d.value, 0);
+      document.getElementById('ahp-total-val').textContent = '\u00A3' + totalValue.toLocaleString();
+      document.getElementById('ahp-deals-count').textContent = account.deals.length;
+      document.getElementById('ahp-opps-count').textContent = account.opps.length;
+
+      // Render all tab
+      renderHistoryItems('all');
+
+      // Reset tabs
+      document.querySelectorAll('.ahp-tab').forEach((t, i) => t.classList.toggle('active', i === 0));
+
+      panel.classList.add('visible');
+    }
+
+    function hideAccountHistory() {
+      document.getElementById('account-history-panel').classList.remove('visible');
+    }
+
+    function switchHistoryTab(tab, el) {
+      document.querySelectorAll('.ahp-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      renderHistoryItems(tab);
+    }
+
+    function renderHistoryItems(filter) {
+      if (!selectedAccount) return;
+      const body = document.getElementById('ahp-body');
+      let items = [];
+
+      if (filter === 'all') items = [...selectedAccount.deals, ...selectedAccount.opps];
+      else if (filter === 'deals') items = [...selectedAccount.deals];
+      else items = [...selectedAccount.opps];
+
+      // Sort by date descending (rough parse)
+      items.sort((a, b) => {
+        const da = new Date(a.date.split(' ').reverse().join(' '));
+        const db = new Date(b.date.split(' ').reverse().join(' '));
+        return db - da;
+      });
+
+      if (items.length === 0) {
+        body.innerHTML = '<div class="ahp-empty">No ' + (filter === 'all' ? 'records' : filter) + ' found for this account</div>';
+        return;
+      }
+
+      let html = '';
+      items.forEach(item => {
+        let badgeClass = '';
+        let badgeLabel = '';
+        if (item.type === 'deal') {
+          if (item.status === 'signed') { badgeClass = 'signed'; badgeLabel = 'Signed'; }
+          else if (item.status === 'contracted') { badgeClass = 'contracted'; badgeLabel = 'Contracted'; }
+          else if (item.status === 'in-play') { badgeClass = 'in-play'; badgeLabel = 'In Play'; }
+          else if (item.status === 'lost') { badgeClass = 'lost'; badgeLabel = 'Lost'; }
+        } else {
+          if (item.status === 'qualified') { badgeClass = 'qualified'; badgeLabel = 'Qualified'; }
+          else if (item.status === 'proposal') { badgeClass = 'proposal'; badgeLabel = 'Proposal'; }
+          else { badgeClass = 'opp'; badgeLabel = item.status; }
+        }
+
+        const typeIcon = item.type === 'deal'
+          ? '<span style="font-size:10px;font-weight:700;color:#6366f1;background:#eef2ff;padding:1px 5px;border-radius:3px;text-transform:uppercase">Deal</span>'
+          : '<span style="font-size:10px;font-weight:700;color:#d97706;background:#fffbeb;padding:1px 5px;border-radius:3px;text-transform:uppercase">Opp</span>';
+
+        html += `<div class="ahp-deal-card">
+          <div class="ahp-deal-top">
+            <div class="ahp-deal-name">${item.name}</div>
+            <div class="ahp-deal-value">\u00A3${item.value.toLocaleString()}</div>
+          </div>
+          <div class="ahp-deal-meta">
+            ${typeIcon}
+            <span class="ahp-deal-badge ${badgeClass}">${badgeLabel}</span>
+            <span class="ahp-deal-prop">${item.property}</span>
+            <span class="ahp-deal-date">${item.date}</span>
+          </div>
+        </div>`;
+      });
+
+      body.innerHTML = html;
+    }
+
+    lucide.createIcons();
+  </script>
+</body>
+</html>

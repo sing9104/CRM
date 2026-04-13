@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM - Accounts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * {
+      font-family: 'DM Sans', sans-serif;
+    }
+    body {
+      background-color: #f8f8fa;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Left Sidebar -->
+    <aside class="w-[76px] flex flex-col items-center py-4 space-y-1 border-r border-gray-800" style="background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%);">
+      <!-- Home -->
+      <a href="index.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Home</span>
+      </a>
+      <!-- Mari AI -->
+      <a href="mari-ai.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="sparkles" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Mari AI</span>
+      </a>
+      <!-- Search -->
+      <a href="search.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="search" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Search</span>
+      </a>
+      <div class="w-8 border-t border-gray-700/50 my-1"></div>
+      <!-- Accounts -->
+      <a href="accounts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg bg-white/15 text-white transition-colors">
+        <i data-lucide="building-2" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Accounts</span>
+      </a>
+      <!-- Contacts -->
+      <a href="contacts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Contacts</span>
+      </a>
+      <!-- Opps -->
+      <a href="opportunities.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="target" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Opps</span>
+      </a>
+      <!-- Deals -->
+      <a href="deals.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="handshake" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Deals</span>
+      </a>
+      <!-- Leads -->
+      <a href="leads.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="megaphone" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Leads</span>
+      </a>
+      <!-- Reports -->
+      <a href="reports.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Reports</span>
+      </a>
+
+      <!-- Spacer -->
+      <div class="flex-1"></div>
+
+      <!-- Logout -->
+      <a href="#" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="log-out" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Logout</span>
+      </a>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Top Header Bar -->
+      <header class="bg-white border-b border-gray-200 border-t-2 border-gray-900 h-14 flex items-center justify-between px-6">
+        <h1 class="text-gray-900 font-semibold">Accounts</h1>
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold rounded" style="border-radius: 8px;">JS</div>
+          <span class="text-sm text-gray-700">Jaspinder Singh</span>
+        </div>
+      </header>
+
+      <!-- Main Content Area -->
+      <main class="flex-1 overflow-y-auto p-6">
+        <div class="w-full">
+          <!-- Header with Actions -->
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center">
+              <h2 class="text-xl font-bold text-gray-900">Accounts</h2>
+            </div>
+            <div class="flex gap-3">
+              <a href="account-create.html" class="px-3 h-8 bg-gray-900 text-white text-xs font-medium rounded hover:bg-gray-800 flex items-center gap-1.5">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                New
+              </a>
+              <button class="px-3 h-8 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded hover:bg-gray-50">
+                Deactivate
+              </button>
+              <button class="px-3 h-8 bg-white border border-gray-200 text-gray-700 text-xs font-medium rounded hover:bg-gray-50">
+                Delete
+              </button>
+            </div>
+          </div>
+
+          <!-- Search and Table -->
+          <div class="bg-white rounded-3xl border border-gray-200 overflow-hidden">
+            <!-- Search -->
+            <div class="border-b border-gray-200 p-4">
+              <div class="relative">
+                <i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 text-gray-400"></i>
+                <input type="text" placeholder="Search accounts..." class="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-gray-300" />
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="text-left text-[11px] uppercase tracking-wider font-semibold text-gray-400 border-b border-gray-100 bg-gray-50/50">
+                    <th class="px-6 py-3">Name</th>
+                    <th class="px-6 py-3">Type</th>
+                    <th class="px-6 py-3">Industry</th>
+                    <th class="px-6 py-3">City</th>
+                    <th class="px-6 py-3">Country</th>
+                    <th class="px-6 py-3">Phone</th>
+                    <th class="px-6 py-3">Email</th>
+                    <th class="px-6 py-3">Created</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3 font-medium text-gray-900"><a href="account-detail.html" class="hover:text-blue-600 hover:underline">Red Global</a></td>
+                    <td class="px-6 py-3 text-gray-600">Corporate</td>
+                    <td class="px-6 py-3 text-gray-600">Technology</td>
+                    <td class="px-6 py-3 text-gray-600">London</td>
+                    <td class="px-6 py-3 text-gray-600">UK</td>
+                    <td class="px-6 py-3 text-gray-600">+44 20 7946 0958</td>
+                    <td class="px-6 py-3 text-blue-600">contact@redglobal.com</td>
+                    <td class="px-6 py-3 text-gray-600">2025-10-15</td>
+                  </tr>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3 font-medium text-gray-900"><a href="account-detail.html" class="hover:text-blue-600 hover:underline">Tech Innovations Ltd</a></td>
+                    <td class="px-6 py-3 text-gray-600">Corporate</td>
+                    <td class="px-6 py-3 text-gray-600">Software</td>
+                    <td class="px-6 py-3 text-gray-600">Manchester</td>
+                    <td class="px-6 py-3 text-gray-600">UK</td>
+                    <td class="px-6 py-3 text-gray-600">+44 161 234 5678</td>
+                    <td class="px-6 py-3 text-blue-600">hello@techinnovations.com</td>
+                    <td class="px-6 py-3 text-gray-600">2025-09-22</td>
+                  </tr>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3 font-medium text-gray-900"><a href="account-detail.html" class="hover:text-blue-600 hover:underline">Global Events Co</a></td>
+                    <td class="px-6 py-3 text-gray-600">Corporate</td>
+                    <td class="px-6 py-3 text-gray-600">Events</td>
+                    <td class="px-6 py-3 text-gray-600">New York</td>
+                    <td class="px-6 py-3 text-gray-600">USA</td>
+                    <td class="px-6 py-3 text-gray-600">+1 212 555 0123</td>
+                    <td class="px-6 py-3 text-blue-600">info@globalevents.com</td>
+                    <td class="px-6 py-3 text-gray-600">2025-08-10</td>
+                  </tr>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3 font-medium text-gray-900"><a href="account-detail.html" class="hover:text-blue-600 hover:underline">Brand Solutions</a></td>
+                    <td class="px-6 py-3 text-gray-600">Partnership</td>
+                    <td class="px-6 py-3 text-gray-600">Marketing</td>
+                    <td class="px-6 py-3 text-gray-600">Berlin</td>
+                    <td class="px-6 py-3 text-gray-600">Germany</td>
+                    <td class="px-6 py-3 text-gray-600">+49 30 123 456</td>
+                    <td class="px-6 py-3 text-blue-600">sales@brandsolutions.de</td>
+                    <td class="px-6 py-3 text-gray-600">2025-07-05</td>
+                  </tr>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3 font-medium text-gray-900"><a href="account-detail.html" class="hover:text-blue-600 hover:underline">Creative Studios</a></td>
+                    <td class="px-6 py-3 text-gray-600">Corporate</td>
+                    <td class="px-6 py-3 text-gray-600">Design</td>
+                    <td class="px-6 py-3 text-gray-600">Paris</td>
+                    <td class="px-6 py-3 text-gray-600">France</td>
+                    <td class="px-6 py-3 text-gray-600">+33 1 42 86 82 00</td>
+                    <td class="px-6 py-3 text-blue-600">contact@creativestudios.fr</td>
+                    <td class="px-6 py-3 text-gray-600">2025-06-18</td>
+                  </tr>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3 font-medium text-gray-900"><a href="account-detail.html" class="hover:text-blue-600 hover:underline">Enterprise Solutions</a></td>
+                    <td class="px-6 py-3 text-gray-600">Corporate</td>
+                    <td class="px-6 py-3 text-gray-600">Consulting</td>
+                    <td class="px-6 py-3 text-gray-600">Toronto</td>
+                    <td class="px-6 py-3 text-gray-600">Canada</td>
+                    <td class="px-6 py-3 text-gray-600">+1 416 555 0199</td>
+                    <td class="px-6 py-3 text-blue-600">info@enterprisesol.ca</td>
+                    <td class="px-6 py-3 text-gray-600">2025-05-30</td>
+                  </tr>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3 font-medium text-gray-900"><a href="account-detail.html" class="hover:text-blue-600 hover:underline">Digital Innovations</a></td>
+                    <td class="px-6 py-3 text-gray-600">Corporate</td>
+                    <td class="px-6 py-3 text-gray-600">Technology</td>
+                    <td class="px-6 py-3 text-gray-600">Singapore</td>
+                    <td class="px-6 py-3 text-gray-600">Singapore</td>
+                    <td class="px-6 py-3 text-gray-600">+65 6234 5678</td>
+                    <td class="px-6 py-3 text-blue-600">hello@digitalinno.sg</td>
+                    <td class="px-6 py-3 text-gray-600">2025-04-12</td>
+                  </tr>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3 font-medium text-gray-900"><a href="account-detail.html" class="hover:text-blue-600 hover:underline">Global Ventures</a></td>
+                    <td class="px-6 py-3 text-gray-600">Corporate</td>
+                    <td class="px-6 py-3 text-gray-600">Finance</td>
+                    <td class="px-6 py-3 text-gray-600">Sydney</td>
+                    <td class="px-6 py-3 text-gray-600">Australia</td>
+                    <td class="px-6 py-3 text-gray-600">+61 2 8246 8800</td>
+                    <td class="px-6 py-3 text-blue-600">contact@globalventures.au</td>
+                    <td class="px-6 py-3 text-gray-600">2025-03-25</td>
+                  </tr>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3 font-medium text-gray-900"><a href="account-detail.html" class="hover:text-blue-600 hover:underline">Premium Partners</a></td>
+                    <td class="px-6 py-3 text-gray-600">Partnership</td>
+                    <td class="px-6 py-3 text-gray-600">Retail</td>
+                    <td class="px-6 py-3 text-gray-600">Dubai</td>
+                    <td class="px-6 py-3 text-gray-600">UAE</td>
+                    <td class="px-6 py-3 text-gray-600">+971 4 308 3333</td>
+                    <td class="px-6 py-3 text-blue-600">info@premiumpartners.ae</td>
+                    <td class="px-6 py-3 text-gray-600">2025-02-08</td>
+                  </tr>
+                  <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                    <td class="px-6 py-3 font-medium text-gray-900"><a href="account-detail.html" class="hover:text-blue-600 hover:underline">Summit Corporation</a></td>
+                    <td class="px-6 py-3 text-gray-600">Corporate</td>
+                    <td class="px-6 py-3 text-gray-600">Manufacturing</td>
+                    <td class="px-6 py-3 text-gray-600">Tokyo</td>
+                    <td class="px-6 py-3 text-gray-600">Japan</td>
+                    <td class="px-6 py-3 text-gray-600">+81 3 6234 8800</td>
+                    <td class="px-6 py-3 text-blue-600">contact@summitcorp.jp</td>
+                    <td class="px-6 py-3 text-gray-600">2025-01-14</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Footer -->
+            <div class="border-t border-gray-100 px-6 py-3 bg-gray-50/50">
+              <p class="text-xs text-gray-500">1 - 100 of 46,472 items</p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

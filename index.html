@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM - Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * {
+      font-family: 'DM Sans', sans-serif;
+    }
+    body {
+      background-color: #f8f8fa;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Left Sidebar -->
+    <aside class="w-[76px] flex flex-col items-center py-4 space-y-1 border-r border-gray-800" style="background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%);">
+      <!-- Home -->
+      <a href="index.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg bg-white/15 text-white transition-colors">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Home</span>
+      </a>
+      <!-- Mari AI -->
+      <a href="mari-ai.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="sparkles" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Mari AI</span>
+      </a>
+      <!-- Search -->
+      <a href="search.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="search" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Search</span>
+      </a>
+      <div class="w-8 border-t border-gray-700/50 my-1"></div>
+      <!-- Accounts -->
+      <a href="accounts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="building-2" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Accounts</span>
+      </a>
+      <!-- Contacts -->
+      <a href="contacts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Contacts</span>
+      </a>
+      <!-- Opps -->
+      <a href="opportunities.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="target" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Opps</span>
+      </a>
+      <!-- Deals -->
+      <a href="deals.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="handshake" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Deals</span>
+      </a>
+      <!-- Leads -->
+      <a href="leads.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="megaphone" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Leads</span>
+      </a>
+      <!-- Reports -->
+      <a href="reports.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Reports</span>
+      </a>
+
+      <!-- Spacer -->
+      <div class="flex-1"></div>
+
+      <!-- Logout -->
+      <a href="#" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="log-out" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Logout</span>
+      </a>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Top Header Bar -->
+      <header class="bg-white border-b border-gray-200 border-t-2 border-gray-900 h-14 flex items-center justify-between px-6">
+        <h1 class="text-gray-900 font-semibold">Home</h1>
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold rounded" style="border-radius: 8px;">JS</div>
+          <span class="text-sm text-gray-700">Jaspinder Singh</span>
+        </div>
+      </header>
+
+      <!-- Main Content Area -->
+      <main class="flex-1 overflow-y-auto p-6">
+        <div class="w-full">
+          <!-- Welcome Section -->
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-1">Welcome back, Jaspinder</h2>
+            <p class="text-gray-500">Here's what's happening in your CRM</p>
+          </div>
+
+          <!-- Quick Links Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+            <!-- Accounts -->
+            <a href="accounts.html" class="group p-6 bg-white rounded-3xl border border-gray-200 hover:shadow-sm hover:border-gray-300 transition-all cursor-pointer">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 bg-blue-100 text-blue-600 flex items-center justify-center rounded-lg">
+                  <i data-lucide="building-2" class="w-6 h-6"></i>
+                </div>
+              </div>
+              <h3 class="text-gray-900 font-semibold mb-1">Accounts</h3>
+              <p class="text-gray-500 text-sm">46,472 active accounts</p>
+            </a>
+
+            <!-- Contacts -->
+            <a href="contacts.html" class="group p-6 bg-white rounded-3xl border border-gray-200 hover:shadow-sm hover:border-gray-300 transition-all cursor-pointer">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 bg-emerald-100 text-emerald-600 flex items-center justify-center rounded-lg">
+                  <i data-lucide="users" class="w-6 h-6"></i>
+                </div>
+              </div>
+              <h3 class="text-gray-900 font-semibold mb-1">Contacts</h3>
+              <p class="text-gray-500 text-sm">49,764 active contacts</p>
+            </a>
+
+            <!-- Opportunities -->
+            <a href="opportunities.html" class="group p-6 bg-white rounded-3xl border border-gray-200 hover:shadow-sm hover:border-gray-300 transition-all cursor-pointer">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 bg-violet-100 text-violet-600 flex items-center justify-center rounded-lg">
+                  <i data-lucide="target" class="w-6 h-6"></i>
+                </div>
+              </div>
+              <h3 class="text-gray-900 font-semibold mb-1">Opportunities</h3>
+              <p class="text-gray-500 text-sm">238 open opportunities</p>
+            </a>
+
+            <!-- Deals -->
+            <a href="deals.html" class="group p-6 bg-white rounded-3xl border border-gray-200 hover:shadow-sm hover:border-gray-300 transition-all cursor-pointer">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 bg-amber-100 text-amber-600 flex items-center justify-center rounded-lg">
+                  <i data-lucide="handshake" class="w-6 h-6"></i>
+                </div>
+              </div>
+              <h3 class="text-gray-900 font-semibold mb-1">Deals</h3>
+              <p class="text-gray-500 text-sm">10,238 active deals</p>
+            </a>
+
+            <!-- Leads -->
+            <a href="leads.html" class="group p-6 bg-white rounded-3xl border border-gray-200 hover:shadow-sm hover:border-gray-300 transition-all cursor-pointer">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 bg-gray-900 text-white flex items-center justify-center rounded-lg">
+                  <i data-lucide="megaphone" class="w-6 h-6"></i>
+                </div>
+              </div>
+              <h3 class="text-gray-900 font-semibold mb-1">Leads</h3>
+              <p class="text-gray-500 text-sm">Campaign leads & prospects</p>
+            </a>
+
+            <!-- Reports -->
+            <a href="reports.html" class="group p-6 bg-white rounded-3xl border border-gray-200 hover:shadow-sm hover:border-gray-300 transition-all cursor-pointer">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 bg-gray-900 text-white flex items-center justify-center rounded-lg">
+                  <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
+                </div>
+              </div>
+              <h3 class="text-gray-900 font-semibold mb-1">Reports</h3>
+              <p class="text-gray-500 text-sm">Dashboards & analytics</p>
+            </a>
+
+            <!-- Mari AI -->
+            <a href="mari-ai.html" class="group p-6 bg-white rounded-3xl border border-gray-200 hover:shadow-sm hover:border-gray-300 transition-all cursor-pointer" style="background: linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%);">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 bg-violet-100 text-violet-600 flex items-center justify-center rounded-lg">
+                  <i data-lucide="sparkles" class="w-6 h-6"></i>
+                </div>
+              </div>
+              <h3 class="text-gray-900 font-semibold mb-1">Mari AI</h3>
+              <p class="text-gray-500 text-sm">AI-powered assistant</p>
+            </a>
+          </div>
+
+          <!-- Recent Activity & Recent Payments -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Recent Activity -->
+            <div class="bg-white rounded-3xl border border-gray-200 p-6">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+              <div class="space-y-3">
+                <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
+                  <div class="w-8 h-8 bg-amber-50 text-amber-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="handshake" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm text-gray-900"><span class="font-medium">Deal created</span> — TOL26: RED GLOBAL x30 WED EVE</p>
+                    <p class="text-xs text-gray-400">You • 2 hours ago</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
+                  <div class="w-8 h-8 bg-emerald-50 text-emerald-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm text-gray-900"><span class="font-medium">Contact added</span> — Sarah Johnson</p>
+                    <p class="text-xs text-gray-400">You • 5 hours ago</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
+                  <div class="w-8 h-8 bg-violet-50 text-violet-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="target" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm text-gray-900"><span class="font-medium">Opportunity updated</span> — Red Global Tech Summit 2026</p>
+                    <p class="text-xs text-gray-400">Mollie Stoneham • 1 day ago</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
+                  <div class="w-8 h-8 bg-blue-50 text-blue-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="building-2" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm text-gray-900"><span class="font-medium">Account created</span> — Digital Innovations</p>
+                    <p class="text-xs text-gray-400">You • 2 days ago</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 bg-amber-50 text-amber-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="handshake" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm text-gray-900"><span class="font-medium">Payment received</span> — INV-2026-0042</p>
+                    <p class="text-xs text-gray-400">System • 3 days ago</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Payments -->
+            <div class="bg-white rounded-3xl border border-gray-200 p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Recent Payments</h3>
+                <a href="deals.html" class="text-xs text-blue-600 hover:text-blue-700 font-medium">View All</a>
+              </div>
+              <div class="space-y-3">
+                <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
+                  <div class="w-8 h-8 bg-emerald-50 text-emerald-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="credit-card" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">INV-2026-0042 — £12,500.00</p>
+                    <p class="text-xs text-gray-400">Red Global • Status changed to Paid</p>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <span class="inline-flex items-center px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-medium rounded border border-emerald-200">Paid</span>
+                    <p class="text-[10px] text-gray-400 mt-0.5">2 hrs ago</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
+                  <div class="w-8 h-8 bg-blue-50 text-blue-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="credit-card" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">INV-2026-0078 — £8,750.00</p>
+                    <p class="text-xs text-gray-400">Tech Innovations • Invoice created</p>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <span class="inline-flex items-center px-2 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-medium rounded border border-blue-200">Invoiced</span>
+                    <p class="text-[10px] text-gray-400 mt-0.5">5 hrs ago</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
+                  <div class="w-8 h-8 bg-gray-50 text-gray-500 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="credit-card" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">INV-2026-0091 — £22,000.00</p>
+                    <p class="text-xs text-gray-400">Global Events Co • Draft created</p>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <span class="inline-flex items-center px-2 py-0.5 bg-gray-50 text-gray-600 text-[10px] font-medium rounded border border-gray-200">Draft</span>
+                    <p class="text-[10px] text-gray-400 mt-0.5">1 day ago</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
+                  <div class="w-8 h-8 bg-emerald-50 text-emerald-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="credit-card" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">INV-2026-0035 — £15,300.00</p>
+                    <p class="text-xs text-gray-400">Brand Solutions • Status changed to Paid</p>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <span class="inline-flex items-center px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-medium rounded border border-emerald-200">Paid</span>
+                    <p class="text-[10px] text-gray-400 mt-0.5">2 days ago</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 bg-blue-50 text-blue-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="credit-card" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">INV-2026-0063 — £6,200.00</p>
+                    <p class="text-xs text-gray-400">Enterprise Solutions • Amount updated</p>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <span class="inline-flex items-center px-2 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-medium rounded border border-blue-200">Invoiced</span>
+                    <p class="text-[10px] text-gray-400 mt-0.5">3 days ago</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Deals & Recent Opportunities -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Recent Deals -->
+            <div class="bg-white rounded-3xl border border-gray-200 p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Recent Deals</h3>
+                <a href="deals.html" class="text-xs text-blue-600 hover:text-blue-700 font-medium">View All</a>
+              </div>
+              <div class="space-y-3">
+                <a href="deal-detail.html" class="flex items-center gap-3 pb-3 border-b border-gray-100 hover:bg-gray-50/50 -mx-2 px-2 rounded-lg transition-colors">
+                  <div class="w-8 h-8 bg-amber-50 text-amber-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="handshake" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">TOL26: RED GLOBAL x30 WED EVE</p>
+                    <p class="text-xs text-gray-400">Red Global • Taste of London</p>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <span class="inline-flex items-center px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-medium rounded border border-amber-200">In Play</span>
+                    <p class="text-[10px] text-gray-400 mt-0.5">10%</p>
+                  </div>
+                </a>
+                <a href="deal-detail.html" class="flex items-center gap-3 pb-3 border-b border-gray-100 hover:bg-gray-50/50 -mx-2 px-2 rounded-lg transition-colors">
+                  <div class="w-8 h-8 bg-emerald-50 text-emerald-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="handshake" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">TOL25: RED GLOBAL x20 SAT</p>
+                    <p class="text-xs text-gray-400">Red Global • Taste of London</p>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <span class="inline-flex items-center px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-medium rounded border border-emerald-200">Signed</span>
+                    <p class="text-[10px] text-gray-400 mt-0.5">85%</p>
+                  </div>
+                </a>
+                <a href="deal-detail.html" class="flex items-center gap-3 pb-3 border-b border-gray-100 hover:bg-gray-50/50 -mx-2 px-2 rounded-lg transition-colors">
+                  <div class="w-8 h-8 bg-blue-50 text-blue-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="handshake" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">FL26: TECH INNOVATIONS x50 FRI</p>
+                    <p class="text-xs text-gray-400">Tech Innovations • Frieze London</p>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <span class="inline-flex items-center px-2 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-medium rounded border border-blue-200">Contracted</span>
+                    <p class="text-[10px] text-gray-400 mt-0.5">95%</p>
+                  </div>
+                </a>
+                <a href="deal-detail.html" class="flex items-center gap-3 pb-3 border-b border-gray-100 hover:bg-gray-50/50 -mx-2 px-2 rounded-lg transition-colors">
+                  <div class="w-8 h-8 bg-amber-50 text-amber-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="handshake" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">HYPARK24: BRAND SOLUTIONS x35</p>
+                    <p class="text-xs text-gray-400">Brand Solutions • Hyde Park Winter</p>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <span class="inline-flex items-center px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-medium rounded border border-amber-200">In Play</span>
+                    <p class="text-[10px] text-gray-400 mt-0.5">70%</p>
+                  </div>
+                </a>
+                <a href="deal-detail.html" class="flex items-center gap-3 hover:bg-gray-50/50 -mx-2 px-2 rounded-lg transition-colors">
+                  <div class="w-8 h-8 bg-amber-50 text-amber-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="handshake" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">SUMMIT26: CREATIVE STUDIOS x25</p>
+                    <p class="text-xs text-gray-400">Creative Studios • Summer Summit</p>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <span class="inline-flex items-center px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-medium rounded border border-amber-200">In Play</span>
+                    <p class="text-[10px] text-gray-400 mt-0.5">45%</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <!-- Recent Opportunities -->
+            <div class="bg-white rounded-3xl border border-gray-200 p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Recent Opportunities</h3>
+                <a href="opportunities.html" class="text-xs text-blue-600 hover:text-blue-700 font-medium">View All</a>
+              </div>
+              <div class="space-y-3">
+                <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
+                  <div class="w-8 h-8 bg-amber-50 text-amber-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="target" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">Red Global Tech Summit 2026</p>
+                    <p class="text-xs text-gray-400">Red Global • $45,000</p>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <span class="inline-flex items-center px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-medium rounded border border-amber-200">Proposal</span>
+                    <p class="text-[10px] text-gray-400 mt-0.5">75%</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
+                  <div class="w-8 h-8 bg-blue-50 text-blue-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="target" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">TechInnovations Annual Gala</p>
+                    <p class="text-xs text-gray-400">Tech Innovations Ltd • $32,000</p>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <span class="inline-flex items-center px-2 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-medium rounded border border-blue-200">Qualification</span>
+                    <p class="text-[10px] text-gray-400 mt-0.5">50%</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
+                  <div class="w-8 h-8 bg-emerald-50 text-emerald-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="target" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">Global Events Product Launch</p>
+                    <p class="text-xs text-gray-400">Global Events Co • $58,000</p>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <span class="inline-flex items-center px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-medium rounded border border-emerald-200">Closed Won</span>
+                    <p class="text-[10px] text-gray-400 mt-0.5">100%</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
+                  <div class="w-8 h-8 bg-violet-50 text-violet-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="target" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">Brand Solutions Conference</p>
+                    <p class="text-xs text-gray-400">Brand Solutions • $42,000</p>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <span class="inline-flex items-center px-2 py-0.5 bg-violet-50 text-violet-700 text-[10px] font-medium rounded border border-violet-200">Negotiation</span>
+                    <p class="text-[10px] text-gray-400 mt-0.5">85%</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 bg-amber-50 text-amber-600 flex items-center justify-center rounded flex-shrink-0">
+                    <i data-lucide="target" class="w-4 h-4"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">Digital Innovations Partnership</p>
+                    <p class="text-xs text-gray-400">Digital Innovations • $38,000</p>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <span class="inline-flex items-center px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-medium rounded border border-amber-200">Proposal</span>
+                    <p class="text-[10px] text-gray-400 mt-0.5">70%</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

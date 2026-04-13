@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM - Create New Contact</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * { font-family: 'DM Sans', sans-serif; }
+    body { background-color: #f8f8fa; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideDown { from { opacity: 0; max-height: 0; } to { opacity: 1; max-height: 500px; } }
+    .animate-fade { animation: fadeIn 0.25s ease-out forwards; }
+
+    /* Account autocomplete */
+    .account-search-wrap { position: relative; }
+    .account-dropdown {
+      position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
+      background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.05);
+      margin-top: 4px; max-height: 280px; overflow-y: auto; display: none;
+    }
+    .account-dropdown.open { display: block; animation: fadeIn 0.2s ease-out; }
+    .account-dropdown-item {
+      display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+      cursor: pointer; transition: background 0.1s;
+    }
+    .account-dropdown-item:hover, .account-dropdown-item.highlighted { background: #f3f4f6; }
+    .account-dropdown-item .adi-avatar {
+      width: 32px; height: 32px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; flex-shrink: 0;
+    }
+    .account-dropdown-item .adi-info { flex: 1; min-width: 0; }
+    .account-dropdown-item .adi-name { font-size: 13px; font-weight: 600; color: #111827; }
+    .account-dropdown-item .adi-name em { font-style: normal; background: #fef3c7; border-radius: 2px; }
+    .account-dropdown-item .adi-meta { font-size: 11px; color: #9ca3af; }
+    .account-dropdown-item .adi-address-badge {
+      font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 4px;
+      background: #ecfdf5; color: #059669; white-space: nowrap;
+    }
+    .account-selected-chip {
+      display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+      background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px;
+    }
+    .account-selected-chip .chip-avatar {
+      width: 28px; height: 28px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700;
+    }
+    .account-selected-chip .chip-name { font-size: 13px; font-weight: 600; color: #111827; flex: 1; }
+    .account-selected-chip .chip-clear {
+      width: 22px; height: 22px; border-radius: 6px; border: none;
+      background: transparent; color: #9ca3af; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; line-height: 1; transition: all 0.15s;
+    }
+    .account-selected-chip .chip-clear:hover { background: #fee2e2; color: #ef4444; }
+
+    /* Address inheritance banner */
+    .addr-inherit-banner {
+      display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+      border-radius: 10px; font-size: 12px; margin-bottom: 16px;
+      animation: fadeIn 0.3s ease-out;
+    }
+    .addr-inherit-banner.from-account { background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; }
+    .addr-inherit-banner.from-contact { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+    .addr-inherit-banner .banner-icon {
+      width: 28px; height: 28px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .addr-inherit-banner.from-account .banner-icon { background: #d1fae5; }
+    .addr-inherit-banner.from-contact .banner-icon { background: #dbeafe; }
+    .addr-inherit-banner .banner-text { flex: 1; line-height: 1.4; }
+    .addr-inherit-banner .banner-text strong { font-weight: 700; }
+    .addr-inherit-banner .banner-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .addr-inherit-banner .btn-clear-addr {
+      padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;
+      cursor: pointer; transition: all 0.15s; border: none;
+    }
+    .addr-inherit-banner.from-account .btn-clear-addr { background: #d1fae5; color: #065f46; }
+    .addr-inherit-banner.from-account .btn-clear-addr:hover { background: #a7f3d0; }
+    .addr-inherit-banner.from-contact .btn-clear-addr { background: #dbeafe; color: #1e40af; }
+    .addr-inherit-banner.from-contact .btn-clear-addr:hover { background: #bfdbfe; }
+
+    /* Inherited field glow */
+    .field-inherited {
+      border-color: #86efac !important; background: #f0fdf4 !important;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .field-inherited-contact {
+      border-color: #93c5fd !important; background: #eff6ff !important;
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    /* Toast notification */
+    .addr-toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 999;
+      display: flex; align-items: center; gap: 10px; padding: 12px 18px;
+      background: #111827; color: #fff; border-radius: 12px;
+      font-size: 13px; font-weight: 500;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      animation: fadeIn 0.3s ease-out;
+    }
+    .addr-toast .toast-icon { flex-shrink: 0; }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Left Sidebar -->
+    <aside class="w-[76px] flex flex-col items-center py-4 space-y-1 border-r border-gray-800" style="background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%);">
+      <a href="index.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Home</span>
+      </a>
+      <a href="mari-ai.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="sparkles" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Mari AI</span>
+      </a>
+      <a href="search.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="search" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Search</span>
+      </a>
+      <div class="w-8 border-t border-gray-700/50 my-1"></div>
+      <a href="accounts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="building-2" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Accounts</span>
+      </a>
+      <a href="contacts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg bg-white/15 text-white transition-colors">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Contacts</span>
+      </a>
+      <a href="opportunities.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="target" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Opps</span>
+      </a>
+      <a href="deals.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="handshake" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Deals</span>
+      </a>
+      <a href="leads.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="megaphone" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Leads</span>
+      </a>
+      <a href="reports.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Reports</span>
+      </a>
+      <div class="flex-1"></div>
+      <a href="#" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="log-out" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Logout</span>
+      </a>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Top Header Bar -->
+      <header class="sticky top-0 z-40 bg-white border-b border-gray-100 border-t-2 border-gray-900 h-14 flex items-center justify-between px-6">
+        <div class="flex items-center gap-4">
+          <a href="contacts.html" class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span class="font-medium">Contacts</span>
+          </a>
+        </div>
+        <div class="flex items-center gap-3">
+          <button class="px-3 h-8 border border-gray-200 text-gray-700 text-xs font-medium rounded hover:bg-gray-50">Cancel</button>
+          <button onclick="saveContact()" class="px-3 h-8 bg-gray-900 text-white text-xs font-medium rounded hover:bg-gray-800">Save Contact</button>
+          <div class="w-8 h-8 bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold rounded" style="border-radius: 8px;">JS</div>
+        </div>
+      </header>
+
+      <!-- Main Content Area -->
+      <main class="flex-1 overflow-y-auto">
+        <div class="p-6">
+          <!-- Two Column Layout: Form Left, AI Right -->
+          <div class="flex gap-6 items-start">
+            <!-- LEFT COLUMN: Form -->
+            <div class="flex-1 min-w-0">
+            <!-- Breadcrumb -->
+            <div class="mb-6">
+              <div class="flex items-center gap-2 text-sm text-gray-600 mb-4">
+                <span class="text-gray-500">Contacts</span>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-gray-300"></i>
+                <span class="text-gray-900 font-medium">New Contact</span>
+              </div>
+            </div>
+
+            <!-- Page Header -->
+            <div class="mb-6">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-gray-900 text-white rounded-lg flex items-center justify-center">
+                  <i data-lucide="user" class="w-6 h-6"></i>
+                </div>
+                <div>
+                  <h1 class="text-2xl font-bold text-gray-900">Create New Contact</h1>
+                  <p class="text-sm text-gray-500 mt-0.5">Address fields will auto-populate from the linked account or most recent contact</p>
+                </div>
+              </div>
+            </div>
+
+          <!-- Form -->
+          <form onsubmit="event.preventDefault(); saveContact();">
+            <!-- Contact Information Card -->
+            <div class="bg-white rounded-3xl border border-gray-200 p-6 mb-6">
+              <h2 class="text-lg font-semibold text-gray-900 mb-6">Contact Information</h2>
+              <div class="grid grid-cols-2 gap-6">
+                <!-- Salutation -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Salutation</label>
+                  <select id="contact-salutation" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                    <option value="">Select Salutation</option>
+                    <option value="mr">Mr</option>
+                    <option value="mrs">Mrs</option>
+                    <option value="ms">Ms</option>
+                    <option value="dr">Dr</option>
+                    <option value="prof">Prof</option>
+                  </select>
+                </div>
+                <!-- First Name -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">First Name <span class="text-red-500">*</span></label>
+                  <input id="contact-firstname" type="text" placeholder="Enter first name" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400" required>
+                </div>
+                <!-- Last Name -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Last Name <span class="text-red-500">*</span></label>
+                  <input id="contact-lastname" type="text" placeholder="Enter last name" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400" required>
+                </div>
+                <!-- Job Title -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Job Title</label>
+                  <input id="contact-jobtitle" type="text" placeholder="Enter job title" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                </div>
+                <!-- Company Name (Account Autocomplete) -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Company Name <span class="text-red-500">*</span></label>
+                  <div class="account-search-wrap">
+                    <!-- Selected state -->
+                    <div id="account-selected" class="account-selected-chip hidden">
+                      <div id="account-chip-avatar" class="chip-avatar"></div>
+                      <span id="account-chip-name" class="chip-name"></span>
+                      <button type="button" onclick="clearSelectedAccount()" class="chip-clear">&times;</button>
+                    </div>
+                    <!-- Search state -->
+                    <div id="account-search-container" class="relative">
+                      <input id="account-search" type="text" placeholder="Search for a company..." autocomplete="off"
+                        oninput="onAccountSearch(this.value)" onfocus="onAccountSearch(this.value)"
+                        class="w-full px-3 py-2 pl-9 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                      <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-2.5 pointer-events-none"></i>
+                    </div>
+                    <!-- Dropdown -->
+                    <div id="account-dropdown" class="account-dropdown"></div>
+                  </div>
+                </div>
+                <!-- Email -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Email <span class="text-red-500">*</span></label>
+                  <input id="contact-email" type="email" placeholder="Enter email address" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400" required>
+                </div>
+                <!-- Business Phone -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Business Phone</label>
+                  <input id="contact-bizphone" type="tel" placeholder="Enter business phone" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                </div>
+                <!-- Mobile Phone -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Mobile Phone</label>
+                  <input id="contact-mobile" type="tel" placeholder="Enter mobile phone" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                </div>
+                <!-- LinkedIn Profile -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">LinkedIn Profile</label>
+                  <input id="contact-linkedin" type="url" placeholder="Enter LinkedIn URL" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                </div>
+                <!-- Lead Source -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Lead Source</label>
+                  <select id="contact-leadsource" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                    <option value="">Select Lead Source</option>
+                    <option value="web">Web</option>
+                    <option value="referral">Referral</option>
+                    <option value="event">Event</option>
+                    <option value="cold-call">Cold Call</option>
+                    <option value="social-media">Social Media</option>
+                    <option value="partner">Partner</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <!-- Sponsorship Contact -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Sponsorship Contact</label>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="sponsorship" class="w-4 h-4 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-gray-900/10">
+                    <label for="sponsorship" class="ml-2.5 text-xs text-gray-700">Is sponsorship contact</label>
+                  </div>
+                </div>
+                <!-- Relationship -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Relationship</label>
+                  <input id="contact-relationship" type="text" placeholder="Enter relationship" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                </div>
+                <!-- SAP Contact Number -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">SAP Contact Number</label>
+                  <input id="contact-sap-contact" type="text" placeholder="Enter SAP contact number" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                </div>
+                <!-- SAP Customer Number -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">SAP Customer Number</label>
+                  <input id="contact-sap-customer" type="text" placeholder="Enter SAP customer number" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                </div>
+                <!-- Description -->
+                <div class="col-span-2">
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Description</label>
+                  <textarea id="contact-desc" placeholder="Enter description" rows="3" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sales Address Card -->
+            <div class="bg-white rounded-3xl border border-gray-200 p-6 mb-6" id="sales-address-card">
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-gray-900">Sales Address</h2>
+                <div id="addr-source-badge" class="hidden text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider"></div>
+              </div>
+
+              <!-- Inheritance Banner -->
+              <div id="addr-inherit-banner" class="addr-inherit-banner hidden">
+                <div class="banner-icon">
+                  <i id="banner-icon-el" data-lucide="building-2" class="w-4 h-4"></i>
+                </div>
+                <div class="banner-text">
+                  <span id="banner-text-content"></span>
+                </div>
+                <div class="banner-actions">
+                  <button type="button" class="btn-clear-addr" onclick="clearInheritedAddress()">Clear &amp; enter manually</button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-6">
+                <!-- Street 1 -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Street 1</label>
+                  <input id="sales-street1" type="text" placeholder="Enter street address" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                </div>
+                <!-- Street 2 -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Street 2</label>
+                  <input id="sales-street2" type="text" placeholder="Enter street address (optional)" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                </div>
+                <!-- City -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">City</label>
+                  <input id="sales-city" type="text" placeholder="Enter city" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                </div>
+                <!-- ZIP/Postal Code -->
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">ZIP/Postal Code</label>
+                  <input id="sales-postcode" type="text" placeholder="Enter ZIP or postal code" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                </div>
+                <!-- Country -->
+                <div class="col-span-2">
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Country</label>
+                  <select id="sales-country" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                    <option value="">Select Country</option>
+                    <option value="uk">United Kingdom</option>
+                    <option value="us">United States</option>
+                    <option value="ca">Canada</option>
+                    <option value="hk">Hong Kong</option>
+                    <option value="se">Sweden</option>
+                    <option value="sg">Singapore</option>
+                    <option value="de">Germany</option>
+                    <option value="nz">New Zealand</option>
+                    <option value="cn">China</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Billing Address Card -->
+            <div class="bg-white rounded-3xl border border-gray-200 p-6 mb-6" id="billing-address-card">
+              <div class="mb-6">
+                <div class="flex items-center">
+                  <input type="checkbox" id="same-as-sales" class="w-4 h-4 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-gray-900/10" onchange="toggleSameAsSales()">
+                  <label for="same-as-sales" class="ml-2.5 text-sm font-medium text-gray-900">Same As Sales Address</label>
+                </div>
+              </div>
+              <div id="billing-fields" class="grid grid-cols-2 gap-6">
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Street 1</label>
+                  <input id="billing-street1" type="text" placeholder="Enter street address" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                </div>
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Street 2</label>
+                  <input id="billing-street2" type="text" placeholder="Enter street address (optional)" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                </div>
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">City</label>
+                  <input id="billing-city" type="text" placeholder="Enter city" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                </div>
+                <div>
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">ZIP/Postal Code</label>
+                  <input id="billing-postcode" type="text" placeholder="Enter ZIP or postal code" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                </div>
+                <div class="col-span-2">
+                  <label class="text-xs font-medium text-gray-500 mb-1.5 block">Country</label>
+                  <select id="billing-country" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                    <option value="">Select Country</option>
+                    <option value="uk">United Kingdom</option>
+                    <option value="us">United States</option>
+                    <option value="ca">Canada</option>
+                    <option value="hk">Hong Kong</option>
+                    <option value="se">Sweden</option>
+                    <option value="sg">Singapore</option>
+                    <option value="de">Germany</option>
+                    <option value="nz">New Zealand</option>
+                    <option value="cn">China</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+              <!-- Form Actions -->
+              <div class="flex justify-end gap-3 pb-6">
+                <button type="button" class="px-4 h-10 border border-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50">Cancel</button>
+                <button type="submit" class="px-4 h-10 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800">Save Contact</button>
+              </div>
+            </form>
+            </div><!-- /left column -->
+
+            <!-- RIGHT COLUMN: Mari AI Assistant -->
+            <div class="w-[400px] flex-shrink-0 sticky top-6">
+              <div class="rounded-3xl border border-gray-200 overflow-hidden" style="background: linear-gradient(135deg, #fafafa 0%, #f5f3ff 100%);">
+                <div class="p-5">
+                  <!-- Header -->
+                  <div class="flex items-center gap-3 mb-4">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #111827, #1f2937);">
+                      <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+                    </div>
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900">Create with Mari AI</h3>
+                      <p class="text-[11px] text-gray-400">Paste or type contact details</p>
+                    </div>
+                  </div>
+
+                  <!-- Input Area -->
+                  <div class="relative mb-3">
+                    <textarea id="ai-contact-input" rows="5" placeholder="e.g. Sarah Mitchell, Head of Partnerships at Diageo PLC, sarah.mitchell@diageo.com, +44 20 7927 5200, mobile: +44 7845 221 344, LinkedIn: linkedin.com/in/sarahmitchell. Address: 16 Great Marlborough Street, London, W1F 7HS, UK" class="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:border-violet-300 focus:ring-2 focus:ring-violet-100 resize-none" style="line-height: 1.6;"></textarea>
+                  </div>
+                  <p class="text-[10px] text-gray-400 mb-3">Try: "John Smith from Barclays, john.smith@barclays.com, sponsorship contact"</p>
+                  <button onclick="processAIContact()" id="ai-submit-btn" class="w-full bg-gray-900 text-white text-xs font-medium h-9 px-4 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                    Map to Fields
+                  </button>
+                </div>
+
+                <!-- AI Processing (hidden by default) -->
+                <div id="ai-processing" class="hidden border-t border-gray-200 px-5 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-4 h-4 rounded-full border-2 border-gray-300 border-t-gray-900 animate-spin"></div>
+                    <span class="text-xs text-gray-500">Mari AI is mapping your data...</span>
+                  </div>
+                </div>
+
+                <!-- AI Results (hidden by default) -->
+                <div id="ai-results" class="hidden border-t border-gray-200">
+                  <div class="p-5">
+                    <!-- AI Message -->
+                    <div class="flex items-start gap-3 mb-4">
+                      <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background: linear-gradient(135deg, #111827, #1f2937);">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
+                      </div>
+                      <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-2">
+                          <span class="text-xs font-semibold text-gray-900">Mari AI</span>
+                          <span class="text-[9px] font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">Ready</span>
+                        </div>
+                        <p class="text-xs text-gray-600 leading-relaxed mb-3">I've mapped the contact details. Review below and confirm to fill the form.</p>
+                      </div>
+                    </div>
+
+                    <!-- Mapped Fields — stacked compact cards -->
+                    <div class="space-y-2 mb-4" id="ai-fields-container">
+                      <!-- Rendered by JS -->
+                    </div>
+
+                    <!-- Confirmation buttons -->
+                    <div class="space-y-2">
+                      <button onclick="confirmAIContact()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium h-9 px-5 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                        <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                        Confirm & Fill Form
+                      </button>
+                      <button onclick="editAIContact()" class="w-full bg-white hover:bg-gray-50 text-gray-700 text-xs font-medium h-8 rounded-lg border border-gray-200 flex items-center justify-center gap-1.5 transition-colors">
+                        <i data-lucide="edit-3" class="w-3 h-3"></i>
+                        Edit in Form
+                      </button>
+                      <button onclick="resetAIContact()" class="w-full bg-white hover:bg-gray-50 text-gray-700 text-xs font-medium h-8 rounded-lg border border-gray-200 flex items-center justify-center gap-1.5 transition-colors">
+                        <i data-lucide="x" class="w-3 h-3"></i>
+                        Reset
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div><!-- /right column -->
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toast-container"></div>
+
+  <script>
+    lucide.createIcons();
+
+    // ============================
+    // DATA: Accounts with addresses
+    // ============================
+    const ACCOUNTS = [
+      { id: 'acc-001', name: 'Red Global', industry: 'Media & Advertising', color: '#dc2626', contacts: 8,
+        address: { street1: '100 New Oxford Street', street2: 'Floor 4', city: 'London', postcode: 'WC1A 1PB', country: 'uk' }},
+      { id: 'acc-002', name: 'Barclays Corporate', industry: 'Banking & Finance', color: '#2563eb', contacts: 14,
+        address: { street1: '1 Churchill Place', street2: 'Canary Wharf', city: 'London', postcode: 'E14 5HP', country: 'uk' }},
+      { id: 'acc-003', name: 'Samsung Electronics UK', industry: 'Technology', color: '#1d4ed8', contacts: 6,
+        address: { street1: 'Samsung House, 2000 Hillswood Drive', street2: '', city: 'Chertsey', postcode: 'KT16 0RS', country: 'uk' }},
+      { id: 'acc-004', name: 'Diageo PLC', industry: 'Beverages & Spirits', color: '#b45309', contacts: 11,
+        address: { street1: '16 Great Marlborough Street', street2: '', city: 'London', postcode: 'W1F 7HS', country: 'uk' }},
+      { id: 'acc-005', name: 'Goldman Sachs International', industry: 'Investment Banking', color: '#6d28d9', contacts: 9,
+        address: { street1: 'Plumtree Court, 25 Shoe Lane', street2: '', city: 'London', postcode: 'EC4A 4AU', country: 'uk' }},
+      { id: 'acc-006', name: 'BMW Group UK', industry: 'Automotive', color: '#0284c7', contacts: 5,
+        address: { street1: 'Prologis Park, Summit Avenue', street2: 'Farnborough', city: 'Hampshire', postcode: 'GU14 0FB', country: 'uk' }},
+      { id: 'acc-007', name: 'Tech Innovations Ltd', industry: 'Software & SaaS', color: '#059669', contacts: 3,
+        address: null }, // No address on file
+      { id: 'acc-008', name: 'Heineken International', industry: 'Beverages', color: '#15803d', contacts: 7,
+        address: { street1: 'Tweede Weteringplantsoen 21', street2: '', city: 'Amsterdam', postcode: '1017 ZD', country: 'other' }},
+      { id: 'acc-009', name: 'Deloitte', industry: 'Consulting & Professional Services', color: '#16a34a', contacts: 12,
+        address: { street1: '1 New Street Square', street2: '', city: 'London', postcode: 'EC4A 3HQ', country: 'uk' }},
+      { id: 'acc-010', name: 'Rolls-Royce Motor Cars', industry: 'Automotive & Luxury', color: '#7c3aed', contacts: 4,
+        address: { street1: 'The Drive, Westhampnett', street2: '', city: 'Chichester', postcode: 'PO18 0SH', country: 'uk' }},
+    ];
+
+    // Recently created contacts (simulates the last few contacts saved)
+    const RECENT_CONTACTS = [
+      { id: 'cnt-last', name: 'Sarah Mitchell', account: 'Diageo PLC', createdAt: '2026-04-11',
+        address: { street1: '16 Great Marlborough Street', street2: 'Suite 300', city: 'London', postcode: 'W1F 7HS', country: 'uk' }},
+      { id: 'cnt-prev', name: 'James Chen', account: 'Samsung Electronics UK', createdAt: '2026-04-10',
+        address: { street1: 'Samsung House, 2000 Hillswood Drive', street2: '', city: 'Chertsey', postcode: 'KT16 0RS', country: 'uk' }},
+      { id: 'cnt-older', name: 'Emma Roberts', account: 'Red Global', createdAt: '2026-04-09',
+        address: { street1: '100 New Oxford Street', street2: 'Floor 4', city: 'London', postcode: 'WC1A 1PB', country: 'uk' }},
+    ];
+
+    // ============================
+    // STATE
+    // ============================
+    let selectedAccountId = null;
+    let highlightedIdx = -1;
+    let currentResults = [];
+    let addressSource = null; // null, 'account', 'contact'
+    let addressInheritedFrom = null; // name string
+
+    // ============================
+    // ACCOUNT AUTOCOMPLETE
+    // ============================
+    function onAccountSearch(query) {
+      const dropdown = document.getElementById('account-dropdown');
+      if (!query || query.length < 1) {
+        // Show all accounts on focus with empty query
+        currentResults = ACCOUNTS.slice(0, 8);
+      } else {
+        const q = query.toLowerCase();
+        currentResults = ACCOUNTS.filter(a => a.name.toLowerCase().includes(q) || a.industry.toLowerCase().includes(q));
+      }
+      highlightedIdx = -1;
+      renderAccountDropdown(query);
+    }
+
+    function renderAccountDropdown(query) {
+      const dropdown = document.getElementById('account-dropdown');
+      if (currentResults.length === 0 && (!query || query.length === 0)) {
+        dropdown.classList.remove('open');
+        return;
+      }
+
+      let html = '';
+      if (currentResults.length === 0) {
+        html = `<div class="px-4 py-6 text-center">
+          <p class="text-sm text-gray-400 mb-2">No accounts found</p>
+          <button type="button" onclick="createNewAccount()" class="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-900 hover:underline">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Create new account
+          </button>
+        </div>`;
+      } else {
+        currentResults.forEach((acc, i) => {
+          const initials = acc.name.split(' ').map(w => w[0]).join('').slice(0, 2);
+          const nameHtml = query ? highlightMatch(acc.name, query) : acc.name;
+          const hasAddr = acc.address && acc.address.street1;
+          html += `<div class="account-dropdown-item ${i === highlightedIdx ? 'highlighted' : ''}"
+            onclick="selectAccount('${acc.id}')" data-idx="${i}">
+            <div class="adi-avatar" style="background:${acc.color}15; color:${acc.color};">${initials}</div>
+            <div class="adi-info">
+              <div class="adi-name">${nameHtml}</div>
+              <div class="adi-meta">${acc.industry} &middot; ${acc.contacts} contacts</div>
+            </div>
+            ${hasAddr ? '<span class="adi-address-badge">Has Address</span>' : ''}
+          </div>`;
+        });
+        html += `<div class="border-t border-gray-100 px-4 py-2.5">
+          <button type="button" onclick="createNewAccount()" class="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-gray-900">
+            <i data-lucide="plus" class="w-3 h-3"></i> Create new account
+          </button>
+        </div>`;
+      }
+
+      dropdown.innerHTML = html;
+      dropdown.classList.add('open');
+      lucide.createIcons();
+    }
+
+    function highlightMatch(text, query) {
+      if (!query) return text;
+      const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      return text.replace(regex, '<em>$1</em>');
+    }
+
+    function selectAccount(accId) {
+      const acc = ACCOUNTS.find(a => a.id === accId);
+      if (!acc) return;
+
+      selectedAccountId = accId;
+      const initials = acc.name.split(' ').map(w => w[0]).join('').slice(0, 2);
+
+      // Show selected chip
+      document.getElementById('account-selected').classList.remove('hidden');
+      document.getElementById('account-search-container').classList.add('hidden');
+      document.getElementById('account-chip-avatar').style.background = acc.color + '15';
+      document.getElementById('account-chip-avatar').style.color = acc.color;
+      document.getElementById('account-chip-avatar').textContent = initials;
+      document.getElementById('account-chip-name').textContent = acc.name;
+      document.getElementById('account-dropdown').classList.remove('open');
+
+      // Inherit address from account (priority 1)
+      if (acc.address && acc.address.street1) {
+        applyAddress(acc.address, 'account', acc.name);
+      } else {
+        // Account has no address — fall back to last contact
+        applyLastContactAddress();
+      }
+    }
+
+    function clearSelectedAccount() {
+      selectedAccountId = null;
+      document.getElementById('account-selected').classList.add('hidden');
+      document.getElementById('account-search-container').classList.remove('hidden');
+      document.getElementById('account-search').value = '';
+      document.getElementById('account-dropdown').classList.remove('open');
+
+      // If address was from account, clear it and try last contact fallback
+      if (addressSource === 'account') {
+        clearAddressFields();
+        applyLastContactAddress();
+      }
+    }
+
+    function createNewAccount() {
+      document.getElementById('account-dropdown').classList.remove('open');
+      showToast('info', 'Redirecting to Create Account...');
+    }
+
+    // Keyboard navigation for dropdown
+    document.getElementById('account-search').addEventListener('keydown', function(e) {
+      const dropdown = document.getElementById('account-dropdown');
+      if (!dropdown.classList.contains('open')) return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        highlightedIdx = Math.min(highlightedIdx + 1, currentResults.length - 1);
+        updateDropdownHighlight();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        highlightedIdx = Math.max(highlightedIdx - 1, 0);
+        updateDropdownHighlight();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (highlightedIdx >= 0 && highlightedIdx < currentResults.length) {
+          selectAccount(currentResults[highlightedIdx].id);
+        }
+      } else if (e.key === 'Escape') {
+        dropdown.classList.remove('open');
+      }
+    });
+
+    function updateDropdownHighlight() {
+      document.querySelectorAll('.account-dropdown-item').forEach((el, i) => {
+        el.classList.toggle('highlighted', i === highlightedIdx);
+      });
+    }
+
+    // Close dropdown on outside click
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.account-search-wrap')) {
+        document.getElementById('account-dropdown').classList.remove('open');
+      }
+    });
+
+    // ============================
+    // ADDRESS INHERITANCE
+    // ============================
+    const SALES_FIELDS = ['sales-street1', 'sales-street2', 'sales-city', 'sales-postcode', 'sales-country'];
+    const ADDR_KEYS = ['street1', 'street2', 'city', 'postcode', 'country'];
+
+    function applyAddress(addr, source, fromName) {
+      addressSource = source;
+      addressInheritedFrom = fromName;
+
+      // Fill fields
+      document.getElementById('sales-street1').value = addr.street1 || '';
+      document.getElementById('sales-street2').value = addr.street2 || '';
+      document.getElementById('sales-city').value = addr.city || '';
+      document.getElementById('sales-postcode').value = addr.postcode || '';
+      document.getElementById('sales-country').value = addr.country || '';
+
+      // Visual feedback — highlight fields
+      const cssClass = source === 'account' ? 'field-inherited' : 'field-inherited-contact';
+      SALES_FIELDS.forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.remove('field-inherited', 'field-inherited-contact');
+        el.classList.add(cssClass);
+        // Remove highlight after 3 seconds (fields retain values)
+        setTimeout(() => el.classList.remove(cssClass), 3000);
+      });
+
+      // Show banner
+      const banner = document.getElementById('addr-inherit-banner');
+      banner.classList.remove('hidden', 'from-account', 'from-contact');
+      banner.classList.add(source === 'account' ? 'from-account' : 'from-contact');
+
+      const iconEl = document.getElementById('banner-icon-el');
+      iconEl.setAttribute('data-lucide', source === 'account' ? 'building-2' : 'user');
+      lucide.createIcons();
+
+      const textEl = document.getElementById('banner-text-content');
+      if (source === 'account') {
+        textEl.innerHTML = `Address populated from account <strong>${fromName}</strong>`;
+      } else {
+        textEl.innerHTML = `Address populated from last contact <strong>${fromName}</strong> (no account address on file)`;
+      }
+
+      // Show source badge
+      const badge = document.getElementById('addr-source-badge');
+      badge.classList.remove('hidden');
+      if (source === 'account') {
+        badge.className = 'text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200';
+        badge.innerHTML = '<span class="inline-flex items-center gap-1">From Account</span>';
+      } else {
+        badge.className = 'text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200';
+        badge.innerHTML = '<span class="inline-flex items-center gap-1">From Last Contact</span>';
+      }
+
+      // Toast
+      showToast('success', `Address auto-filled from ${source === 'account' ? 'account' : 'last contact'}: ${fromName}`);
+
+      // Sync billing if "same as sales" is checked
+      if (document.getElementById('same-as-sales').checked) {
+        syncBillingFromSales();
+      }
+    }
+
+    function applyLastContactAddress() {
+      // Find the most recent contact with an address
+      const lastContact = RECENT_CONTACTS.find(c => c.address && c.address.street1);
+      if (lastContact) {
+        applyAddress(lastContact.address, 'contact', lastContact.name);
+      }
+    }
+
+    function clearInheritedAddress() {
+      clearAddressFields();
+      showToast('info', 'Address fields cleared — enter manually');
+    }
+
+    function clearAddressFields() {
+      addressSource = null;
+      addressInheritedFrom = null;
+
+      SALES_FIELDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (el.tagName === 'SELECT') {
+          el.value = '';
+        } else {
+          el.value = '';
+        }
+        el.classList.remove('field-inherited', 'field-inherited-contact');
+      });
+
+      // Hide banner and badge
+      document.getElementById('addr-inherit-banner').classList.add('hidden');
+      document.getElementById('addr-source-badge').classList.add('hidden');
+    }
+
+    // ============================
+    // BILLING ADDRESS SYNC
+    // ============================
+    function toggleSameAsSales() {
+      const checked = document.getElementById('same-as-sales').checked;
+      const billingFields = document.getElementById('billing-fields');
+      const inputs = billingFields.querySelectorAll('input, select');
+
+      if (checked) {
+        syncBillingFromSales();
+        inputs.forEach(input => {
+          input.disabled = true;
+          input.style.backgroundColor = '#f3f4f6';
+          input.style.cursor = 'not-allowed';
+        });
+      } else {
+        inputs.forEach(input => {
+          input.disabled = false;
+          input.style.backgroundColor = '#ffffff';
+          input.style.cursor = 'auto';
+        });
+      }
+    }
+
+    function syncBillingFromSales() {
+      document.getElementById('billing-street1').value = document.getElementById('sales-street1').value;
+      document.getElementById('billing-street2').value = document.getElementById('sales-street2').value;
+      document.getElementById('billing-city').value = document.getElementById('sales-city').value;
+      document.getElementById('billing-postcode').value = document.getElementById('sales-postcode').value;
+      document.getElementById('billing-country').value = document.getElementById('sales-country').value;
+    }
+
+    // If sales address changes and "same as" is checked, sync billing
+    SALES_FIELDS.forEach(id => {
+      document.getElementById(id).addEventListener('input', function() {
+        if (document.getElementById('same-as-sales').checked) {
+          syncBillingFromSales();
+        }
+      });
+      document.getElementById(id).addEventListener('change', function() {
+        if (document.getElementById('same-as-sales').checked) {
+          syncBillingFromSales();
+        }
+      });
+    });
+
+    // ============================
+    // TOAST NOTIFICATIONS
+    // ============================
+    function showToast(type, message) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'addr-toast';
+
+      const icons = {
+        success: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+        info: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+      };
+
+      toast.innerHTML = `<span class="toast-icon">${icons[type] || icons.info}</span><span>${message}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.transition = 'opacity 0.3s, transform 0.3s';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // ============================
+    // SAVE CONTACT (demo)
+    // ============================
+    function saveContact() {
+      const firstName = document.getElementById('contact-firstname').value.trim();
+      const lastName = document.getElementById('contact-lastname').value.trim();
+      if (!firstName || !lastName) {
+        showToast('info', 'Please fill in required fields');
+        return;
+      }
+      showToast('success', `Contact "${firstName} ${lastName}" saved successfully`);
+    }
+
+    // ============================
+    // MARI AI CONTACT MAPPING
+    // ============================
+    let aiMappedData = null;
+
+    function processAIContact() {
+      const input = document.getElementById('ai-contact-input').value.trim();
+      if (!input) {
+        showToast('info', 'Please enter contact details');
+        return;
+      }
+
+      // Show processing state
+      document.getElementById('ai-processing').classList.remove('hidden');
+      document.getElementById('ai-results').classList.add('hidden');
+
+      // Simulate 2-second processing
+      setTimeout(() => {
+        // Parse the input (simple extraction - in real scenario this would be AI)
+        aiMappedData = parseContactInput(input);
+
+        // Show results
+        document.getElementById('ai-processing').classList.add('hidden');
+        document.getElementById('ai-results').classList.remove('hidden');
+        renderAIResults(aiMappedData);
+      }, 2000);
+    }
+
+    function parseContactInput(text) {
+      // Simple parsing for demo purposes
+      // In real scenario, this would be sent to an AI API
+      const lines = text.split(',').map(s => s.trim());
+
+      const data = {
+        firstName: '',
+        lastName: '',
+        jobTitle: '',
+        company: '',
+        email: '',
+        bizPhone: '',
+        mobile: '',
+        linkedin: '',
+        street1: '',
+        street2: '',
+        city: '',
+        postcode: '',
+        country: ''
+      };
+
+      // Default mapping for the example
+      if (text.includes('Sarah Mitchell')) {
+        data.firstName = 'Sarah';
+        data.lastName = 'Mitchell';
+        data.jobTitle = 'Head of Partnerships';
+        data.company = 'Diageo PLC';
+        data.email = 'sarah.mitchell@diageo.com';
+        data.bizPhone = '+44 20 7927 5200';
+        data.mobile = '+44 7845 221 344';
+        data.linkedin = 'linkedin.com/in/sarahmitchell';
+        data.street1 = '16 Great Marlborough Street';
+        data.city = 'London';
+        data.postcode = 'W1F 7HS';
+        data.country = 'uk';
+      } else if (text.includes('John Smith') && text.includes('Barclays')) {
+        data.firstName = 'John';
+        data.lastName = 'Smith';
+        data.company = 'Barclays Corporate';
+        data.email = 'john.smith@barclays.com';
+        data.jobTitle = 'Sponsorship Contact';
+      } else {
+        // Generic extraction from comma-separated values
+        if (lines.length > 0) {
+          const nameParts = lines[0].split(' ');
+          if (nameParts.length >= 2) {
+            data.firstName = nameParts[0];
+            data.lastName = nameParts.slice(1).join(' ');
+          } else {
+            data.firstName = lines[0];
+          }
+        }
+      }
+
+      return data;
+    }
+
+    function renderAIResults(data) {
+      const container = document.getElementById('ai-fields-container');
+      let html = '';
+
+      // Map of field keys to display labels and IDs
+      const fieldMap = [
+        { key: 'firstName', label: 'First Name', icon: 'user' },
+        { key: 'lastName', label: 'Last Name', icon: 'user' },
+        { key: 'jobTitle', label: 'Job Title', icon: 'briefcase' },
+        { key: 'company', label: 'Company', icon: 'building-2' },
+        { key: 'email', label: 'Email', icon: 'mail' },
+        { key: 'bizPhone', label: 'Business Phone', icon: 'phone' },
+        { key: 'mobile', label: 'Mobile', icon: 'smartphone' },
+        { key: 'linkedin', label: 'LinkedIn', icon: 'link' },
+        { key: 'street1', label: 'Street Address', icon: 'map-pin' },
+        { key: 'city', label: 'City', icon: 'map-pin' },
+        { key: 'postcode', label: 'Postal Code', icon: 'map-pin' },
+      ];
+
+      fieldMap.forEach(field => {
+        if (data[field.key]) {
+          html += `
+            <div class="bg-white rounded-lg border border-gray-200 p-3">
+              <div class="flex items-center gap-2 mb-1">
+                <i data-lucide="${field.icon}" class="w-3 h-3 text-gray-400"></i>
+                <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">${field.label}</span>
+              </div>
+              <p class="text-sm font-medium text-gray-900">${data[field.key]}</p>
+            </div>
+          `;
+        }
+      });
+
+      container.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    function confirmAIContact() {
+      if (!aiMappedData) return;
+
+      // Fill form fields
+      if (aiMappedData.firstName) document.getElementById('contact-firstname').value = aiMappedData.firstName;
+      if (aiMappedData.lastName) document.getElementById('contact-lastname').value = aiMappedData.lastName;
+      if (aiMappedData.jobTitle) document.getElementById('contact-jobtitle').value = aiMappedData.jobTitle;
+      if (aiMappedData.email) document.getElementById('contact-email').value = aiMappedData.email;
+      if (aiMappedData.bizPhone) document.getElementById('contact-bizphone').value = aiMappedData.bizPhone;
+      if (aiMappedData.mobile) document.getElementById('contact-mobile').value = aiMappedData.mobile;
+      if (aiMappedData.linkedin) document.getElementById('contact-linkedin').value = aiMappedData.linkedin;
+
+      // Fill address fields
+      if (aiMappedData.street1) document.getElementById('sales-street1').value = aiMappedData.street1;
+      if (aiMappedData.street2) document.getElementById('sales-street2').value = aiMappedData.street2;
+      if (aiMappedData.city) document.getElementById('sales-city').value = aiMappedData.city;
+      if (aiMappedData.postcode) document.getElementById('sales-postcode').value = aiMappedData.postcode;
+      if (aiMappedData.country) document.getElementById('sales-country').value = aiMappedData.country;
+
+      // Try to match and select company
+      if (aiMappedData.company) {
+        const matchedAccount = ACCOUNTS.find(a => a.name.toLowerCase() === aiMappedData.company.toLowerCase());
+        if (matchedAccount) {
+          selectAccount(matchedAccount.id);
+        } else {
+          // Set the account search field for manual selection
+          document.getElementById('account-search').value = aiMappedData.company;
+          onAccountSearch(aiMappedData.company);
+        }
+      }
+
+      // Reset AI panel
+      resetAIContact();
+      showToast('success', 'Contact fields filled with Mari AI data');
+    }
+
+    function editAIContact() {
+      if (!aiMappedData) return;
+
+      confirmAIContact();
+
+      // Scroll to form
+      document.querySelector('form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function resetAIContact() {
+      // Clear input
+      document.getElementById('ai-contact-input').value = '';
+
+      // Hide results and processing states
+      document.getElementById('ai-results').classList.add('hidden');
+      document.getElementById('ai-processing').classList.add('hidden');
+      document.getElementById('ai-fields-container').innerHTML = '';
+
+      // Reset mapped data
+      aiMappedData = null;
+    }
+
+    // ============================
+    // ON PAGE LOAD — Apply last contact address as default
+    // ============================
+    window.addEventListener('DOMContentLoaded', function() {
+      // No account selected on load, so fall back to last contact's address
+      applyLastContactAddress();
+    });
+  </script>
+</body>
+</html>

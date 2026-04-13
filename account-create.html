@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Account - Cerebro CRM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * {
+            font-family: 'DM Sans', sans-serif;
+        }
+        body {
+            background-color: #f8f8fa;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex h-screen">
+    <!-- Left Sidebar -->
+    <aside class="w-[76px] flex flex-col items-center py-4 space-y-1 border-r border-gray-800" style="background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%);">
+      <!-- Home -->
+      <a href="index.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Home</span>
+      </a>
+      <!-- Mari AI -->
+      <a href="mari-ai.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="sparkles" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Mari AI</span>
+      </a>
+      <!-- Search -->
+      <a href="search.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="search" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Search</span>
+      </a>
+      <div class="w-8 border-t border-gray-700/50 my-1"></div>
+      <!-- Accounts -->
+      <a href="accounts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg bg-white/15 text-white transition-colors">
+        <i data-lucide="building-2" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Accounts</span>
+      </a>
+      <!-- Contacts -->
+      <a href="contacts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Contacts</span>
+      </a>
+      <!-- Opportunities -->
+      <a href="opportunities.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="target" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Opps</span>
+      </a>
+      <!-- Deals -->
+      <a href="deals.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="handshake" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Deals</span>
+      </a>
+      <!-- Leads -->
+      <a href="leads.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="megaphone" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Leads</span>
+      </a>
+      <!-- Reports -->
+      <a href="reports.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Reports</span>
+      </a>
+
+      <!-- Spacer -->
+      <div class="flex-1"></div>
+
+      <!-- Logout -->
+      <a href="#" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="log-out" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Logout</span>
+      </a>
+    </aside>
+
+        <div class="flex-1 flex flex-col">
+            <!-- Header -->
+            <header class="sticky top-0 z-40 bg-white border-b border-gray-100 border-t-2 border-gray-900 h-14 flex items-center justify-between px-6">
+                <div class="flex items-center gap-3">
+                    <a href="accounts.html" class="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                        <span class="text-sm">Back to Accounts</span>
+                    </a>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <a href="accounts.html" class="px-4 py-2 text-sm font-medium border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                        Cancel
+                    </a>
+                    <button class="px-4 py-2 text-sm font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
+                        Save Account
+                    </button>
+                    <div class="w-9 h-9 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-semibold">
+                        JS
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Page Title Section -->
+                <div class="mb-8">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-gray-900 text-white rounded-lg flex items-center justify-center">
+                            <i data-lucide="building-2" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-900">Create New Account</h1>
+                            <p class="text-xs text-gray-500 mt-1">Accounts <span class="text-gray-400">></span> New Account</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two-Column Container -->
+                <div class="flex gap-8">
+                    <!-- Left Column: Form -->
+                    <div class="flex-1 min-w-0">
+                <!-- Form Container -->
+                <form class="space-y-6" id="accountForm">
+
+                    <!-- Card 1: Company Information -->
+                    <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                        <div class="flex items-center gap-2 mb-6">
+                            <i data-lucide="building-2" class="w-4 h-4 text-gray-900"></i>
+                            <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Company Information</h2>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-6">
+                            <!-- Name -->
+                            <div>
+                                <label class="text-xs font-medium text-gray-500 mb-1.5 block">
+                                    Name
+                                    <span class="text-red-500 ml-0.5">*</span>
+                                </label>
+                                <input type="text" id="acc-name" required class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400" placeholder="Enter company name">
+                            </div>
+
+                            <!-- Known Name -->
+                            <div>
+                                <label class="text-xs font-medium text-gray-500 mb-1.5 block">Known Name</label>
+                                <input type="text" id="acc-known-name" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400" placeholder="Enter known name">
+                            </div>
+
+                            <!-- Telephone -->
+                            <div>
+                                <label class="text-xs font-medium text-gray-500 mb-1.5 block">Telephone</label>
+                                <input type="tel" id="acc-telephone" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400" placeholder="Enter telephone">
+                            </div>
+
+                            <!-- Website -->
+                            <div>
+                                <label class="text-xs font-medium text-gray-500 mb-1.5 block">
+                                    Website
+                                    <span class="text-red-500 ml-0.5">*</span>
+                                </label>
+                                <input type="url" id="acc-website" required class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400" placeholder="https://example.com">
+                            </div>
+
+                            <!-- Industry -->
+                            <div>
+                                <label class="text-xs font-medium text-gray-500 mb-1.5 block">
+                                    Industry
+                                    <span class="text-red-500 ml-0.5">*</span>
+                                </label>
+                                <select id="acc-industry" required class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                                    <option value="">Select an industry</option>
+                                    <option value="media">Media</option>
+                                    <option value="healthcare">Health Care / Medical</option>
+                                    <option value="pr">PR/Social</option>
+                                    <option value="advertising">Advertising</option>
+                                    <option value="food">Food Products</option>
+                                    <option value="telecom">Telecommunications</option>
+                                    <option value="business">Business Services</option>
+                                    <option value="hotels">Hotels</option>
+                                    <option value="financial">Financial Services</option>
+                                    <option value="technology">Information Technology</option>
+                                    <option value="realestate">Real Estate</option>
+                                    <option value="marketing">Marketing Agency</option>
+                                    <option value="broadcasters">Broadcasters / Entertainment</option>
+                                    <option value="consumer">Consumer Goods</option>
+                                    <option value="tourism">Tourism Business</option>
+                                </select>
+                            </div>
+
+                            <!-- Description (full width) -->
+                            <div class="col-span-2">
+                                <label class="text-xs font-medium text-gray-500 mb-1.5 block">Description</label>
+                                <textarea id="acc-description" rows="3" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400" placeholder="Enter company description"></textarea>
+                            </div>
+
+                            <!-- Is Parent Company -->
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" id="isParent" class="rounded border-gray-200">
+                                <label for="isParent" class="text-xs font-medium text-gray-500">Is Parent Company</label>
+                            </div>
+
+                            <!-- 160/90 Company -->
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" id="is16090" class="rounded border-gray-200">
+                                <label for="is16090" class="text-xs font-medium text-gray-500">160/90 Company</label>
+                            </div>
+
+                            <!-- Key Account -->
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" id="keyAccount" class="rounded border-gray-200">
+                                <label for="keyAccount" class="text-xs font-medium text-gray-500">Key Account</label>
+                            </div>
+
+                            <!-- Key Prospect -->
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" id="keyProspect" class="rounded border-gray-200">
+                                <label for="keyProspect" class="text-xs font-medium text-gray-500">Key Prospect</label>
+                            </div>
+
+                            <!-- Ownership -->
+                            <div>
+                                <label class="text-xs font-medium text-gray-500 mb-1.5 block">Ownership</label>
+                                <input type="text" id="acc-ownership" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400" placeholder="Enter ownership">
+                            </div>
+
+                            <!-- SAP VAT Registration Number -->
+                            <div>
+                                <label class="text-xs font-medium text-gray-500 mb-1.5 block">SAP VAT Registration Number</label>
+                                <input type="text" id="acc-sap-vat" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400" placeholder="Enter SAP VAT number">
+                            </div>
+
+                            <!-- Company Notification Contact(s) -->
+                            <div class="col-span-2">
+                                <label class="text-xs font-medium text-gray-500 mb-1.5 block">Company Notification Contact(s)</label>
+                                <input type="text" id="acc-notification-contacts" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400" placeholder="Enter notification contacts">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Address -->
+                    <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                        <div class="flex items-center gap-2 mb-6">
+                            <i data-lucide="map-pin" class="w-4 h-4 text-gray-900"></i>
+                            <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Address</h2>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-6">
+                            <!-- Street 1 -->
+                            <div>
+                                <label class="text-xs font-medium text-gray-500 mb-1.5 block">Street 1</label>
+                                <input type="text" id="acc-street1" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400" placeholder="Enter street address">
+                            </div>
+
+                            <!-- City -->
+                            <div>
+                                <label class="text-xs font-medium text-gray-500 mb-1.5 block">City</label>
+                                <input type="text" id="acc-city" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400" placeholder="Enter city">
+                            </div>
+
+                            <!-- ZIP/Postal Code -->
+                            <div>
+                                <label class="text-xs font-medium text-gray-500 mb-1.5 block">ZIP/Postal Code</label>
+                                <input type="text" id="acc-postcode" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400" placeholder="Enter postal code">
+                            </div>
+
+                            <!-- Country -->
+                            <div>
+                                <label class="text-xs font-medium text-gray-500 mb-1.5 block">Country</label>
+                                <select id="acc-country" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                                    <option value="">Select a country</option>
+                                    <option value="us">United States</option>
+                                    <option value="uk">United Kingdom</option>
+                                    <option value="ca">Canada</option>
+                                    <option value="hk">Hong Kong</option>
+                                    <option value="se">Sweden</option>
+                                    <option value="sg">Singapore</option>
+                                    <option value="de">Germany</option>
+                                    <option value="nz">New Zealand</option>
+                                    <option value="cn">China</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <!-- Is Primary -->
+                            <div class="flex items-center gap-2 col-span-2">
+                                <input type="checkbox" id="isPrimary" class="rounded border-gray-200" checked>
+                                <label for="isPrimary" class="text-xs font-medium text-gray-500">Is Primary</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Admin Information -->
+                    <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                        <div class="flex items-center gap-2 mb-6">
+                            <i data-lucide="settings" class="w-4 h-4 text-gray-900"></i>
+                            <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Admin Information</h2>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-6">
+                            <!-- Currency -->
+                            <div>
+                                <label class="text-xs font-medium text-gray-500 mb-1.5 block">Currency</label>
+                                <select id="acc-currency" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400">
+                                    <option value="">Select a currency</option>
+                                    <option value="usd">US Dollar</option>
+                                    <option value="gbp">GBP</option>
+                                    <option value="eur">EUR</option>
+                                    <option value="sgd">SGD</option>
+                                    <option value="hkd">HKD</option>
+                                    <option value="aud">AUD</option>
+                                    <option value="cad">CAD</option>
+                                </select>
+                            </div>
+
+                            <!-- Exclude GCM -->
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" id="excludeGcm" class="rounded border-gray-200">
+                                <label for="excludeGcm" class="text-xs font-medium text-gray-500">Exclude GCM</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Action Bar -->
+                    <div class="flex items-center justify-between gap-3 pt-4 pb-6">
+                        <a href="accounts.html" class="px-6 py-2 text-sm font-medium text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                            Cancel
+                        </a>
+                        <button type="submit" class="px-6 py-2 text-sm font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
+                            Save Account
+                        </button>
+                    </div>
+                </form>
+                    </div>
+
+                    <!-- Right Column: Mari AI Panel -->
+                    <div class="w-[400px] flex-shrink-0">
+                        <div class="sticky" style="top: 24px;">
+                            <!-- Mari AI Card -->
+                            <div class="bg-white rounded-3xl border border-gray-200 p-6" style="background: linear-gradient(135deg, #fafafa 0%, #f5f3ff 100%);">
+                                <!-- Header -->
+                                <div class="flex items-start gap-3 mb-6">
+                                    <div class="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <h3 class="text-sm font-semibold text-gray-900">Create with Mari AI</h3>
+                                        <p class="text-xs text-gray-500 mt-0.5">Paste or type company details</p>
+                                    </div>
+                                </div>
+
+                                <!-- Input Textarea -->
+                                <textarea id="mariInput" rows="5" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 mb-3 resize-none" placeholder="e.g. Diageo PLC, a leading global beverages company. Industry: Beverages & Spirits. Website: diageo.com. Tel: +44 20 7927 5200. Address: 16 Great Marlborough Street, London, W1F 7HS, United Kingdom. Key account, GBP currency."></textarea>
+
+                                <!-- Hint Text -->
+                                <p class="text-xs text-gray-500 mb-4">Try: "Samsung Electronics UK, technology company, Samsung House, 2000 Hillswood Drive, Chertsey, KT16 0RS"</p>
+
+                                <!-- Map to Fields Button -->
+                                <button type="button" onclick="processAIAccount()" class="w-full px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 mb-4" id="mapButton">
+                                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                    Map to Fields
+                                </button>
+
+                                <!-- Processing State -->
+                                <div id="processingState" class="hidden mb-4 flex items-center justify-center gap-2 py-4 px-3 bg-white rounded-lg border border-gray-200">
+                                    <div class="w-4 h-4 border-2 border-gray-200 border-t-gray-900 rounded-full animate-spin"></div>
+                                    <span class="text-xs font-medium text-gray-600">Mari AI is mapping your data...</span>
+                                </div>
+
+                                <!-- Results State -->
+                                <div id="resultsState" class="hidden">
+                                    <div class="bg-white rounded-2xl border border-gray-200 p-4 mb-4 max-h-80 overflow-y-auto">
+                                        <!-- Mapped Fields -->
+                                        <div class="space-y-3">
+                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
+                                                <span class="text-xs font-medium text-gray-500">Name</span>
+                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-name">Diageo PLC</span>
+                                            </div>
+                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
+                                                <span class="text-xs font-medium text-gray-500">Known Name</span>
+                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-known-name">Diageo</span>
+                                            </div>
+                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
+                                                <span class="text-xs font-medium text-gray-500">Industry</span>
+                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-industry">Food Products</span>
+                                            </div>
+                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
+                                                <span class="text-xs font-medium text-gray-500">Website</span>
+                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-website">https://diageo.com</span>
+                                            </div>
+                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
+                                                <span class="text-xs font-medium text-gray-500">Telephone</span>
+                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-telephone">+44 20 7927 5200</span>
+                                            </div>
+                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
+                                                <span class="text-xs font-medium text-gray-500">Street</span>
+                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-street">16 Great Marlborough Street</span>
+                                            </div>
+                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
+                                                <span class="text-xs font-medium text-gray-500">City</span>
+                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-city">London</span>
+                                            </div>
+                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
+                                                <span class="text-xs font-medium text-gray-500">Postal Code</span>
+                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-postcode">W1F 7HS</span>
+                                            </div>
+                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
+                                                <span class="text-xs font-medium text-gray-500">Country</span>
+                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-country">uk</span>
+                                            </div>
+                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
+                                                <span class="text-xs font-medium text-gray-500">Currency</span>
+                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-currency">gbp</span>
+                                            </div>
+                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
+                                                <span class="text-xs font-medium text-gray-500">Key Account</span>
+                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-key-account">Yes</span>
+                                            </div>
+                                            <div class="flex justify-between items-start gap-3 pb-3">
+                                                <span class="text-xs font-medium text-gray-500">Description</span>
+                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-description">Leading global beverages company</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Result Action Buttons -->
+                                    <button type="button" onclick="confirmAIAccount()" class="w-full px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors mb-3">
+                                        Confirm & Fill Form
+                                    </button>
+                                    <div class="flex gap-2">
+                                        <button type="button" onclick="editAIAccount()" class="flex-1 px-4 py-2 bg-gray-100 text-gray-900 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">
+                                            Edit in Form
+                                        </button>
+                                        <button type="button" onclick="resetAIAccount()" class="flex-1 px-4 py-2 bg-gray-100 text-gray-900 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">
+                                            Start Over
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Mari AI Functions
+        function processAIAccount() {
+            const mapButton = document.getElementById('mapButton');
+            const processingState = document.getElementById('processingState');
+            const resultsState = document.getElementById('resultsState');
+            const mariInput = document.getElementById('mariInput');
+
+            // Hide input and show processing
+            mapButton.classList.add('hidden');
+            mariInput.classList.add('hidden');
+            document.querySelector('p.text-xs.text-gray-500').classList.add('hidden');
+            processingState.classList.remove('hidden');
+
+            // Simulate AI processing
+            setTimeout(() => {
+                processingState.classList.add('hidden');
+                resultsState.classList.remove('hidden');
+            }, 2000);
+        }
+
+        function confirmAIAccount() {
+            const data = {
+                name: document.getElementById('result-name').textContent,
+                knownName: document.getElementById('result-known-name').textContent,
+                industry: 'food', // Maps "Food Products" to value
+                website: document.getElementById('result-website').textContent,
+                telephone: document.getElementById('result-telephone').textContent,
+                street1: document.getElementById('result-street').textContent,
+                city: document.getElementById('result-city').textContent,
+                postcode: document.getElementById('result-postcode').textContent,
+                country: document.getElementById('result-country').textContent,
+                currency: document.getElementById('result-currency').textContent,
+                keyAccount: true,
+                description: document.getElementById('result-description').textContent
+            };
+
+            // Fill form fields
+            document.getElementById('acc-name').value = data.name;
+            document.getElementById('acc-known-name').value = data.knownName;
+            document.getElementById('acc-industry').value = data.industry;
+            document.getElementById('acc-website').value = data.website;
+            document.getElementById('acc-telephone').value = data.telephone;
+            document.getElementById('acc-street1').value = data.street1;
+            document.getElementById('acc-city').value = data.city;
+            document.getElementById('acc-postcode').value = data.postcode;
+            document.getElementById('acc-country').value = data.country;
+            document.getElementById('acc-currency').value = data.currency;
+            document.getElementById('keyAccount').checked = data.keyAccount;
+            document.getElementById('acc-description').value = data.description;
+
+            // Reset Mari panel
+            resetAIAccount();
+        }
+
+        function editAIAccount() {
+            const form = document.getElementById('accountForm');
+            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            resetAIAccount();
+        }
+
+        function resetAIAccount() {
+            const mapButton = document.getElementById('mapButton');
+            const processingState = document.getElementById('processingState');
+            const resultsState = document.getElementById('resultsState');
+            const mariInput = document.getElementById('mariInput');
+            const hintText = document.querySelector('p.text-xs.text-gray-500');
+
+            // Reset to initial state
+            mapButton.classList.remove('hidden');
+            processingState.classList.add('hidden');
+            resultsState.classList.add('hidden');
+            mariInput.classList.remove('hidden');
+            hintText.classList.remove('hidden');
+            mariInput.value = '';
+        }
+    </script>
+</body>
+</html>

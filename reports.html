@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM - Reports & Dashboards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * {
+      font-family: 'DM Sans', sans-serif;
+    }
+    body {
+      background-color: #f8f8fa;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Left Sidebar -->
+    <aside class="w-[76px] flex flex-col items-center py-4 space-y-1 border-r border-gray-800" style="background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%);">
+      <!-- Home -->
+      <a href="index.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Home</span>
+      </a>
+      <!-- Mari AI -->
+      <a href="mari-ai.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="sparkles" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Mari AI</span>
+      </a>
+      <!-- Search -->
+      <a href="search.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="search" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Search</span>
+      </a>
+      <div class="w-8 border-t border-gray-700/50 my-1"></div>
+      <!-- Accounts -->
+      <a href="accounts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="building-2" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Accounts</span>
+      </a>
+      <!-- Contacts -->
+      <a href="contacts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Contacts</span>
+      </a>
+      <!-- Opps -->
+      <a href="opportunities.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="target" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Opps</span>
+      </a>
+      <!-- Deals -->
+      <a href="deals.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="handshake" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Deals</span>
+      </a>
+      <!-- Leads -->
+      <a href="leads.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="megaphone" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Leads</span>
+      </a>
+      <!-- Reports -->
+      <a href="reports.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg bg-white/15 text-white transition-colors">
+        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Reports</span>
+      </a>
+
+      <!-- Spacer -->
+      <div class="flex-1"></div>
+
+      <!-- Logout -->
+      <a href="#" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="log-out" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Logout</span>
+      </a>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Top Header Bar -->
+      <header class="bg-white border-b border-gray-200 border-t-2 border-gray-900 h-14 flex items-center justify-between px-6">
+        <h1 class="text-gray-900 font-semibold">Reports & Dashboards</h1>
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold rounded" style="border-radius: 8px;">JS</div>
+          <span class="text-sm text-gray-700">Jaspinder Singh</span>
+        </div>
+      </header>
+
+      <!-- Main Content Area -->
+      <main class="flex-1 overflow-y-auto p-6">
+        <div class="w-full">
+          <!-- Welcome Section -->
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-1">Reports & Dashboards</h2>
+            <p class="text-gray-500">Access key business insights and performance metrics</p>
+          </div>
+
+          <!-- Dashboard Tiles Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Executive Dashboard -->
+            <a href="../Reports/Executive-Dashboard-v1.html" class="group p-8 bg-white rounded-3xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer">
+              <div class="flex items-start justify-between mb-6">
+                <div class="w-14 h-14 bg-gray-900 text-white flex items-center justify-center rounded-lg">
+                  <i data-lucide="crown" class="w-7 h-7"></i>
+                </div>
+              </div>
+              <h3 class="text-lg font-bold text-gray-900 mb-2">Executive Dashboard</h3>
+              <p class="text-gray-600 text-sm">High-level business overview for senior leadership</p>
+            </a>
+
+            <!-- Management Dashboard -->
+            <a href="../Reports/Management-Dashboard.html" class="group p-8 bg-white rounded-3xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer">
+              <div class="flex items-start justify-between mb-6">
+                <div class="w-14 h-14 bg-emerald-100 text-emerald-600 flex items-center justify-center rounded-lg">
+                  <i data-lucide="trending-up" class="w-7 h-7"></i>
+                </div>
+              </div>
+              <h3 class="text-lg font-bold text-gray-900 mb-2">Management Dashboard</h3>
+              <p class="text-gray-600 text-sm">Revenue targets, team performance, and forecasting</p>
+            </a>
+
+            <!-- Sales Exec Dashboard -->
+            <a href="../Reports/Sales-Exec-Dashboard.html" class="group p-8 bg-white rounded-3xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer">
+              <div class="flex items-start justify-between mb-6">
+                <div class="w-14 h-14 bg-blue-100 text-blue-600 flex items-center justify-center rounded-lg">
+                  <i data-lucide="bar-chart-3" class="w-7 h-7"></i>
+                </div>
+              </div>
+              <h3 class="text-lg font-bold text-gray-900 mb-2">Sales Exec Dashboard</h3>
+              <p class="text-gray-600 text-sm">Pipeline overview, deal velocity, and conversion metrics</p>
+            </a>
+
+            <!-- Division Head Dashboard -->
+            <a href="../Reports/Division Head -Dashboard-v1.html" class="group p-8 bg-white rounded-3xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer">
+              <div class="flex items-start justify-between mb-6">
+                <div class="w-14 h-14 bg-amber-100 text-amber-600 flex items-center justify-center rounded-lg">
+                  <i data-lucide="users" class="w-7 h-7"></i>
+                </div>
+              </div>
+              <h3 class="text-lg font-bold text-gray-900 mb-2">Division Head Dashboard</h3>
+              <p class="text-gray-600 text-sm">Divisional performance, team metrics, and revenue breakdown</p>
+            </a>
+
+            <!-- Leadership Dashboard -->
+            <a href="../Reports/Leadership-Dashboard.html" class="group p-8 bg-white rounded-3xl border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer">
+              <div class="flex items-start justify-between mb-6">
+                <div class="w-14 h-14 bg-violet-100 text-violet-600 flex items-center justify-center rounded-lg">
+                  <i data-lucide="shield" class="w-7 h-7"></i>
+                </div>
+              </div>
+              <h3 class="text-lg font-bold text-gray-900 mb-2">Leadership Dashboard</h3>
+              <p class="text-gray-600 text-sm">Strategic overview and KPI tracking for leadership</p>
+            </a>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

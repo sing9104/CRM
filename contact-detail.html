@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM - Contact Detail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * {
+      font-family: 'DM Sans', sans-serif;
+    }
+    body {
+      background-color: #f8f8fa;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Left Sidebar -->
+    <aside class="w-[76px] flex flex-col items-center py-4 space-y-1 border-r border-gray-800" style="background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%);">
+      <!-- Home -->
+      <a href="index.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Home</span>
+      </a>
+      <!-- Mari AI -->
+      <a href="mari-ai.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="sparkles" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Mari AI</span>
+      </a>
+      <!-- Search -->
+      <a href="search.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="search" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Search</span>
+      </a>
+      <div class="w-8 border-t border-gray-700/50 my-1"></div>
+      <!-- Accounts -->
+      <a href="accounts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="building-2" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Accounts</span>
+      </a>
+      <!-- Contacts -->
+      <a href="contacts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg bg-white/15 text-white transition-colors">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Contacts</span>
+      </a>
+      <!-- Opps -->
+      <a href="opportunities.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="target" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Opps</span>
+      </a>
+      <!-- Deals -->
+      <a href="deals.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="handshake" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Deals</span>
+      </a>
+      <!-- Leads -->
+      <a href="leads.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="megaphone" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Leads</span>
+      </a>
+      <!-- Reports -->
+      <a href="reports.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Reports</span>
+      </a>
+
+      <!-- Spacer -->
+      <div class="flex-1"></div>
+
+      <!-- Logout -->
+      <a href="#" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="log-out" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Logout</span>
+      </a>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Top Header Bar -->
+      <header class="sticky top-0 z-40 bg-white border-b border-gray-100 border-t-2 border-gray-900 h-14 flex items-center justify-between px-6">
+        <div class="flex items-center gap-4">
+          <a href="contacts.html" class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span class="font-medium">Contacts</span>
+          </a>
+          <div class="h-5 border-l border-gray-200"></div>
+          <span class="text-xs text-gray-400 font-mono">enrita stigliano</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <button class="text-red-500 hover:text-red-600 text-xs font-medium h-8 px-3 flex items-center gap-1.5">
+            <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
+            Deactivate
+          </button>
+          <button class="bg-gray-900 text-white text-xs font-medium h-8 px-3 rounded flex items-center gap-1.5 hover:bg-gray-800">
+            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+            Edit Contact
+          </button>
+          <button class="text-red-500 hover:text-red-600 text-xs font-medium h-8 px-3 flex items-center gap-1.5">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            Delete
+          </button>
+          <div class="w-9 h-9 bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold rounded" style="border-radius: 8px;">JS</div>
+        </div>
+      </header>
+
+      <!-- Main Content Area -->
+      <main class="flex-1 overflow-y-auto">
+        <div class="w-full px-6 py-6">
+          <!-- Contact Header -->
+          <div class="mb-6">
+            <div class="flex items-start gap-4 mb-6">
+              <div class="w-12 h-12 bg-gray-900 text-white rounded-lg flex items-center justify-center flex-shrink-0">
+                <i data-lucide="user" class="w-6 h-6"></i>
+              </div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-3 mb-3 flex-wrap">
+                  <h1 class="text-xl font-bold text-gray-900">enrita stigliano</h1>
+                </div>
+                <div class="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
+                  <span class="flex items-center gap-1.5">
+                    <i data-lucide="building-2" class="w-3.5 h-3.5 text-gray-400"></i>
+                    <a href="#" class="hover:text-blue-600">Headbox</a>
+                  </span>
+                  <span class="text-gray-200">|</span>
+                  <span class="flex items-center gap-1.5">
+                    <i data-lucide="mail" class="w-3.5 h-3.5 text-gray-400"></i>
+                    <a href="mailto:enrita.stigliano@headbox.com" class="hover:text-blue-600">enrita.stigliano@headbox.com</a>
+                  </span>
+                  <span class="text-gray-200">|</span>
+                  <span class="flex items-center gap-1.5">
+                    <i data-lucide="briefcase" class="w-3.5 h-3.5 text-gray-400"></i>
+                    <span class="text-gray-400">—</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <div class="border-b border-gray-200 mb-6">
+            <div class="flex gap-0">
+              <button data-tab-trigger="summary" class="border-gray-900 text-gray-900 border-b-2 px-4 pb-3 pt-1 text-sm font-medium flex items-center gap-1.5 transition-colors">
+                <i data-lucide="briefcase" class="w-3.5 h-3.5"></i>
+                Summary
+              </button>
+              <button data-tab-trigger="deals" class="border-transparent text-gray-400 border-b-2 px-4 pb-3 pt-1 text-sm font-medium flex items-center gap-1.5 transition-colors hover:text-gray-600">
+                <i data-lucide="handshake" class="w-3.5 h-3.5"></i>
+                Deals
+              </button>
+              <button data-tab-trigger="leads" class="border-transparent text-gray-400 border-b-2 px-4 pb-3 pt-1 text-sm font-medium flex items-center gap-1.5 transition-colors hover:text-gray-600">
+                <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                Leads
+              </button>
+              <button data-tab-trigger="notes" class="border-transparent text-gray-400 border-b-2 px-4 pb-3 pt-1 text-sm font-medium flex items-center gap-1.5 transition-colors hover:text-gray-600">
+                <i data-lucide="sticky-note" class="w-3.5 h-3.5"></i>
+                Notes
+              </button>
+              <button data-tab-trigger="audit" class="border-transparent text-gray-400 border-b-2 px-4 pb-3 pt-1 text-sm font-medium flex items-center gap-1.5 transition-colors hover:text-gray-600">
+                <i data-lucide="history" class="w-3.5 h-3.5"></i>
+                Audit History
+              </button>
+            </div>
+          </div>
+
+          <!-- SUMMARY TAB -->
+          <div data-tab-content="summary" class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <!-- Left Column -->
+              <div class="lg:col-span-2 space-y-6">
+                <!-- Contact Summary -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                  <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-2">
+                      <i data-lucide="user" class="w-3.5 h-3.5 text-gray-400"></i>
+                      <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Summary</h3>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-x-10 gap-y-2">
+                    <div class="space-y-2 border-r border-gray-100 pr-10">
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Salutation</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">First Name</span><span class="text-sm text-gray-800 font-medium text-right">enrita</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Last Name</span><span class="text-sm text-gray-800 font-medium text-right">stigliano</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Job Title</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Company Name</span><span class="text-sm text-blue-600 font-medium text-right hover:underline cursor-pointer">Headbox</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Email</span><span class="text-sm text-blue-600 font-medium text-right hover:underline cursor-pointer">enrita.stigliano@headbox.com</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Business Phone</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Mobile Phone</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">LinkedIn Profile</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Lead Source</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Sponsorship Contact</span><span class="text-sm text-gray-800 font-medium text-right">No</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Relationship</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">SAP Contact Number</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">SAP Customer Number</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Description</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                    </div>
+                    <div class="space-y-2">
+                      <div class="flex items-center gap-2 mb-4">
+                        <i data-lucide="link-2" class="w-3.5 h-3.5 text-gray-400"></i>
+                        <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Connections</h4>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Sales Address -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                  <div class="flex items-center gap-2 mb-6">
+                    <i data-lucide="map-pin" class="w-3.5 h-3.5 text-gray-400"></i>
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Sales Address</h3>
+                  </div>
+                  <div class="space-y-2">
+                    <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Street 1</span><span class="text-sm text-gray-800 font-medium text-right">Headbox Solutions Ltd 9 Howell Street</span></div>
+                    <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Street 2</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                    <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">City</span><span class="text-sm text-gray-800 font-medium text-right">London</span></div>
+                    <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">ZIP/Postal Code</span><span class="text-sm text-gray-800 font-medium text-right">EC2A 3HN</span></div>
+                    <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Country</span><span class="text-sm text-gray-800 font-medium text-right">United Kingdom</span></div>
+                  </div>
+                </div>
+
+                <!-- Billing Address -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                  <div class="flex items-center gap-2 mb-6">
+                    <i data-lucide="receipt" class="w-3.5 h-3.5 text-gray-400"></i>
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Billing Address</h3>
+                  </div>
+                  <div class="space-y-2">
+                    <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Same As Sales Address</span><span class="text-sm text-gray-800 font-medium text-right">No</span></div>
+                    <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Street 1</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                    <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Street 2</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                    <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">City</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                    <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">ZIP/Postal Code</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                    <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Country</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column -->
+              <div class="space-y-6">
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-5">
+                  <div class="flex items-center gap-2 mb-3">
+                    <span class="text-gray-400"><i data-lucide="zap" class="w-3.5 h-3.5"></i></span>
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Quick Actions</h3>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2">
+                    <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors text-center rounded-lg justify-center">
+                      <span class="text-emerald-500"><i data-lucide="plus" class="w-4 h-4"></i></span>
+                      <span>Add Deal</span>
+                    </button>
+                    <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors text-center rounded-lg justify-center">
+                      <span class="text-blue-500"><i data-lucide="plus" class="w-4 h-4"></i></span>
+                      <span>Add Lead</span>
+                    </button>
+                    <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors text-center rounded-lg justify-center">
+                      <span class="text-gray-600"><i data-lucide="mail" class="w-4 h-4"></i></span>
+                      <span>Send Email</span>
+                    </button>
+                    <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-amber-50 text-amber-700 hover:bg-amber-100 transition-colors text-center rounded-lg justify-center">
+                      <span class="text-amber-500"><i data-lucide="plus" class="w-4 h-4"></i></span>
+                      <span>Add Note</span>
+                    </button>
+                    <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-teal-50 text-teal-700 hover:bg-teal-100 transition-colors text-center rounded-lg justify-center col-span-2">
+                      <span class="text-teal-500"><i data-lucide="building-2" class="w-4 h-4"></i></span>
+                      <span>View Company</span>
+                    </button>
+                    <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-sky-50 text-sky-700 hover:bg-sky-100 transition-colors text-center rounded-lg justify-center col-span-2">
+                      <span class="text-sky-500"><i data-lucide="download" class="w-4 h-4"></i></span>
+                      <span>Export PDF</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Related Deals -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                  <div class="flex items-center gap-2 mb-6">
+                    <i data-lucide="handshake" class="w-3.5 h-3.5 text-gray-400"></i>
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Related Deals</h3>
+                  </div>
+                  <div class="text-center py-8">
+                    <p class="text-sm text-gray-400">No deals found</p>
+                  </div>
+                </div>
+
+                <!-- Activity Timeline -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                  <div class="flex items-center gap-2 mb-6">
+                    <i data-lucide="activity" class="w-3.5 h-3.5 text-gray-400"></i>
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Activity Timeline</h3>
+                  </div>
+                  <div class="space-y-4">
+                    <div class="flex gap-3 pb-4 border-b border-gray-100 last:border-b-0">
+                      <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold">E</div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900">Contact created</p>
+                        <p class="text-xs text-gray-400">11 April 2026</p>
+                      </div>
+                    </div>
+                    <div class="flex gap-3 pb-4 border-b border-gray-100 last:border-b-0">
+                      <div class="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold">M</div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900">Email sent to contact</p>
+                        <p class="text-xs text-gray-400">10 April 2026</p>
+                      </div>
+                    </div>
+                    <div class="flex gap-3 pb-4 border-b border-gray-100 last:border-b-0">
+                      <div class="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold">A</div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900">Associated with account Headbox</p>
+                        <p class="text-xs text-gray-400">9 April 2026</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DEALS TAB -->
+          <div data-tab-content="deals" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl border border-gray-200 p-6">
+              <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="handshake" class="w-3.5 h-3.5 text-gray-400"></i>
+                  <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Deals</h3>
+                </div>
+                <button class="text-xs bg-gray-900 text-white px-3 py-1.5 rounded hover:bg-gray-800 flex items-center gap-1">
+                  <i data-lucide="plus" class="w-3 h-3"></i>
+                  New
+                </button>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                      <th class="pb-3 pr-4">Name</th>
+                      <th class="pb-3 pr-4">Customer</th>
+                      <th class="pb-3 pr-4">Industry</th>
+                      <th class="pb-3 pr-4">Signed Date</th>
+                      <th class="pb-3 pr-4">Start Date</th>
+                      <th class="pb-3 pr-4">End Date</th>
+                      <th class="pb-3 pr-4">Deal Status</th>
+                      <th class="pb-3 pr-4">Probability</th>
+                      <th class="pb-3 pr-4">Property</th>
+                      <th class="pb-3 pr-4">Lead Sales Person</th>
+                      <th class="pb-3 pr-4">Business Unit</th>
+                      <th class="pb-3 pr-4">Total Gross</th>
+                      <th class="pb-3 pr-4">Total Net</th>
+                      <th class="pb-3 pr-4">Total Inventory</th>
+                      <th class="pb-3 pr-4">Created</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-t border-gray-50">
+                      <td colspan="15" class="py-8 text-center">
+                        <p class="text-sm text-gray-400">No records found</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- LEADS TAB -->
+          <div data-tab-content="leads" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl border border-gray-200 p-6">
+              <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="zap" class="w-3.5 h-3.5 text-gray-400"></i>
+                  <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Leads</h3>
+                </div>
+                <button class="text-xs bg-gray-900 text-white px-3 py-1.5 rounded hover:bg-gray-800 flex items-center gap-1">
+                  <i data-lucide="plus" class="w-3 h-3"></i>
+                  New
+                </button>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                      <th class="pb-3 pr-4">Campaign Name</th>
+                      <th class="pb-3 pr-4">Owner</th>
+                      <th class="pb-3 pr-4">Last Comment</th>
+                      <th class="pb-3 pr-4">Status</th>
+                      <th class="pb-3 pr-4">Due Date</th>
+                      <th class="pb-3 pr-4">Updated On</th>
+                      <th class="pb-3 pr-4">Created On</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-t border-gray-50">
+                      <td colspan="7" class="py-8 text-center">
+                        <p class="text-sm text-gray-400">No records found</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- NOTES TAB -->
+          <div data-tab-content="notes" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl border border-gray-200 p-6">
+              <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="sticky-note" class="w-3.5 h-3.5 text-gray-400"></i>
+                  <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Notes</h3>
+                </div>
+                <div class="flex gap-2">
+                  <button class="text-xs bg-gray-100 text-gray-800 px-3 py-1.5 rounded hover:bg-gray-200">Save</button>
+                  <button class="text-xs bg-gray-100 text-gray-800 px-3 py-1.5 rounded hover:bg-gray-200">Cancel Changes</button>
+                  <button class="text-xs bg-gray-900 text-white px-3 py-1.5 rounded hover:bg-gray-800 flex items-center gap-1">
+                    <i data-lucide="plus" class="w-3 h-3"></i>
+                    New
+                  </button>
+                </div>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                      <th class="pb-3 pr-4">Type</th>
+                      <th class="pb-3 pr-4">Subject</th>
+                      <th class="pb-3 pr-4">Note</th>
+                      <th class="pb-3 pr-4">Accepted</th>
+                      <th class="pb-3 pr-4">Due Date</th>
+                      <th class="pb-3 pr-4">Created On</th>
+                      <th class="pb-3 pr-4">Owner</th>
+                      <th class="pb-3 pr-4">Created By</th>
+                      <th class="pb-3 pr-4">Modified On</th>
+                      <th class="pb-3 pr-4">Modified By</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-t border-gray-50">
+                      <td colspan="10" class="py-8 text-center">
+                        <p class="text-sm text-gray-400">No records found</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- AUDIT HISTORY TAB -->
+          <div data-tab-content="audit" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl border border-gray-200 p-6">
+              <div class="flex items-center gap-2 mb-6">
+                <i data-lucide="history" class="w-3.5 h-3.5 text-gray-400"></i>
+                <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Audit History</h3>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                      <th class="pb-3 pr-4">Changed Date</th>
+                      <th class="pb-3 pr-4">Changed By</th>
+                      <th class="pb-3 pr-4">Event</th>
+                      <th class="pb-3 pr-4">Entity</th>
+                      <th class="pb-3 pr-4">Record Name</th>
+                      <th class="pb-3 pr-4">Changed Field</th>
+                      <th class="pb-3 pr-4">Old Value</th>
+                      <th class="pb-3 pr-4">New Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                      <td class="py-3 pr-4 text-xs text-gray-600">11 April 2026, 14:32</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Enrita Stigliano</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Created</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Contact</td>
+                      <td class="py-3 pr-4 text-xs font-medium text-gray-800">enrita stigliano</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">—</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">—</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">—</td>
+                    </tr>
+                    <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                      <td class="py-3 pr-4 text-xs text-gray-600">10 April 2026, 10:15</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">System Admin</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Modified</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Contact</td>
+                      <td class="py-3 pr-4 text-xs font-medium text-gray-800">enrita stigliano</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Job Title</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">—</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Manager</td>
+                    </tr>
+                    <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                      <td class="py-3 pr-4 text-xs text-gray-600">9 April 2026, 09:45</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Enrita Stigliano</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Modified</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Contact</td>
+                      <td class="py-3 pr-4 text-xs font-medium text-gray-800">enrita stigliano</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Email</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">enrita@oldomain.com</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">enrita.stigliano@headbox.com</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tabName) {
+      document.querySelectorAll('[data-tab-trigger]').forEach(btn => {
+        btn.classList.remove('border-gray-900', 'text-gray-900');
+        btn.classList.add('border-transparent', 'text-gray-400');
+      });
+      document.querySelectorAll('[data-tab-content]').forEach(content => {
+        content.classList.add('hidden');
+      });
+      const activeBtn = document.querySelector(`[data-tab-trigger="${tabName}"]`);
+      if (activeBtn) {
+        activeBtn.classList.add('border-gray-900', 'text-gray-900');
+        activeBtn.classList.remove('border-transparent', 'text-gray-400');
+      }
+      const activeContent = document.querySelector(`[data-tab-content="${tabName}"]`);
+      if (activeContent) {
+        activeContent.classList.remove('hidden');
+      }
+    }
+    document.querySelectorAll('[data-tab-trigger]').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tabTrigger));
+    });
+    lucide.createIcons();
+  </script>
+</body>
+</html>

@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mari AI - CRM Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * {
+      font-family: 'DM Sans', sans-serif;
+    }
+    body {
+      background-color: #f8f8fa;
+    }
+
+    /* Chat animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes bounce {
+      0%, 80%, 100% {
+        transform: scaleY(0.5);
+        opacity: 0.5;
+      }
+      40% {
+        transform: scaleY(1);
+        opacity: 1;
+      }
+    }
+
+    .message {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .typing-dot {
+      animation: bounce 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+
+    .chat-messages::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    .success-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background-color: #dcfce7;
+      color: #166534;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .card-field {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .card-field:last-child {
+      border-bottom: none;
+    }
+
+    .card-field-label {
+      color: #6b7280;
+      font-size: 0.875rem;
+    }
+
+    .card-field-value {
+      color: #111827;
+      font-weight: 500;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    .data-table th {
+      background-color: #f3f4f6;
+      color: #374151;
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .data-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #e5e7eb;
+      color: #374151;
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .btn-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background-color: #1a1a2e;
+      color: white;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.2s;
+    }
+
+    .btn-link:hover {
+      background-color: #0a0a0a;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Left Sidebar -->
+    <aside class="w-[76px] flex flex-col items-center py-4 space-y-1 border-r border-gray-800" style="background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%);">
+      <!-- Home -->
+      <a href="index.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Home</span>
+      </a>
+      <!-- Mari AI -->
+      <a href="mari-ai.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg bg-white/15 text-white transition-colors">
+        <i data-lucide="sparkles" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Mari AI</span>
+      </a>
+      <!-- Search -->
+      <a href="search.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="search" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Search</span>
+      </a>
+      <div class="w-8 border-t border-gray-700/50 my-1"></div>
+      <!-- Accounts -->
+      <a href="accounts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="building-2" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Accounts</span>
+      </a>
+      <!-- Contacts -->
+      <a href="contacts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Contacts</span>
+      </a>
+      <!-- Opps -->
+      <a href="opportunities.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="target" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Opps</span>
+      </a>
+      <!-- Deals -->
+      <a href="deals.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="handshake" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Deals</span>
+      </a>
+      <!-- Leads -->
+      <a href="leads.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="megaphone" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Leads</span>
+      </a>
+      <!-- Reports -->
+      <a href="reports.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Reports</span>
+      </a>
+
+      <!-- Spacer -->
+      <div class="flex-1"></div>
+
+      <!-- Logout -->
+      <a href="#" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="log-out" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Logout</span>
+      </a>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Top Header Bar -->
+      <header class="bg-white border-b border-gray-200 border-t-2 border-gray-900 h-14 flex items-center justify-between px-6">
+        <h1 class="text-gray-900 font-semibold">Mari AI</h1>
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold rounded" style="border-radius: 8px;">JS</div>
+          <span class="text-sm text-gray-700">Jaspinder Singh</span>
+        </div>
+      </header>
+
+      <!-- Chat Container -->
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Welcome Section (shown initially) -->
+        <div id="welcomeSection" class="flex-1 flex flex-col items-center justify-center p-6">
+          <div class="w-20 h-20 mb-6 flex items-center justify-center rounded-full" style="background: linear-gradient(135deg, #111827, #1f2937);">
+            <i data-lucide="sparkles" class="w-10 h-10 text-white"></i>
+          </div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-2">Hi Jaspinder, I'm Mari AI</h2>
+          <p class="text-gray-500 text-sm text-center mb-8 max-w-lg">Your intelligent CRM assistant. I can query data, create deals & opportunities, send payment links, booking confirmations, and more.</p>
+          <div class="grid grid-cols-2 gap-3 w-full max-w-2xl">
+            <button onclick="sendSuggestion('Create a new Deal for Red Global at Taste of London for 20 tickets on Thursday evening')" class="p-3.5 rounded-xl text-left transition-all hover:shadow-md bg-white border border-gray-200 hover:border-gray-300">
+              <div class="flex items-start gap-2.5">
+                <div class="w-8 h-8 bg-emerald-50 text-emerald-600 flex items-center justify-center rounded-lg flex-shrink-0">
+                  <i data-lucide="handshake" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <p class="text-xs font-medium text-gray-900">Create a new Deal</p>
+                  <p class="text-[10px] text-gray-400 mt-0.5">Hospitality package setup</p>
+                </div>
+              </div>
+            </button>
+            <button onclick="sendSuggestion('Create a new Opportunity for Tech Summit 2026')" class="p-3.5 rounded-xl text-left transition-all hover:shadow-md bg-white border border-gray-200 hover:border-gray-300">
+              <div class="flex items-start gap-2.5">
+                <div class="w-8 h-8 bg-violet-50 text-violet-600 flex items-center justify-center rounded-lg flex-shrink-0">
+                  <i data-lucide="target" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <p class="text-xs font-medium text-gray-900">Create a new Opportunity</p>
+                  <p class="text-[10px] text-gray-400 mt-0.5">Pipeline opportunity tracking</p>
+                </div>
+              </div>
+            </button>
+            <button onclick="sendSuggestion('Send a Payment Link to client for invoice INV-2026-0042')" class="p-3.5 rounded-xl text-left transition-all hover:shadow-md bg-white border border-gray-200 hover:border-gray-300">
+              <div class="flex items-start gap-2.5">
+                <div class="w-8 h-8 bg-blue-50 text-blue-600 flex items-center justify-center rounded-lg flex-shrink-0">
+                  <i data-lucide="link-2" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <p class="text-xs font-medium text-gray-900">Send a Payment Link</p>
+                  <p class="text-[10px] text-gray-400 mt-0.5">Generate & send to client</p>
+                </div>
+              </div>
+            </button>
+            <button onclick="sendSuggestion('Show me all deals currently In Play status with their values')" class="p-3.5 rounded-xl text-left transition-all hover:shadow-md bg-white border border-gray-200 hover:border-gray-300">
+              <div class="flex items-start gap-2.5">
+                <div class="w-8 h-8 bg-amber-50 text-amber-600 flex items-center justify-center rounded-lg flex-shrink-0">
+                  <i data-lucide="search" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <p class="text-xs font-medium text-gray-900">Query CRM Data</p>
+                  <p class="text-[10px] text-gray-400 mt-0.5">Search deals, contacts & more</p>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat Messages Area (hidden initially) -->
+        <div id="chatArea" class="hidden flex-1 overflow-hidden">
+          <div id="chatMessages" class="chat-messages h-full p-6 space-y-4 overflow-y-auto">
+          </div>
+        </div>
+
+        <!-- Input Area (always visible) -->
+        <div class="bg-white border-t border-gray-200 px-6 py-4">
+          <div class="max-w-4xl mx-auto">
+            <div class="flex gap-3">
+              <input
+                type="text"
+                id="messageInput"
+                placeholder="Ask Mari AI anything... Create a deal, query data, send confirmations..."
+                class="flex-1 px-4 py-3 text-sm rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 bg-gray-50"
+              />
+              <button
+                onclick="sendMessage()"
+                class="w-11 h-11 bg-gray-900 text-white rounded-xl flex items-center justify-center hover:bg-gray-800 transition-colors flex-shrink-0"
+              >
+                <i data-lucide="arrow-up" class="w-5 h-5"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let messages = [];
+    let hasStartedChat = false;
+
+    function refreshIcons() { lucide.createIcons(); }
+    refreshIcons();
+
+    document.getElementById('messageInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value.trim();
+      if (!message) return;
+
+      if (!hasStartedChat) {
+        hasStartedChat = true;
+        document.getElementById('welcomeSection').classList.add('hidden');
+        document.getElementById('chatArea').classList.remove('hidden');
+        messages.push({ type: 'ai', text: "Hello Jaspinder! I'm Mari AI, your CRM assistant. How can I help you today?" });
+        renderMessages();
+      }
+
+      messages.push({ type: 'user', text: message });
+      renderMessages();
+      input.value = '';
+
+      // Show typing, then status steps, then final answer
+      showProgressResponse(message);
+    }
+
+    function sendSuggestion(text) {
+      document.getElementById('messageInput').value = text;
+      sendMessage();
+    }
+
+    async function showProgressResponse(message) {
+      const response = generateAIResponse(message);
+
+      // Phase 1: Show typing indicator
+      messages.push({ type: 'typing' });
+      renderMessages();
+      await delay(800);
+
+      // Phase 2: Show status steps one by one
+      if (response.steps && response.steps.length > 0) {
+        messages.pop(); // remove typing
+        for (let i = 0; i < response.steps.length; i++) {
+          messages.push({ type: 'status', text: response.steps[i], done: false });
+          renderMessages();
+          await delay(600 + Math.random() * 800);
+          messages[messages.length - 1].done = true;
+          renderMessages();
+          await delay(200);
+        }
+        // Brief typing before final answer
+        messages.push({ type: 'typing' });
+        renderMessages();
+        await delay(1200 + Math.random() * 1000);
+        messages.pop();
+      } else {
+        // Simple response — just hold typing a bit longer
+        await delay(1500 + Math.random() * 1000);
+        messages.pop();
+      }
+
+      // Phase 3: Show final answer
+      messages.push({ type: 'ai', html: response.html, text: response.text });
+      renderMessages();
+      refreshIcons();
+    }
+
+    function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    function generateAIResponse(message) {
+      const lm = message.toLowerCase();
+
+      // --- CREATE DEAL ---
+      if (lm.includes('create') && lm.includes('deal')) {
+        return {
+          steps: [
+            'Parsing deal details from your request...',
+            'Looking up customer "Red Global" in CRM...',
+            'Matching property "Taste of London" — found 3 upcoming sessions...',
+            'Selecting Thursday evening session — 20 tickets available...',
+            'Calculating pricing: 20 × £210.00 = £4,200.00...',
+            'Creating deal record and assigning to your pipeline...'
+          ],
+          html: `
+            <div class="success-badge"><i data-lucide="check-circle" class="w-4 h-4"></i> Deal Created Successfully</div>
+            <p class="text-sm text-gray-600 mb-3">I've created a new deal for <strong>Red Global</strong> at <strong>Taste of London</strong>. Here's the summary:</p>
+            <div class="bg-white rounded-lg p-4 border border-gray-200">
+              <div class="card-field"><span class="card-field-label">Deal Name</span><span class="card-field-value">TOL26: RED GLOBAL x20 THU EVE</span></div>
+              <div class="card-field"><span class="card-field-label">Deal ID</span><span class="card-field-value" style="font-family: monospace; font-size: 0.8rem;">D-134892</span></div>
+              <div class="card-field"><span class="card-field-label">Customer</span><span class="card-field-value">Red Global</span></div>
+              <div class="card-field"><span class="card-field-label">Property</span><span class="card-field-value">Taste of London 2026</span></div>
+              <div class="card-field"><span class="card-field-label">Session</span><span class="card-field-value">Thursday 19th June (evening 17:30–21:30)</span></div>
+              <div class="card-field"><span class="card-field-label">Package</span><span class="card-field-value">Summer Garden Party Package</span></div>
+              <div class="card-field"><span class="card-field-label">Tickets</span><span class="card-field-value">20</span></div>
+              <div class="card-field"><span class="card-field-label">Unit Price</span><span class="card-field-value">£210.00</span></div>
+              <div class="card-field"><span class="card-field-label">Total Inventory</span><span class="card-field-value" style="font-weight: 700;">£4,200.00</span></div>
+              <div class="card-field"><span class="card-field-label">Status</span><span class="card-field-value" style="color: #ea580c;">In Play</span></div>
+              <div class="card-field"><span class="card-field-label">Probability</span><span class="card-field-value">10%</span></div>
+              <div class="card-field"><span class="card-field-label">Lead Salesperson</span><span class="card-field-value">Jaspinder Singh</span></div>
+              <div class="card-field"><span class="card-field-label">Business Unit</span><span class="card-field-value">Art & Entertainment</span></div>
+              <div class="card-field"><span class="card-field-label">Currency</span><span class="card-field-value">£ GBP — British Pound</span></div>
+            </div>
+            <p class="text-xs text-gray-400 mt-3">1 inventory line item added. Sales contact and billing contact have been pulled from the Red Global account record. You can edit the deal details or add additional inventory items from the deal page.</p>
+            <div class="mt-3 flex gap-2">
+              <a href="deal-detail.html" class="btn-link">View Deal <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+              <button class="btn-link" style="background-color: #f3f4f6; color: #374151;">Add Inventory <i data-lucide="package" class="w-4 h-4"></i></button>
+            </div>`
+        };
+      }
+
+      // --- CREATE OPPORTUNITY ---
+      if (lm.includes('create') && lm.includes('opportunity')) {
+        return {
+          steps: [
+            'Analysing opportunity details from your request...',
+            'Searching CRM for matching accounts and contacts...',
+            'Setting up opportunity pipeline stage...',
+            'Assigning default probability based on stage...',
+            'Creating opportunity record...'
+          ],
+          html: `
+            <div class="success-badge"><i data-lucide="check-circle" class="w-4 h-4"></i> Opportunity Created Successfully</div>
+            <p class="text-sm text-gray-600 mb-3">New opportunity has been created and added to your pipeline. I've assigned it to the <strong>Prospecting</strong> stage with a default 25% probability — you can adjust this as conversations progress.</p>
+            <div class="bg-white rounded-lg p-4 border border-gray-200">
+              <div class="card-field"><span class="card-field-label">Opportunity Name</span><span class="card-field-value">Tech Summit 2026</span></div>
+              <div class="card-field"><span class="card-field-label">Account</span><span class="card-field-value">Digital Innovations Ltd</span></div>
+              <div class="card-field"><span class="card-field-label">Primary Contact</span><span class="card-field-value">James Whitfield (VP Events)</span></div>
+              <div class="card-field"><span class="card-field-label">Stage</span><span class="card-field-value" style="color: #7c3aed;">Prospecting</span></div>
+              <div class="card-field"><span class="card-field-label">Probability</span><span class="card-field-value">25%</span></div>
+              <div class="card-field"><span class="card-field-label">Estimated Value</span><span class="card-field-value" style="font-weight: 700;">$45,000</span></div>
+              <div class="card-field"><span class="card-field-label">Expected Close</span><span class="card-field-value">30/06/2026</span></div>
+              <div class="card-field"><span class="card-field-label">Owner</span><span class="card-field-value">Jaspinder Singh</span></div>
+              <div class="card-field"><span class="card-field-label">Property</span><span class="card-field-value">Global Tech Summit — ExCel London</span></div>
+              <div class="card-field"><span class="card-field-label">Source</span><span class="card-field-value">Inbound — Website Enquiry</span></div>
+            </div>
+            <p class="text-xs text-gray-400 mt-3">Next steps: I'd recommend scheduling a discovery call with James Whitfield to understand their hospitality requirements. Would you like me to draft an outreach email?</p>
+            <div class="mt-3 flex gap-2">
+              <a href="opportunity-detail.html" class="btn-link">View Opportunity <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+              <button class="btn-link" style="background-color: #f3f4f6; color: #374151;">Draft Email <i data-lucide="mail" class="w-4 h-4"></i></button>
+            </div>`
+        };
+      }
+
+      // --- PAYMENT LINK ---
+      if (lm.includes('payment') || lm.includes('payment link')) {
+        return {
+          steps: [
+            'Looking up invoice INV-2026-0042...',
+            'Found: £1,260.00 outstanding — Red Global, Taste of London deal...',
+            'Generating secure Stripe payment link...',
+            'Composing email notification to billing contact...',
+            'Sending payment link to red.accounts@redglobal.com...'
+          ],
+          html: `
+            <p class="text-sm text-gray-600 mb-3">Payment link has been generated via <strong>Stripe</strong> and sent to the billing contact at Red Global. The client will receive an email with a secure link to complete the payment.</p>
+            <div class="bg-white rounded-lg p-4 border border-gray-200">
+              <div class="card-field"><span class="card-field-label">Invoice</span><span class="card-field-value">INV-2026-0042</span></div>
+              <div class="card-field"><span class="card-field-label">Deal</span><span class="card-field-value">TOL26: RED GLOBAL x30 WED EVE</span></div>
+              <div class="card-field"><span class="card-field-label">Amount Due</span><span class="card-field-value" style="font-weight: 700;">£1,260.00</span></div>
+              <div class="card-field"><span class="card-field-label">Payment Methods</span><span class="card-field-value">Card, Bank Transfer</span></div>
+              <div class="card-field"><span class="card-field-label">Sent To</span><span class="card-field-value">red.accounts@redglobal.com</span></div>
+              <div class="card-field"><span class="card-field-label">Link Status</span><span class="card-field-value" style="color: #0891b2;">Active — Pending Payment</span></div>
+              <div class="card-field"><span class="card-field-label">Expires</span><span class="card-field-value">13 April 2026 (48 hours)</span></div>
+              <div class="card-field"><span class="card-field-label">Stripe Reference</span><span class="card-field-value" style="font-family: monospace; font-size: 0.75rem;">pi_3R5kL2CZ...x8Qm</span></div>
+            </div>
+            <p class="text-xs text-gray-400 mt-3">I'll notify you when the payment is completed. If it isn't paid within 24 hours, would you like me to send an automatic reminder?</p>
+            <div class="mt-3 flex gap-2">
+              <button class="btn-link">Copy Payment Link <i data-lucide="copy" class="w-4 h-4"></i></button>
+              <button class="btn-link" style="background-color: #f3f4f6; color: #374151;">View Invoice <i data-lucide="file-text" class="w-4 h-4"></i></button>
+            </div>`
+        };
+      }
+
+      // --- BOOKING CONFIRMATION ---
+      if (lm.includes('booking') || lm.includes('confirmation')) {
+        return {
+          steps: [
+            'Retrieving deal and event details...',
+            'Generating booking confirmation document...',
+            'Attaching table plan and menu selections...',
+            'Sending confirmation to sales contact and billing contact...'
+          ],
+          html: `
+            <p class="text-sm text-gray-600 mb-3">Booking confirmation has been generated and sent to <strong>2 recipients</strong> at Red Global. The email includes the event details, table allocation, and menu options.</p>
+            <div class="bg-white rounded-lg p-4 border border-gray-200">
+              <div class="card-field"><span class="card-field-label">Event</span><span class="card-field-value">Taste of London 2026</span></div>
+              <div class="card-field"><span class="card-field-label">Session</span><span class="card-field-value">Wednesday 17th June, 17:30–21:30</span></div>
+              <div class="card-field"><span class="card-field-label">Package</span><span class="card-field-value">Summer Garden Party Package</span></div>
+              <div class="card-field"><span class="card-field-label">Guests</span><span class="card-field-value">30 pax</span></div>
+              <div class="card-field"><span class="card-field-label">Table Allocation</span><span class="card-field-value">Tables 14 & 15 — Garden Terrace</span></div>
+              <div class="card-field"><span class="card-field-label">Sent To</span><span class="card-field-value">jeanette.dunning@redglobal.com, sarah.johnson@redglobal.com</span></div>
+              <div class="card-field"><span class="card-field-label">Confirmation #</span><span class="card-field-value" style="font-family: monospace;">BK-TOL26-0041</span></div>
+              <div class="card-field"><span class="card-field-label">Status</span><span class="card-field-value" style="color: #16a34a;">Confirmed & Sent</span></div>
+            </div>
+            <p class="text-xs text-gray-400 mt-3">Attachments included: Booking confirmation PDF, Taste of London 2026 venue map, and dietary requirements form. The client has been asked to return the dietary form by 10th June.</p>`
+        };
+      }
+
+      // --- DATA QUERY ---
+      if (lm.includes('how many') || lm.includes('total') || lm.includes('query') || lm.includes('show me') || lm.includes('find') || lm.includes('deals') || lm.includes('pipeline') || lm.includes('status')) {
+        return {
+          steps: [
+            'Querying CRM database...',
+            'Filtering deals by status: In Play...',
+            'Aggregating values and calculating pipeline totals...',
+            'Sorting by probability (highest first)...'
+          ],
+          html: `
+            <p class="text-sm text-gray-600 mb-3">Found <strong>7 deals</strong> currently in <strong>In Play</strong> status across 5 properties. Here's the breakdown, sorted by probability:</p>
+            <div class="bg-white rounded-lg p-4 border border-gray-200 overflow-x-auto">
+              <table class="data-table">
+                <thead><tr><th>Deal Name</th><th>Customer</th><th>Property</th><th>Probability</th><th style="text-align:right">Gross Value</th></tr></thead>
+                <tbody>
+                  <tr><td>CloudTech Enterprise License</td><td>CloudTech Solutions</td><td>Global Tech Summit</td><td>40%</td><td style="text-align:right; font-weight:600">£87,500</td></tr>
+                  <tr><td>Partnership Agreement</td><td>Global Networks Inc</td><td>Frieze London</td><td>35%</td><td style="text-align:right; font-weight:600">£25,000</td></tr>
+                  <tr><td>02 Industries — TOL26 Corp</td><td>02 Industries</td><td>Taste of London</td><td>30%</td><td style="text-align:right; font-weight:600">£18,400</td></tr>
+                  <tr><td>Tech Summit Sponsorship</td><td>Digital Innovations</td><td>Global Tech Summit</td><td>25%</td><td style="text-align:right; font-weight:600">£45,000</td></tr>
+                  <tr><td>Red Global — TOL26 x30</td><td>Red Global</td><td>Taste of London</td><td>10%</td><td style="text-align:right; font-weight:600">£6,300</td></tr>
+                  <tr><td>Meridian Hospitality Suite</td><td>Meridian Group</td><td>Wimbledon</td><td>10%</td><td style="text-align:right; font-weight:600">£32,000</td></tr>
+                  <tr><td>Apex Media Rebooking</td><td>Apex Media</td><td>Hyde Park Winter</td><td>5%</td><td style="text-align:right; font-weight:600">£12,500</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="mt-3 grid grid-cols-3 gap-3">
+              <div style="background:#f0fdf4; border:1px solid #dcfce7; border-radius:8px; padding:10px; text-align:center;">
+                <div style="font-size:10px; color:#16a34a; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Total Pipeline</div>
+                <div style="font-size:18px; font-weight:700; color:#166534;">£226,700</div>
+              </div>
+              <div style="background:#eff6ff; border:1px solid #dbeafe; border-radius:8px; padding:10px; text-align:center;">
+                <div style="font-size:10px; color:#2563eb; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Weighted Value</div>
+                <div style="font-size:18px; font-weight:700; color:#1e40af;">£52,835</div>
+              </div>
+              <div style="background:#fefce8; border:1px solid #fef9c3; border-radius:8px; padding:10px; text-align:center;">
+                <div style="font-size:10px; color:#ca8a04; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Avg. Probability</div>
+                <div style="font-size:18px; font-weight:700; color:#a16207;">22%</div>
+              </div>
+            </div>
+            <p class="text-xs text-gray-400 mt-3">Top risk: The <strong>Meridian Hospitality Suite</strong> (£32K) has been at 10% for 3 weeks with no activity. I'd recommend a follow-up call to keep momentum. The <strong>CloudTech</strong> deal looks strong — consider moving it to Proposal stage if the last meeting went well.</p>`
+        };
+      }
+
+      // --- RESEARCH / ACCOUNT ---
+      if (lm.includes('research') || lm.includes('account') || lm.includes('company') || lm.includes('intel')) {
+        return {
+          steps: [
+            'Searching CRM for matching account records...',
+            'Pulling public data from LinkedIn, Companies House...',
+            'Scanning recent news articles and press releases...',
+            'Analysing hospitality and event spend patterns...',
+            'Generating intelligence summary...'
+          ],
+          html: `
+            <p class="text-sm text-gray-600 mb-3">Here's the intelligence report I've compiled. Data sourced from your CRM records, LinkedIn, Companies House, and recent news.</p>
+            <div class="bg-white rounded-lg p-4 border border-gray-200">
+              <div class="card-field"><span class="card-field-label">Company</span><span class="card-field-value">02 Industries</span></div>
+              <div class="card-field"><span class="card-field-label">Industry</span><span class="card-field-value">Health Care / Medical Technology</span></div>
+              <div class="card-field"><span class="card-field-label">HQ</span><span class="card-field-value">Toronto, ON, Canada</span></div>
+              <div class="card-field"><span class="card-field-label">Employees</span><span class="card-field-value">250–500 (LinkedIn)</span></div>
+              <div class="card-field"><span class="card-field-label">Est. Revenue</span><span class="card-field-value">CAD $45–60M</span></div>
+              <div class="card-field"><span class="card-field-label">Ownership</span><span class="card-field-value">Private — Series C ($25M, Mar 2026)</span></div>
+              <div class="card-field"><span class="card-field-label">CRM Relationship</span><span class="card-field-value" style="color: #16a34a;">Strong (Score 72/100)</span></div>
+            </div>
+            <p class="text-sm text-gray-700 mt-3 mb-2" style="font-weight:600">Key Signals:</p>
+            <div style="font-size:0.8rem; color:#374151; line-height:1.6;">
+              <div style="margin-bottom:6px;">🔴 <strong>$25M Series C closed</strong> (TechCrunch, 28 Mar) — Funding earmarked for European expansion</div>
+              <div style="margin-bottom:6px;">🟡 <strong>London office opening Q3 2026</strong> (MedTech News) — Shoreditch location, targeting NHS partnerships</div>
+              <div style="margin-bottom:6px;">🟢 <strong>12 open roles on LinkedIn</strong> — incl. VP of Partnerships (posted 2 weeks ago)</div>
+              <div style="margin-bottom:6px;">🔵 <strong>Named in Forbes Top 50 Health-Tech Innovators 2026</strong></div>
+            </div>
+            <p class="text-sm text-gray-700 mt-3 mb-1" style="font-weight:600">Estimated Annual Event Spend: <span style="color:#16a34a">£320K–£450K</span> (+30% YoY)</p>
+            <p class="text-xs text-gray-400 mt-2">Recommendation: Their new VP of Partnerships role and London expansion make them ideal for a premium bundled package. I'd suggest a Taste of London + Frieze London combo proposal. Want me to draft that?</p>
+            <div class="mt-3"><a href="account-detail.html" class="btn-link">View Full Account <i data-lucide="arrow-right" class="w-4 h-4"></i></a></div>`
+        };
+      }
+
+      // --- EMAIL / DRAFT ---
+      if (lm.includes('email') || lm.includes('draft') || lm.includes('outreach') || lm.includes('follow-up') || lm.includes('follow up')) {
+        return {
+          steps: [
+            'Pulling account context and recent interactions...',
+            'Reviewing last meeting notes and deal history...',
+            'Drafting personalised email...',
+            'Applying professional tone and formatting...'
+          ],
+          html: `
+            <p class="text-sm text-gray-600 mb-3">Here's the draft email. I've pulled context from the last meeting notes and the current deal status to keep it relevant and specific.</p>
+            <div class="bg-white rounded-lg p-4 border border-gray-200" style="font-size:0.85rem; line-height:1.7; color:#374151;">
+              <div style="margin-bottom:8px;"><strong>To:</strong> sarah.chen@02industries.com</div>
+              <div style="margin-bottom:8px;"><strong>Subject:</strong> Great meeting — Hospitality package proposal for Frieze London + Taste of London</div>
+              <div style="border-top:1px solid #e5e7eb; padding-top:12px; margin-top:8px;">
+                <p>Hi Sarah,</p>
+                <p style="margin-top:8px;">It was a pleasure meeting you and the team on Tuesday. Your insights on 02 Industries' plans for the European market were really exciting — it's clear there's strong momentum following the Series C.</p>
+                <p style="margin-top:8px;">Following our conversation about using events as a platform for brand visibility and client entertainment, I wanted to share a bundled hospitality proposal that I think fits perfectly:</p>
+                <p style="margin-top:8px;"><strong>Taste of London 2026</strong> — 20-person Summer Garden Party Package (June)<br><strong>Frieze London 2026</strong> — VIP Corporate Suite, 15 guests (October)</p>
+                <p style="margin-top:8px;">The bundle gives you two high-profile touchpoints across the year at a preferential rate. I've attached the full proposal with pricing and availability.</p>
+                <p style="margin-top:8px;">Would Thursday or Friday next week work for a 20-minute call to walk through the options? Happy to work around your schedule.</p>
+                <p style="margin-top:12px;">Best regards,<br>Jaspinder Singh<br>Account Manager — Mari Group</p>
+              </div>
+            </div>
+            <p class="text-xs text-gray-400 mt-3">Shall I send this now, or would you like to make edits first?</p>
+            <div class="mt-3 flex gap-2">
+              <button class="btn-link">Send Email <i data-lucide="send" class="w-4 h-4"></i></button>
+              <button class="btn-link" style="background-color: #f3f4f6; color: #374151;">Edit Draft <i data-lucide="edit-3" class="w-4 h-4"></i></button>
+            </div>`
+        };
+      }
+
+      // --- DEFAULT ---
+      return {
+        steps: [],
+        text: "I can help with that! Here's what I can do for you:\n\n• <strong>Create deals and opportunities</strong> — just describe what you need\n• <strong>Send payment links</strong> — I'll generate a Stripe link and email it\n• <strong>Send booking confirmations</strong> — with all event details attached\n• <strong>Query CRM data</strong> — pipeline reports, deal lookups, contact search\n• <strong>Research accounts</strong> — company intelligence from LinkedIn, news & public data\n• <strong>Draft emails</strong> — follow-ups, proposals, and outreach with CRM context\n• <strong>Analyse pipeline</strong> — weighted forecasts, at-risk deals, and recommendations\n\nTry asking me something specific, like <em>'Show me all In Play deals'</em> or <em>'Research 02 Industries'</em>."
+      };
+    }
+
+    function renderMessages() {
+      const container = document.getElementById('chatMessages');
+      container.innerHTML = '';
+      messages.forEach(msg => {
+        const div = document.createElement('div');
+        div.className = 'message flex gap-3';
+
+        if (msg.type === 'ai') {
+          div.classList.add('justify-start');
+          div.innerHTML = `<div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="background: #1a1a2e;"><i data-lucide="sparkles" class="w-4 h-4 text-white"></i></div><div class="flex-1 max-w-2xl"><div class="bg-gray-100 rounded-2xl p-4 text-gray-800 text-sm leading-relaxed">${msg.html || `<p>${msg.text}</p>`}</div></div>`;
+
+        } else if (msg.type === 'user') {
+          div.classList.add('justify-end');
+          div.innerHTML = `<div class="flex-1 max-w-md lg:max-w-xl"><div class="bg-gray-900 rounded-2xl p-4 text-white text-sm"><p>${msg.text}</p></div></div><div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">JS</div>`;
+
+        } else if (msg.type === 'typing') {
+          div.classList.add('justify-start');
+          div.innerHTML = `<div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="background: #1a1a2e;"><i data-lucide="sparkles" class="w-4 h-4 text-white"></i></div><div class="flex-1"><div class="bg-gray-100 rounded-2xl p-4 inline-flex gap-1.5 items-center"><span class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></span><span class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></span><span class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></span></div></div>`;
+
+        } else if (msg.type === 'status') {
+          div.classList.add('justify-start');
+          const icon = msg.done
+            ? '<i data-lucide="check" class="w-3 h-3 text-emerald-500"></i>'
+            : '<span class="w-3 h-3 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin inline-block"></span>';
+          const textColor = msg.done ? 'text-gray-400' : 'text-gray-600';
+          div.innerHTML = `<div class="flex-shrink-0 w-8 h-8"></div><div class="flex-1"><div class="flex items-center gap-2 py-0.5"><span class="flex-shrink-0">${icon}</span><span class="text-xs ${textColor}">${msg.text}</span></div></div>`;
+        }
+
+        container.appendChild(div);
+      });
+      setTimeout(() => { container.scrollTop = container.scrollHeight; }, 0);
+      refreshIcons();
+    }
+  </script>
+</body>
+</html>

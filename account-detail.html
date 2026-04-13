@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM - Account Detail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * {
+      font-family: 'DM Sans', sans-serif;
+    }
+    body {
+      background-color: #f8f8fa;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Left Sidebar -->
+    <aside class="w-[76px] flex flex-col items-center py-4 space-y-1 border-r border-gray-800" style="background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%);">
+      <!-- Home -->
+      <a href="index.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Home</span>
+      </a>
+      <!-- Mari AI -->
+      <a href="mari-ai.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="sparkles" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Mari AI</span>
+      </a>
+      <!-- Search -->
+      <a href="search.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="search" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Search</span>
+      </a>
+      <div class="w-8 border-t border-gray-700/50 my-1"></div>
+      <!-- Accounts -->
+      <a href="accounts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg bg-white/15 text-white transition-colors">
+        <i data-lucide="building-2" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Accounts</span>
+      </a>
+      <!-- Contacts -->
+      <a href="contacts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Contacts</span>
+      </a>
+      <!-- Opps -->
+      <a href="opportunities.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="target" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Opps</span>
+      </a>
+      <!-- Deals -->
+      <a href="deals.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="handshake" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Deals</span>
+      </a>
+      <!-- Leads -->
+      <a href="leads.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="megaphone" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Leads</span>
+      </a>
+      <!-- Reports -->
+      <a href="reports.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Reports</span>
+      </a>
+
+      <!-- Spacer -->
+      <div class="flex-1"></div>
+
+      <!-- Logout -->
+      <a href="#" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="log-out" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Logout</span>
+      </a>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Top Header Bar -->
+      <header class="sticky top-0 z-40 bg-white border-b border-gray-100 border-t-2 border-gray-900 h-14 flex items-center justify-between px-6">
+        <div class="flex items-center gap-4">
+          <a href="accounts.html" class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span class="font-medium">Accounts</span>
+          </a>
+          <div class="h-5 border-l border-gray-200"></div>
+          <span class="text-xs text-gray-400 font-mono">Company Details</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <button class="text-red-500 hover:text-red-600 text-xs font-medium h-8 px-3 flex items-center gap-1.5">
+            <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
+            Deactivate
+          </button>
+          <button class="bg-gray-900 text-white text-xs font-medium h-8 px-3 rounded flex items-center gap-1.5 hover:bg-gray-800">
+            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+            Edit Account
+          </button>
+          <button class="text-red-500 hover:text-red-600 text-xs font-medium h-8 px-3 flex items-center gap-1.5">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            Delete
+          </button>
+          <div class="w-9 h-9 bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold rounded" style="border-radius: 8px;">JS</div>
+        </div>
+      </header>
+
+      <!-- Main Content Area -->
+      <main class="flex-1 overflow-y-auto">
+        <div class="w-full px-6 py-6">
+          <!-- Account Header -->
+          <div class="mb-6">
+            <div class="flex items-start gap-4 mb-6">
+              <div class="w-12 h-12 bg-gray-900 text-white rounded-lg flex items-center justify-center flex-shrink-0">
+                <i data-lucide="building-2" class="w-6 h-6"></i>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-1">
+                  <h1 class="text-xl font-bold text-gray-900">02 Industries</h1>
+                </div>
+                <div class="text-sm text-gray-500 mb-3">
+                  <span class="font-semibold">Accounts</span> <span class="text-gray-300">›</span> <span>Company Details</span>
+                </div>
+                <div class="text-xs text-gray-500 flex items-center gap-3 flex-wrap">
+                  <span>Industry: <span class="font-medium text-gray-700">Health Care / Medical</span></span>
+                  <span class="text-gray-200">|</span>
+                  <span>Country: <span class="font-medium text-gray-700">Canada</span></span>
+                  <span class="text-gray-200">|</span>
+                  <span>Website: <a href="#" class="font-medium text-blue-600 hover:text-blue-700">02canada.com</a></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- KPI Strip -->
+            <div class="grid grid-cols-4 gap-3">
+              <div class="flex items-center gap-3 px-4 py-3 text-white rounded" style="border-radius: 10px; background: linear-gradient(135deg, #111827, #1f2937);">
+                <div class="w-9 h-9 bg-white/10 rounded flex items-center justify-center">
+                  <i data-lucide="briefcase" class="w-4 h-4 text-white"></i>
+                </div>
+                <div>
+                  <div class="text-[11px] uppercase tracking-wider font-medium text-white/80">In Play Deals</div>
+                  <div class="text-sm font-semibold text-white">4</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 px-4 py-3 border border-gray-100 bg-white rounded" style="border-radius: 10px;">
+                <div class="w-9 h-9 bg-emerald-50 rounded flex items-center justify-center">
+                  <i data-lucide="trending-up" class="w-4 h-4 text-emerald-600"></i>
+                </div>
+                <div>
+                  <div class="text-[11px] uppercase tracking-wider font-medium text-gray-400">In Play Revenue</div>
+                  <div class="text-sm font-semibold text-gray-900">$2.4M</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 px-4 py-3 border border-gray-100 bg-white rounded" style="border-radius: 10px;">
+                <div class="w-9 h-9 bg-blue-50 rounded flex items-center justify-center">
+                  <i data-lucide="check-circle" class="w-4 h-4 text-blue-600"></i>
+                </div>
+                <div>
+                  <div class="text-[11px] uppercase tracking-wider font-medium text-gray-400">Closed Deals</div>
+                  <div class="text-sm font-semibold text-gray-900">12</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 px-4 py-3 border border-gray-100 bg-white rounded" style="border-radius: 10px;">
+                <div class="w-9 h-9 bg-amber-50 rounded flex items-center justify-center">
+                  <i data-lucide="dollar-sign" class="w-4 h-4 text-amber-600"></i>
+                </div>
+                <div>
+                  <div class="text-[11px] uppercase tracking-wider font-medium text-gray-400">Total Gross Revenue</div>
+                  <div class="text-sm font-semibold text-gray-900">$8.7M</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Tabs -->
+          <div class="border-b border-gray-200 mb-6">
+            <div class="flex gap-0 overflow-x-auto">
+              <button data-tab-trigger="summary" class="border-gray-900 text-gray-900 border-b-2 px-4 pb-3 pt-1 text-sm font-medium flex items-center gap-1.5 transition-colors whitespace-nowrap">
+                <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+                Summary
+              </button>
+              <button data-tab-trigger="pipeline" class="border-transparent text-gray-400 border-b-2 px-4 pb-3 pt-1 text-sm font-medium flex items-center gap-1.5 transition-colors hover:text-gray-600 whitespace-nowrap">
+                <i data-lucide="briefcase" class="w-3.5 h-3.5"></i>
+                Business
+              </button>
+              <button data-tab-trigger="notes" class="border-transparent text-gray-400 border-b-2 px-4 pb-3 pt-1 text-sm font-medium flex items-center gap-1.5 transition-colors hover:text-gray-600 whitespace-nowrap">
+                <i data-lucide="sticky-note" class="w-3.5 h-3.5"></i>
+                Notes
+              </button>
+              <button data-tab-trigger="insights" class="border-transparent text-gray-400 border-b-2 px-4 pb-3 pt-1 text-sm font-medium flex items-center gap-1.5 transition-colors hover:text-gray-600 whitespace-nowrap">
+                <i data-lucide="lightbulb" class="w-3.5 h-3.5"></i>
+                Insights
+              </button>
+              <button data-tab-trigger="audit" class="border-transparent text-gray-400 border-b-2 px-4 pb-3 pt-1 text-sm font-medium flex items-center gap-1.5 transition-colors hover:text-gray-600 whitespace-nowrap">
+                <i data-lucide="history" class="w-3.5 h-3.5"></i>
+                Audit History
+              </button>
+              <button data-tab-trigger="admin" class="border-transparent text-gray-400 border-b-2 px-4 pb-3 pt-1 text-sm font-medium flex items-center gap-1.5 transition-colors hover:text-gray-600 whitespace-nowrap">
+                <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+                Admin
+              </button>
+            </div>
+          </div>
+
+          <!-- SUMMARY TAB -->
+          <div data-tab-content="summary" class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <!-- Left Column -->
+              <div class="lg:col-span-2 space-y-6">
+                <!-- Summary Card -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                  <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-2">
+                      <i data-lucide="building-2" class="w-3.5 h-3.5 text-gray-400"></i>
+                      <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Summary</h3>
+                    </div>
+                    <button class="text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1">
+                      <i data-lucide="edit-3" class="w-3 h-3"></i>
+                      Edit
+                    </button>
+                  </div>
+                  <div class="grid grid-cols-2 gap-x-10 gap-y-2">
+                    <div class="space-y-2 border-r border-gray-100 pr-10">
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Name*</span><span class="text-sm text-gray-800 font-medium text-right">02 Industries</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Known Name</span><span class="text-sm text-gray-800 font-medium text-right">02 Industries</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Telephone</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Website*</span><span class="text-sm text-blue-600 font-medium text-right hover:underline cursor-pointer">02canada.com</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Is Parent Company*</span><span class="text-sm text-gray-800 font-medium text-right"><input type="checkbox" checked disabled></span></div>
+                    </div>
+                    <div class="space-y-2">
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Industry*</span><span class="text-sm text-gray-800 font-medium text-right">Health Care / Medical</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Description</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Ownership</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">SAP VAT Registration Number</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                    </div>
+                  </div>
+                  <!-- Connections -->
+                  <div class="mt-6 pt-6 border-t border-gray-100">
+                    <div class="flex items-center gap-2 mb-3">
+                      <i data-lucide="link-2" class="w-3.5 h-3.5 text-gray-400"></i>
+                      <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Connections</h4>
+                    </div>
+                    <p class="text-xs text-gray-400">No connections found</p>
+                  </div>
+                </div>
+
+                <!-- Address & Contacts Side by Side -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <!-- Address Card -->
+                  <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                    <div class="flex items-center justify-between mb-6">
+                      <div class="flex items-center gap-2">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5 text-gray-400"></i>
+                        <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Address</h3>
+                      </div>
+                      <button class="text-xs bg-gray-900 text-white px-3 py-1.5 rounded hover:bg-gray-800 flex items-center gap-1">
+                        <i data-lucide="plus" class="w-3 h-3"></i>
+                        New
+                      </button>
+                    </div>
+                    <div class="space-y-2">
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Street 1</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">City</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">ZIP/Postal Code</span><span class="text-sm text-gray-300 text-right">—</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Country</span><span class="text-sm text-gray-800 font-medium text-right">Canada</span></div>
+                      <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Is Primary</span><span class="text-sm text-gray-800 font-medium text-right"><input type="checkbox" checked disabled></span></div>
+                    </div>
+                  </div>
+
+                  <!-- Contacts Card -->
+                  <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                    <div class="flex items-center justify-between mb-6">
+                      <div class="flex items-center gap-2">
+                        <i data-lucide="users" class="w-3.5 h-3.5 text-gray-400"></i>
+                        <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Contacts</h3>
+                      </div>
+                      <button class="text-xs bg-gray-900 text-white px-3 py-1.5 rounded hover:bg-gray-800 flex items-center gap-1">
+                        <i data-lucide="plus" class="w-3 h-3"></i>
+                        New
+                      </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                      <table class="w-full text-sm">
+                        <thead>
+                          <tr class="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                            <th class="pb-3 pr-4">Full Name</th>
+                            <th class="pb-3 pr-4">Job Title</th>
+                            <th class="pb-3 pr-4">Email Address</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr class="border-t border-gray-50">
+                            <td colspan="3" class="py-8 text-center text-xs text-gray-400">No records found</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Brands Card -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                  <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-2">
+                      <i data-lucide="tag" class="w-3.5 h-3.5 text-gray-400"></i>
+                      <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Brands</h3>
+                    </div>
+                    <button class="text-xs bg-gray-900 text-white px-3 py-1.5 rounded hover:bg-gray-800 flex items-center gap-1">
+                      <i data-lucide="plus" class="w-3 h-3"></i>
+                      New
+                    </button>
+                  </div>
+                  <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                      <thead>
+                        <tr class="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                          <th class="pb-3 pr-4">Name</th>
+                          <th class="pb-3 pr-4">Industry</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                          <td class="py-3 pr-4 text-xs text-gray-600 font-medium">02 Industries</td>
+                          <td class="py-3 pr-4 text-xs text-gray-600">Health Care / Medical</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column -->
+              <div class="space-y-6">
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-5">
+                  <div class="flex items-center gap-2 mb-3">
+                    <span class="text-gray-400"><i data-lucide="zap" class="w-3.5 h-3.5"></i></span>
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Quick Actions</h3>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2">
+                    <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors text-left rounded-lg">
+                      <span class="text-emerald-500"><i data-lucide="user-plus" class="w-4 h-4"></i></span>
+                      Add Contact
+                    </button>
+                    <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors text-left rounded-lg">
+                      <span class="text-blue-500"><i data-lucide="briefcase" class="w-4 h-4"></i></span>
+                      Add Deal
+                    </button>
+                    <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors text-left rounded-lg">
+                      <span class="text-gray-600"><i data-lucide="users" class="w-4 h-4"></i></span>
+                      Add Lead
+                    </button>
+                    <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-amber-50 text-amber-700 hover:bg-amber-100 transition-colors text-left rounded-lg">
+                      <span class="text-amber-500"><i data-lucide="message-square" class="w-4 h-4"></i></span>
+                      Add Note
+                    </button>
+                    <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-violet-50 text-violet-700 hover:bg-violet-100 transition-colors text-left rounded-lg">
+                      <span class="text-violet-500"><i data-lucide="target" class="w-4 h-4"></i></span>
+                      Add Opportunity
+                    </button>
+                    <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-teal-50 text-teal-700 hover:bg-teal-100 transition-colors text-left rounded-lg">
+                      <span class="text-teal-500"><i data-lucide="lightbulb" class="w-4 h-4"></i></span>
+                      View Insights
+                    </button>
+                    <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-sky-50 text-sky-700 hover:bg-sky-100 transition-colors text-left rounded-lg">
+                      <span class="text-sky-500"><i data-lucide="download" class="w-4 h-4"></i></span>
+                      Export PDF
+                    </button>
+                  </div>
+                </div>
+
+                <!-- AI Relationship Summary & Insights -->
+                <div id="ai-insights-pane" class="rounded-3xl border border-gray-200 overflow-hidden" style="background: linear-gradient(135deg, #fafafa 0%, #f5f5ff 100%);">
+                  <div class="p-5">
+                    <!-- Header -->
+                    <div class="flex items-center justify-between mb-3">
+                      <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #111827, #1f2937);">
+                          <i data-lucide="sparkles" class="w-3 h-3 text-amber-400"></i>
+                        </div>
+                        <div>
+                          <span class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">AI Relationship Summary</span>
+                          <span class="text-[9px] font-medium text-violet-600 bg-violet-50 px-1.5 py-0.5 rounded border border-violet-100 ml-1.5">Mari AI</span>
+                        </div>
+                      </div>
+                      <button onclick="toggleInsightsPane()" id="insights-toggle-btn" class="text-[11px] text-gray-500 hover:text-gray-700 bg-white hover:bg-gray-50 border border-gray-200 px-2.5 py-1 rounded-lg flex items-center gap-1 transition-colors">
+                        <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="insights-chevron"></i>
+                        <span id="insights-toggle-text">More</span>
+                      </button>
+                    </div>
+
+                    <!-- Relationship Blurb -->
+                    <p class="text-xs text-gray-600 leading-relaxed mb-3">02 Industries first engaged with Mari Group properties in late 2024 through a modest two-deal booking at Taste of London (£8,400). The relationship deepened in 2025 across three properties — Taste of London, Frieze London, and Hyde Park Winter — with £14,700 in signed deals. Heading into 2026, two deals are already signed (£10,500 confirmed), three more are in play, and four opportunity proposals total £90,500 in pipeline value.</p>
+
+                    <!-- Key Metrics Row -->
+                    <div class="grid grid-cols-2 gap-2">
+                      <div class="bg-white rounded-xl border border-gray-100 px-3 py-2 flex items-center gap-2">
+                        <div class="relative w-8 h-8 flex-shrink-0">
+                          <svg viewBox="0 0 36 36" class="w-8 h-8 -rotate-90">
+                            <circle cx="18" cy="18" r="15.5" fill="none" stroke="#f1f1f4" stroke-width="3" />
+                            <circle cx="18" cy="18" r="15.5" fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="72 28" stroke-linecap="round" />
+                          </svg>
+                          <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-[10px] font-bold text-gray-900">72</span>
+                          </div>
+                        </div>
+                        <div>
+                          <p class="text-[9px] text-gray-400 font-medium uppercase tracking-wider">Relationship</p>
+                          <p class="text-[11px] font-semibold text-emerald-600">Strong</p>
+                        </div>
+                      </div>
+                      <div class="bg-white rounded-xl border border-gray-100 px-3 py-2">
+                        <p class="text-[9px] text-gray-400 font-medium uppercase tracking-wider mb-0.5">Est. Spend</p>
+                        <p class="text-xs font-bold text-gray-900">£320K–£450K</p>
+                        <p class="text-[9px] text-emerald-600 font-medium flex items-center gap-0.5"><i data-lucide="trending-up" class="w-2.5 h-2.5"></i> +30% YoY</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Expanded Content (hidden by default) -->
+                  <div id="insights-expanded" class="hidden border-t border-gray-200">
+                    <div class="p-5 space-y-3">
+                      <!-- AI Summary -->
+                      <div>
+                        <div class="flex items-center gap-1.5 mb-1.5">
+                          <i data-lucide="brain" class="w-3 h-3 text-gray-400"></i>
+                          <h4 class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">AI Summary</h4>
+                        </div>
+                        <p class="text-[11px] text-gray-700 leading-relaxed">02 Industries is a fast-growing Canadian health-tech company (250–500 employees, est. CAD $45–60M revenue) that recently closed a $25M Series C round and is opening a London office. They have strong event marketing appetite with an estimated £320K–£450K annual hospitality spend across 8 events in 4 countries. Key opportunity: their new VP of Partnerships role and expansion plans make them ideal for a premium bundled hospitality package.</p>
+                      </div>
+
+                      <!-- Recommendations -->
+                      <div>
+                        <div class="flex items-center gap-1.5 mb-1.5">
+                          <i data-lucide="sparkles" class="w-3 h-3 text-amber-500"></i>
+                          <h4 class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Recommendations</h4>
+                        </div>
+                        <div class="space-y-1.5">
+                          <div class="p-2 bg-emerald-50 rounded-lg">
+                            <p class="text-[11px] font-semibold text-emerald-800">Upsell — High Priority</p>
+                            <p class="text-[10px] text-emerald-700 leading-relaxed mt-0.5">Series C funding + London office = prime for premium hospitality bundle across multiple properties.</p>
+                          </div>
+                          <div class="p-2 bg-blue-50 rounded-lg">
+                            <p class="text-[11px] font-semibold text-blue-800">Timing — Act Now</p>
+                            <p class="text-[10px] text-blue-700 leading-relaxed mt-0.5">New VP of Partnerships role signals budget allocation. Engage before competitors do.</p>
+                          </div>
+                          <div class="p-2 bg-amber-50 rounded-lg">
+                            <p class="text-[11px] font-semibold text-amber-800">Cross-sell — Panels</p>
+                            <p class="text-[10px] text-amber-700 leading-relaxed mt-0.5">LinkedIn shows thought-leadership ambitions. Offer Summer Summit healthcare panel + hospitality combo.</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Recent Signals -->
+                      <div>
+                        <div class="flex items-center gap-1.5 mb-1.5">
+                          <i data-lucide="newspaper" class="w-3 h-3 text-gray-400"></i>
+                          <h4 class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Recent Signals</h4>
+                        </div>
+                        <div class="space-y-2">
+                          <div class="flex items-start gap-2">
+                            <span class="inline-flex items-center px-1.5 py-0.5 bg-red-50 text-red-600 text-[9px] font-semibold rounded flex-shrink-0 mt-0.5">HIGH</span>
+                            <div>
+                              <p class="text-[11px] font-medium text-gray-900">$25M Series C closed</p>
+                              <p class="text-[10px] text-gray-400">TechCrunch • 28 Mar 2026</p>
+                            </div>
+                          </div>
+                          <div class="flex items-start gap-2">
+                            <span class="inline-flex items-center px-1.5 py-0.5 bg-amber-50 text-amber-600 text-[9px] font-semibold rounded flex-shrink-0 mt-0.5">OPP</span>
+                            <div>
+                              <p class="text-[11px] font-medium text-gray-900">London office opening Q3</p>
+                              <p class="text-[10px] text-gray-400">MedTech News • 15 Mar 2026</p>
+                            </div>
+                          </div>
+                          <div class="flex items-start gap-2">
+                            <span class="inline-flex items-center px-1.5 py-0.5 bg-emerald-50 text-emerald-600 text-[9px] font-semibold rounded flex-shrink-0 mt-0.5">NEW</span>
+                            <div>
+                              <p class="text-[11px] font-medium text-gray-900">12 open positions (hiring surge)</p>
+                              <p class="text-[10px] text-gray-400">LinkedIn • Active now</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Competitor Watch -->
+                      <div>
+                        <div class="flex items-center gap-1.5 mb-1.5">
+                          <i data-lucide="eye" class="w-3 h-3 text-gray-400"></i>
+                          <h4 class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Competitor Watch</h4>
+                        </div>
+                        <div class="space-y-2">
+                          <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-red-50 text-red-500 flex items-center justify-center rounded flex-shrink-0"><i data-lucide="alert-triangle" class="w-2.5 h-2.5"></i></div>
+                            <div>
+                              <p class="text-[11px] font-medium text-gray-900">Keith Prowse</p>
+                              <p class="text-[10px] text-gray-400">Pitched Wimbledon — Mar 2026</p>
+                            </div>
+                          </div>
+                          <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-amber-50 text-amber-500 flex items-center justify-center rounded flex-shrink-0"><i data-lucide="alert-circle" class="w-2.5 h-2.5"></i></div>
+                            <div>
+                              <p class="text-[11px] font-medium text-gray-900">Sodexo Live!</p>
+                              <p class="text-[10px] text-gray-400">Catering partner at HealthTech</p>
+                            </div>
+                          </div>
+                          <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-gray-50 text-gray-400 flex items-center justify-center rounded flex-shrink-0"><i data-lucide="info" class="w-2.5 h-2.5"></i></div>
+                            <div>
+                              <p class="text-[11px] font-medium text-gray-900">Levy UK</p>
+                              <p class="text-[10px] text-gray-400">Contract ended 2024</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Spend Split -->
+                      <div class="pt-2 border-t border-gray-100">
+                        <div class="flex items-center gap-1.5 mb-1.5">
+                          <i data-lucide="bar-chart-3" class="w-3 h-3 text-gray-400"></i>
+                          <h4 class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Spend Split</h4>
+                        </div>
+                        <div class="space-y-1.5">
+                          <div>
+                            <div class="flex items-center justify-between mb-0.5"><span class="text-[10px] text-gray-500">Hospitality</span><span class="text-[10px] font-semibold text-gray-700">45%</span></div>
+                            <div class="w-full bg-gray-100 rounded-full h-1.5"><div class="bg-emerald-500 h-1.5 rounded-full" style="width: 45%"></div></div>
+                          </div>
+                          <div>
+                            <div class="flex items-center justify-between mb-0.5"><span class="text-[10px] text-gray-500">Sponsorship</span><span class="text-[10px] font-semibold text-gray-700">30%</span></div>
+                            <div class="w-full bg-gray-100 rounded-full h-1.5"><div class="bg-blue-500 h-1.5 rounded-full" style="width: 30%"></div></div>
+                          </div>
+                          <div>
+                            <div class="flex items-center justify-between mb-0.5"><span class="text-[10px] text-gray-500">Conferences</span><span class="text-[10px] font-semibold text-gray-700">15%</span></div>
+                            <div class="w-full bg-gray-100 rounded-full h-1.5"><div class="bg-amber-500 h-1.5 rounded-full" style="width: 15%"></div></div>
+                          </div>
+                          <div>
+                            <div class="flex items-center justify-between mb-0.5"><span class="text-[10px] text-gray-500">Other</span><span class="text-[10px] font-semibold text-gray-700">10%</span></div>
+                            <div class="w-full bg-gray-100 rounded-full h-1.5"><div class="bg-gray-400 h-1.5 rounded-full" style="width: 10%"></div></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Full Report Link -->
+                      <div class="pt-2">
+                        <button onclick="switchTab('insights')" class="w-full text-[11px] text-gray-500 hover:text-gray-700 bg-white hover:bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors">
+                          <i data-lucide="external-link" class="w-3 h-3"></i>
+                          View Full Insights Report
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Deals -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <i data-lucide="handshake" class="w-3.5 h-3.5 text-gray-400"></i>
+                      <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Deals</h3>
+                    </div>
+                    <a href="#" onclick="switchTab('deals'); return false;" class="text-xs text-blue-600 hover:text-blue-700 font-medium">View All</a>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
+                      <div class="w-7 h-7 bg-amber-50 text-amber-600 flex items-center justify-center rounded flex-shrink-0">
+                        <i data-lucide="handshake" class="w-3.5 h-3.5"></i>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-xs font-medium text-gray-900 truncate">TOL26: 02 INDUSTRIES x15 WED</p>
+                        <p class="text-[10px] text-gray-400">Taste of London • £3,150.00</p>
+                      </div>
+                      <span class="inline-flex items-center px-1.5 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-medium rounded border border-amber-200">In Play</span>
+                    </div>
+                    <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
+                      <div class="w-7 h-7 bg-emerald-50 text-emerald-600 flex items-center justify-center rounded flex-shrink-0">
+                        <i data-lucide="handshake" class="w-3.5 h-3.5"></i>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-xs font-medium text-gray-900 truncate">FL26: 02 INDUSTRIES x20 SAT</p>
+                        <p class="text-[10px] text-gray-400">Frieze London • £4,200.00</p>
+                      </div>
+                      <span class="inline-flex items-center px-1.5 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-medium rounded border border-emerald-200">Signed</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <div class="w-7 h-7 bg-blue-50 text-blue-600 flex items-center justify-center rounded flex-shrink-0">
+                        <i data-lucide="handshake" class="w-3.5 h-3.5"></i>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-xs font-medium text-gray-900 truncate">HYPARK25: 02 INDUSTRIES x10</p>
+                        <p class="text-[10px] text-gray-400">Hyde Park Winter • £2,100.00</p>
+                      </div>
+                      <span class="inline-flex items-center px-1.5 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-medium rounded border border-blue-200">Contracted</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Opportunities -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <i data-lucide="target" class="w-3.5 h-3.5 text-gray-400"></i>
+                      <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Opportunities</h3>
+                    </div>
+                    <a href="#" onclick="switchTab('opportunities'); return false;" class="text-xs text-blue-600 hover:text-blue-700 font-medium">View All</a>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
+                      <div class="w-7 h-7 bg-amber-50 text-amber-600 flex items-center justify-center rounded flex-shrink-0">
+                        <i data-lucide="target" class="w-3.5 h-3.5"></i>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-xs font-medium text-gray-900 truncate">02 Industries Health Summit 2026</p>
+                        <p class="text-[10px] text-gray-400">£28,000 • 65%</p>
+                      </div>
+                      <span class="inline-flex items-center px-1.5 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-medium rounded border border-amber-200">Proposal</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <div class="w-7 h-7 bg-blue-50 text-blue-600 flex items-center justify-center rounded flex-shrink-0">
+                        <i data-lucide="target" class="w-3.5 h-3.5"></i>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-xs font-medium text-gray-900 truncate">02 Industries Medical Conference</p>
+                        <p class="text-[10px] text-gray-400">£15,500 • 40%</p>
+                      </div>
+                      <span class="inline-flex items-center px-1.5 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-medium rounded border border-blue-200">Qualification</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Activity Timeline -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                  <div class="flex items-center gap-2 mb-4">
+                    <i data-lucide="activity" class="w-3.5 h-3.5 text-gray-400"></i>
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Activity Timeline</h3>
+                  </div>
+                  <div class="space-y-4">
+                    <div class="flex gap-4">
+                      <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <i data-lucide="plus-circle" class="w-4 h-4 text-blue-600"></i>
+                      </div>
+                      <div class="min-w-0 pb-4 border-b border-gray-100">
+                        <p class="text-xs font-medium text-gray-900">Account Created</p>
+                        <p class="text-xs text-gray-500 mt-1">April 8, 2026 at 10:30 AM</p>
+                      </div>
+                    </div>
+                    <div class="flex gap-4">
+                      <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <i data-lucide="edit" class="w-4 h-4 text-emerald-600"></i>
+                      </div>
+                      <div class="min-w-0 pb-4 border-b border-gray-100">
+                        <p class="text-xs font-medium text-gray-900">Industry Updated</p>
+                        <p class="text-xs text-gray-500 mt-1">April 9, 2026 at 2:15 PM</p>
+                      </div>
+                    </div>
+                    <div class="flex gap-4">
+                      <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <i data-lucide="briefcase" class="w-4 h-4 text-amber-600"></i>
+                      </div>
+                      <div class="min-w-0">
+                        <p class="text-xs font-medium text-gray-900">Deal Associated</p>
+                        <p class="text-xs text-gray-500 mt-1">April 10, 2026 at 9:45 AM</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PIPELINE TAB -->
+          <div data-tab-content="pipeline" class="hidden">
+
+            <!-- Yearly Revenue Breakdown -->
+            <div class="bg-white rounded-3xl border border-gray-200 p-6 mb-6">
+              <div class="flex items-center gap-2 mb-4">
+                <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-gray-400"></i>
+                <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Revenue by Year</h3>
+              </div>
+              <div class="grid grid-cols-4 gap-4">
+                <div class="px-4 py-3 rounded-xl border border-gray-100 bg-gray-50/50">
+                  <div class="text-[11px] uppercase tracking-wider font-medium text-gray-400 mb-1">2024</div>
+                  <div class="text-lg font-bold text-gray-900">£8,400</div>
+                  <div class="text-[10px] text-gray-400 mt-0.5">2 deals · Signed</div>
+                </div>
+                <div class="px-4 py-3 rounded-xl border border-gray-100 bg-gray-50/50">
+                  <div class="text-[11px] uppercase tracking-wider font-medium text-gray-400 mb-1">2025</div>
+                  <div class="text-lg font-bold text-gray-900">£14,700</div>
+                  <div class="text-[10px] text-gray-400 mt-0.5">3 deals · Signed</div>
+                </div>
+                <div class="px-4 py-3 rounded-xl border border-emerald-100 bg-emerald-50/30">
+                  <div class="text-[11px] uppercase tracking-wider font-medium text-emerald-600 mb-1">2026 Confirmed</div>
+                  <div class="text-lg font-bold text-gray-900">£10,500</div>
+                  <div class="text-[10px] text-gray-400 mt-0.5">2 deals · Signed</div>
+                </div>
+                <div class="px-4 py-3 rounded-xl text-white" style="background: linear-gradient(135deg, #111827, #1f2937);">
+                  <div class="text-[11px] uppercase tracking-wider font-medium text-white/70 mb-1">2026 Pipeline</div>
+                  <div class="text-lg font-bold text-white">£99,150</div>
+                  <div class="text-[10px] text-white/60 mt-0.5">5 deals + 4 opps + 4 leads</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kanban Board -->
+            <div class="overflow-x-auto pb-4" style="scrollbar-width: thin;">
+              <div class="flex gap-4" style="min-width: 1100px;">
+
+                <!-- Deals Column -->
+                <div class="flex-1 min-w-[280px]">
+                  <div class="flex items-center justify-between mb-3 px-1">
+                    <div class="flex items-center gap-2">
+                      <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
+                      <h4 class="text-xs font-semibold text-gray-700 uppercase tracking-wider">Deals</h4>
+                      <span class="text-[10px] font-semibold bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded">5</span>
+                    </div>
+                    <span class="text-[10px] font-semibold text-gray-400">£21,000</span>
+                  </div>
+                  <div class="space-y-2.5 bg-gray-50/80 rounded-2xl p-3 min-h-[200px]">
+                    <a href="deal-detail.html" class="block bg-white rounded-xl border border-gray-200 p-4 hover:shadow-sm cursor-pointer transition-all">
+                      <div class="flex items-start justify-between mb-2">
+                        <p class="text-xs font-semibold text-gray-900 leading-snug pr-2">TOL26: 02 INDUSTRIES x15 WED EVE</p>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-medium border border-amber-200 rounded whitespace-nowrap"><span class="w-1 h-1 bg-amber-500 rounded-full"></span>In Play</span>
+                      </div>
+                      <div class="flex items-center justify-between text-[11px] text-gray-400">
+                        <span>Taste of London</span>
+                        <span class="font-semibold text-gray-700">£3,150</span>
+                      </div>
+                      <div class="flex items-center justify-between mt-1.5 text-[10px] text-gray-400">
+                        <span>Jaspinder Singh</span>
+                        <span>60%</span>
+                      </div>
+                    </a>
+                    <a href="deal-detail.html" class="block bg-white rounded-xl border border-gray-200 p-4 hover:shadow-sm cursor-pointer transition-all">
+                      <div class="flex items-start justify-between mb-2">
+                        <p class="text-xs font-semibold text-gray-900 leading-snug pr-2">FL26: 02 INDUSTRIES x20 SAT</p>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-medium border border-emerald-200 rounded whitespace-nowrap"><span class="w-1 h-1 bg-emerald-500 rounded-full"></span>Signed</span>
+                      </div>
+                      <div class="flex items-center justify-between text-[11px] text-gray-400">
+                        <span>Frieze London</span>
+                        <span class="font-semibold text-gray-700">£4,200</span>
+                      </div>
+                      <div class="flex items-center justify-between mt-1.5 text-[10px] text-gray-400">
+                        <span>Mollie Stoneham</span>
+                        <span>90%</span>
+                      </div>
+                    </a>
+                    <a href="deal-detail.html" class="block bg-white rounded-xl border border-gray-200 p-4 hover:shadow-sm cursor-pointer transition-all">
+                      <div class="flex items-start justify-between mb-2">
+                        <p class="text-xs font-semibold text-gray-900 leading-snug pr-2">HYPARK25: 02 INDUSTRIES x10 FRI</p>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-medium border border-blue-200 rounded whitespace-nowrap"><span class="w-1 h-1 bg-blue-500 rounded-full"></span>Contracted</span>
+                      </div>
+                      <div class="flex items-center justify-between text-[11px] text-gray-400">
+                        <span>Hyde Park Winter</span>
+                        <span class="font-semibold text-gray-700">£2,100</span>
+                      </div>
+                      <div class="flex items-center justify-between mt-1.5 text-[10px] text-gray-400">
+                        <span>Jaspinder Singh</span>
+                        <span>95%</span>
+                      </div>
+                    </a>
+                    <a href="deal-detail.html" class="block bg-white rounded-xl border border-gray-200 p-4 hover:shadow-sm cursor-pointer transition-all">
+                      <div class="flex items-start justify-between mb-2">
+                        <p class="text-xs font-semibold text-gray-900 leading-snug pr-2">SUMMIT26: 02 INDUSTRIES x25 THU</p>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-medium border border-amber-200 rounded whitespace-nowrap"><span class="w-1 h-1 bg-amber-500 rounded-full"></span>In Play</span>
+                      </div>
+                      <div class="flex items-center justify-between text-[11px] text-gray-400">
+                        <span>Summer Summit</span>
+                        <span class="font-semibold text-gray-700">£5,250</span>
+                      </div>
+                      <div class="flex items-center justify-between mt-1.5 text-[10px] text-gray-400">
+                        <span>Jessamy Dunning</span>
+                        <span>45%</span>
+                      </div>
+                    </a>
+                    <a href="deal-detail.html" class="block bg-white rounded-xl border border-gray-200 p-4 hover:shadow-sm cursor-pointer transition-all">
+                      <div class="flex items-start justify-between mb-2">
+                        <p class="text-xs font-semibold text-gray-900 leading-snug pr-2">TOL25: 02 INDUSTRIES x30 SAT EVE</p>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-medium border border-emerald-200 rounded whitespace-nowrap"><span class="w-1 h-1 bg-emerald-500 rounded-full"></span>Signed</span>
+                      </div>
+                      <div class="flex items-center justify-between text-[11px] text-gray-400">
+                        <span>Taste of London</span>
+                        <span class="font-semibold text-gray-700">£6,300</span>
+                      </div>
+                      <div class="flex items-center justify-between mt-1.5 text-[10px] text-gray-400">
+                        <span>Jaspinder Singh</span>
+                        <span>100%</span>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- Opportunities Column -->
+                <div class="flex-1 min-w-[280px]">
+                  <div class="flex items-center justify-between mb-3 px-1">
+                    <div class="flex items-center gap-2">
+                      <span class="w-2 h-2 bg-violet-500 rounded-full"></span>
+                      <h4 class="text-xs font-semibold text-gray-700 uppercase tracking-wider">Opportunities</h4>
+                      <span class="text-[10px] font-semibold bg-violet-50 text-violet-700 px-1.5 py-0.5 rounded">4</span>
+                    </div>
+                    <span class="text-[10px] font-semibold text-gray-400">£90,500</span>
+                  </div>
+                  <div class="space-y-2.5 bg-gray-50/80 rounded-2xl p-3 min-h-[200px]">
+                    <a href="opportunity-detail.html" class="block bg-white rounded-xl border border-gray-200 p-4 hover:shadow-sm cursor-pointer transition-all">
+                      <div class="flex items-start justify-between mb-2">
+                        <p class="text-xs font-semibold text-gray-900 leading-snug pr-2">02 Industries Health Summit 2026</p>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-medium border border-amber-200 rounded whitespace-nowrap"><span class="w-1 h-1 bg-amber-500 rounded-full"></span>Proposal</span>
+                      </div>
+                      <div class="flex items-center justify-between text-[11px] text-gray-400">
+                        <span>Taste of London</span>
+                        <span class="font-semibold text-gray-700">£28,000</span>
+                      </div>
+                      <div class="flex items-center justify-between mt-1.5 text-[10px] text-gray-400">
+                        <span>Jaspinder Singh · Close 15/06</span>
+                        <span>65%</span>
+                      </div>
+                    </a>
+                    <a href="opportunity-detail.html" class="block bg-white rounded-xl border border-gray-200 p-4 hover:shadow-sm cursor-pointer transition-all">
+                      <div class="flex items-start justify-between mb-2">
+                        <p class="text-xs font-semibold text-gray-900 leading-snug pr-2">02 Industries Medical Conference</p>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-medium border border-blue-200 rounded whitespace-nowrap"><span class="w-1 h-1 bg-blue-500 rounded-full"></span>Qualification</span>
+                      </div>
+                      <div class="flex items-center justify-between text-[11px] text-gray-400">
+                        <span>Summer Summit</span>
+                        <span class="font-semibold text-gray-700">£15,500</span>
+                      </div>
+                      <div class="flex items-center justify-between mt-1.5 text-[10px] text-gray-400">
+                        <span>Mollie Stoneham · Close 20/08</span>
+                        <span>40%</span>
+                      </div>
+                    </a>
+                    <a href="opportunity-detail.html" class="block bg-white rounded-xl border border-gray-200 p-4 hover:shadow-sm cursor-pointer transition-all">
+                      <div class="flex items-start justify-between mb-2">
+                        <p class="text-xs font-semibold text-gray-900 leading-snug pr-2">02 Industries Wellness Expo Sponsorship</p>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-50 text-gray-600 text-[10px] font-medium border border-gray-200 rounded whitespace-nowrap"><span class="w-1 h-1 bg-gray-400 rounded-full"></span>Prospecting</span>
+                      </div>
+                      <div class="flex items-center justify-between text-[11px] text-gray-400">
+                        <span>Hyde Park Winter</span>
+                        <span class="font-semibold text-gray-700">£12,000</span>
+                      </div>
+                      <div class="flex items-center justify-between mt-1.5 text-[10px] text-gray-400">
+                        <span>Jessamy Dunning · Close 01/10</span>
+                        <span>20%</span>
+                      </div>
+                    </a>
+                    <a href="opportunity-detail.html" class="block bg-white rounded-xl border border-gray-200 p-4 hover:shadow-sm cursor-pointer transition-all">
+                      <div class="flex items-start justify-between mb-2">
+                        <p class="text-xs font-semibold text-gray-900 leading-snug pr-2">02 Industries Annual Gala Partnership</p>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-medium border border-emerald-200 rounded whitespace-nowrap"><span class="w-1 h-1 bg-emerald-500 rounded-full"></span>Closed Won</span>
+                      </div>
+                      <div class="flex items-center justify-between text-[11px] text-gray-400">
+                        <span>Frieze London</span>
+                        <span class="font-semibold text-gray-700">£35,000</span>
+                      </div>
+                      <div class="flex items-center justify-between mt-1.5 text-[10px] text-gray-400">
+                        <span>Jaspinder Singh · Closed 28/02</span>
+                        <span>100%</span>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- Leads Column -->
+                <div class="flex-1 min-w-[280px]">
+                  <div class="flex items-center justify-between mb-3 px-1">
+                    <div class="flex items-center gap-2">
+                      <span class="w-2 h-2 bg-cyan-500 rounded-full"></span>
+                      <h4 class="text-xs font-semibold text-gray-700 uppercase tracking-wider">Leads</h4>
+                      <span class="text-[10px] font-semibold bg-cyan-50 text-cyan-700 px-1.5 py-0.5 rounded">4</span>
+                    </div>
+                  </div>
+                  <div class="space-y-2.5 bg-gray-50/80 rounded-2xl p-3 min-h-[200px]">
+                    <div class="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-sm cursor-pointer transition-all">
+                      <div class="flex items-start justify-between mb-2">
+                        <p class="text-xs font-semibold text-gray-900 leading-snug pr-2">TOL26 Corporate Hospitality</p>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-medium border border-amber-200 rounded whitespace-nowrap"><span class="w-1 h-1 bg-amber-500 rounded-full"></span>In Progress</span>
+                      </div>
+                      <p class="text-[11px] text-gray-500 mb-1.5 line-clamp-2">Sent initial proposal for Wed evening packages</p>
+                      <div class="flex items-center justify-between text-[10px] text-gray-400">
+                        <span>Jaspinder Singh</span>
+                        <span>Due 30/04</span>
+                      </div>
+                    </div>
+                    <div class="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-sm cursor-pointer transition-all">
+                      <div class="flex items-start justify-between mb-2">
+                        <p class="text-xs font-semibold text-gray-900 leading-snug pr-2">Frieze London 2026 Sponsorship</p>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-medium border border-blue-200 rounded whitespace-nowrap"><span class="w-1 h-1 bg-blue-500 rounded-full"></span>Qualified</span>
+                      </div>
+                      <p class="text-[11px] text-gray-500 mb-1.5 line-clamp-2">Follow-up call scheduled with marketing director</p>
+                      <div class="flex items-center justify-between text-[10px] text-gray-400">
+                        <span>Mollie Stoneham</span>
+                        <span>Due 15/05</span>
+                      </div>
+                    </div>
+                    <div class="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-sm cursor-pointer transition-all">
+                      <div class="flex items-start justify-between mb-2">
+                        <p class="text-xs font-semibold text-gray-900 leading-snug pr-2">Summer Summit Healthcare Panel</p>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-50 text-gray-600 text-[10px] font-medium border border-gray-200 rounded whitespace-nowrap"><span class="w-1 h-1 bg-gray-400 rounded-full"></span>New</span>
+                      </div>
+                      <p class="text-[11px] text-gray-500 mb-1.5 line-clamp-2">Exploring panel sponsorship + hospitality combo</p>
+                      <div class="flex items-center justify-between text-[10px] text-gray-400">
+                        <span>Jessamy Dunning</span>
+                        <span>Due 20/06</span>
+                      </div>
+                    </div>
+                    <div class="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-sm cursor-pointer transition-all">
+                      <div class="flex items-start justify-between mb-2">
+                        <p class="text-xs font-semibold text-gray-900 leading-snug pr-2">Hyde Park Winter 2026 Rebooking</p>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-medium border border-emerald-200 rounded whitespace-nowrap"><span class="w-1 h-1 bg-emerald-500 rounded-full"></span>Converted</span>
+                      </div>
+                      <p class="text-[11px] text-gray-500 mb-1.5 line-clamp-2">Previous client — checking interest for 2026 season</p>
+                      <div class="flex items-center justify-between text-[10px] text-gray-400">
+                        <span>Jaspinder Singh</span>
+                        <span>Closed 01/04</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <!-- NOTES TAB -->
+          <div data-tab-content="notes" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl border border-gray-200 p-6">
+              <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="sticky-note" class="w-3.5 h-3.5 text-gray-400"></i>
+                  <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Notes</h3>
+                </div>
+                <div class="flex gap-2">
+                  <button class="text-xs bg-gray-900 text-white px-3 py-1.5 rounded hover:bg-gray-800 flex items-center gap-1">
+                    <i data-lucide="plus" class="w-3 h-3"></i>
+                    New
+                  </button>
+                  <button class="text-xs border border-gray-200 px-3 py-1.5 rounded hover:bg-gray-50">Save</button>
+                  <button class="text-xs border border-gray-200 px-3 py-1.5 rounded hover:bg-gray-50">Cancel Changes</button>
+                </div>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                      <th class="pb-3 pr-4">Type</th>
+                      <th class="pb-3 pr-4">Subject</th>
+                      <th class="pb-3 pr-4">Note</th>
+                      <th class="pb-3 pr-4">Accepted</th>
+                      <th class="pb-3 pr-4">Due Date</th>
+                      <th class="pb-3 pr-4">Created On</th>
+                      <th class="pb-3 pr-4">Owner</th>
+                      <th class="pb-3 pr-4">Created By</th>
+                      <th class="pb-3 pr-4">Modified On</th>
+                      <th class="pb-3 pr-4">Modified By</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                      <td class="py-3 pr-4"><span class="inline-flex items-center px-2 py-0.5 bg-blue-50 text-blue-700 text-[11px] font-medium rounded border border-blue-200">Meeting</span></td>
+                      <td class="py-3 pr-4 text-xs font-medium text-gray-900">Initial discovery call with marketing team</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600 max-w-xs truncate">Discussed hospitality requirements for 2026 season. Key contact is Dr. Sarah Chen (VP Marketing). Interested in Taste of London and Frieze packages.</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600"><input type="checkbox" checked disabled></td>
+                      <td class="py-3 pr-4 text-xs text-gray-500">—</td>
+                      <td class="py-3 pr-4 text-xs text-gray-500">01/03/2026</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Jaspinder Singh</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Jaspinder Singh</td>
+                      <td class="py-3 pr-4 text-xs text-gray-500">01/03/2026</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Jaspinder Singh</td>
+                    </tr>
+                    <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                      <td class="py-3 pr-4"><span class="inline-flex items-center px-2 py-0.5 bg-amber-50 text-amber-700 text-[11px] font-medium rounded border border-amber-200">Task</span></td>
+                      <td class="py-3 pr-4 text-xs font-medium text-gray-900">Send revised hospitality brochure</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600 max-w-xs truncate">Updated brochure with 2026 pricing for Wednesday evening sessions. Include group discount options for 15+ guests.</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600"><input type="checkbox" checked disabled></td>
+                      <td class="py-3 pr-4 text-xs text-gray-500">10/03/2026</td>
+                      <td class="py-3 pr-4 text-xs text-gray-500">05/03/2026</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Mollie Stoneham</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Jaspinder Singh</td>
+                      <td class="py-3 pr-4 text-xs text-gray-500">09/03/2026</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Mollie Stoneham</td>
+                    </tr>
+                    <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                      <td class="py-3 pr-4"><span class="inline-flex items-center px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[11px] font-medium rounded border border-emerald-200">Call</span></td>
+                      <td class="py-3 pr-4 text-xs font-medium text-gray-900">Follow-up on Frieze London proposal</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600 max-w-xs truncate">Spoke with procurement. Budget approved for Saturday package. Awaiting legal sign-off on contract terms. Expected within 2 weeks.</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600"><input type="checkbox" checked disabled></td>
+                      <td class="py-3 pr-4 text-xs text-gray-500">—</td>
+                      <td class="py-3 pr-4 text-xs text-gray-500">22/03/2026</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Mollie Stoneham</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Mollie Stoneham</td>
+                      <td class="py-3 pr-4 text-xs text-gray-500">22/03/2026</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Mollie Stoneham</td>
+                    </tr>
+                    <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                      <td class="py-3 pr-4"><span class="inline-flex items-center px-2 py-0.5 bg-gray-50 text-gray-600 text-[11px] font-medium rounded border border-gray-200">General</span></td>
+                      <td class="py-3 pr-4 text-xs font-medium text-gray-900">Account strategy review</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600 max-w-xs truncate">02 Industries is a growing health care client. They have increased their event spend by 30% YoY. Consider for premium partner programme and cross-sell across all properties.</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600"><input type="checkbox" disabled></td>
+                      <td class="py-3 pr-4 text-xs text-gray-500">30/04/2026</td>
+                      <td class="py-3 pr-4 text-xs text-gray-500">08/04/2026</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Jaspinder Singh</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Jaspinder Singh</td>
+                      <td class="py-3 pr-4 text-xs text-gray-500">08/04/2026</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Jaspinder Singh</td>
+                    </tr>
+                    <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                      <td class="py-3 pr-4"><span class="inline-flex items-center px-2 py-0.5 bg-violet-50 text-violet-700 text-[11px] font-medium rounded border border-violet-200">Email</span></td>
+                      <td class="py-3 pr-4 text-xs font-medium text-gray-900">RE: Summer Summit sponsorship interest</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600 max-w-xs truncate">Received email from 02 Industries expressing interest in healthcare panel sponsorship at Summer Summit. Forwarded to Jessamy for follow-up.</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600"><input type="checkbox" disabled></td>
+                      <td class="py-3 pr-4 text-xs text-gray-500">15/04/2026</td>
+                      <td class="py-3 pr-4 text-xs text-gray-500">10/04/2026</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Jessamy Dunning</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Jaspinder Singh</td>
+                      <td class="py-3 pr-4 text-xs text-gray-500">10/04/2026</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Jaspinder Singh</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- INSIGHTS TAB -->
+          <div data-tab-content="insights" class="hidden space-y-6">
+            <!-- AI Generated Banner -->
+            <div class="flex items-center gap-3 px-4 py-3 rounded-xl" style="background: linear-gradient(135deg, #111827, #1f2937);">
+              <div class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+              </div>
+              <div class="flex-1">
+                <p class="text-white text-xs font-medium">Mari AI — Company Intelligence Report</p>
+                <p class="text-white/60 text-[10px]">Last refreshed: 11 April 2026 • Sources: LinkedIn, Companies House, News, Public Filings</p>
+              </div>
+              <button class="text-[11px] text-white/80 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors">
+                <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+                Refresh
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <!-- Left Column -->
+              <div class="lg:col-span-2 space-y-6">
+
+                <!-- Company Overview -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                  <div class="flex items-center gap-2 mb-4">
+                    <i data-lucide="building-2" class="w-3.5 h-3.5 text-gray-400"></i>
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Company Overview</h3>
+                  </div>
+                  <p class="text-sm text-gray-700 leading-relaxed mb-4">02 Industries is a Canadian health care and medical technology company headquartered in Toronto, Ontario. Founded in 2018, the company specialises in digital health solutions, telemedicine platforms, and medical device distribution across North America. They operate under the parent brand with subsidiaries focused on remote patient monitoring and AI-powered diagnostic tools.</p>
+                  <div class="grid grid-cols-2 gap-x-8 gap-y-2 mt-4 pt-4 border-t border-gray-100">
+                    <div class="flex justify-between py-1.5"><span class="text-xs text-gray-400 font-medium">Founded</span><span class="text-xs text-gray-800 font-medium">2018</span></div>
+                    <div class="flex justify-between py-1.5"><span class="text-xs text-gray-400 font-medium">Headquarters</span><span class="text-xs text-gray-800 font-medium">Toronto, ON, Canada</span></div>
+                    <div class="flex justify-between py-1.5"><span class="text-xs text-gray-400 font-medium">Employees</span><span class="text-xs text-gray-800 font-medium">250–500</span></div>
+                    <div class="flex justify-between py-1.5"><span class="text-xs text-gray-400 font-medium">Revenue (est.)</span><span class="text-xs text-gray-800 font-medium">CAD $45–60M</span></div>
+                    <div class="flex justify-between py-1.5"><span class="text-xs text-gray-400 font-medium">Industry</span><span class="text-xs text-gray-800 font-medium">Health Care / Medical</span></div>
+                    <div class="flex justify-between py-1.5"><span class="text-xs text-gray-400 font-medium">Ownership</span><span class="text-xs text-gray-800 font-medium">Private</span></div>
+                  </div>
+                </div>
+
+                <!-- LinkedIn Intelligence -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                  <div class="flex items-center gap-2 mb-4">
+                    <svg class="w-3.5 h-3.5 text-[#0A66C2]" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">LinkedIn Intelligence</h3>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-start gap-3 pb-3 border-b border-gray-100">
+                      <div class="w-7 h-7 bg-blue-50 text-blue-600 flex items-center justify-center rounded flex-shrink-0 mt-0.5">
+                        <i data-lucide="users" class="w-3.5 h-3.5"></i>
+                      </div>
+                      <div>
+                        <p class="text-xs font-medium text-gray-900">3,200+ followers • 285 employees on LinkedIn</p>
+                        <p class="text-[11px] text-gray-500 mt-0.5">Company page shows 18% follower growth in last 6 months</p>
+                      </div>
+                    </div>
+                    <div class="flex items-start gap-3 pb-3 border-b border-gray-100">
+                      <div class="w-7 h-7 bg-emerald-50 text-emerald-600 flex items-center justify-center rounded flex-shrink-0 mt-0.5">
+                        <i data-lucide="trending-up" class="w-3.5 h-3.5"></i>
+                      </div>
+                      <div>
+                        <p class="text-xs font-medium text-gray-900">Active hiring — 12 open positions</p>
+                        <p class="text-[11px] text-gray-500 mt-0.5">Roles in Sales, Marketing, and Business Development indicate expansion. New VP of Partnerships role posted 2 weeks ago.</p>
+                      </div>
+                    </div>
+                    <div class="flex items-start gap-3 pb-3 border-b border-gray-100">
+                      <div class="w-7 h-7 bg-amber-50 text-amber-600 flex items-center justify-center rounded flex-shrink-0 mt-0.5">
+                        <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
+                      </div>
+                      <div>
+                        <p class="text-xs font-medium text-gray-900">Key decision makers identified</p>
+                        <p class="text-[11px] text-gray-500 mt-0.5">Dr. Sarah Chen (VP Marketing), Michael Torres (Head of Events), Lisa Park (Director of Corporate Partnerships)</p>
+                      </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                      <div class="w-7 h-7 bg-violet-50 text-violet-600 flex items-center justify-center rounded flex-shrink-0 mt-0.5">
+                        <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                      </div>
+                      <div>
+                        <p class="text-xs font-medium text-gray-900">Recent posts focus on industry events</p>
+                        <p class="text-[11px] text-gray-500 mt-0.5">3 posts in the last month about attending/sponsoring health-tech conferences. Strong signal for event hospitality interest.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Recent News & Press -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                  <div class="flex items-center gap-2 mb-4">
+                    <i data-lucide="newspaper" class="w-3.5 h-3.5 text-gray-400"></i>
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Recent News & Press</h3>
+                  </div>
+                  <div class="space-y-4">
+                    <div class="flex items-start gap-3 pb-4 border-b border-gray-100">
+                      <div class="w-7 h-7 bg-red-50 text-red-500 flex items-center justify-center rounded flex-shrink-0 mt-0.5">
+                        <i data-lucide="flame" class="w-3.5 h-3.5"></i>
+                      </div>
+                      <div>
+                        <p class="text-xs font-medium text-gray-900">02 Industries closes $25M Series C funding round</p>
+                        <p class="text-[11px] text-gray-500 mt-0.5">TechCrunch • 28 March 2026 — Funding will be used to expand European operations and scale telemedicine platform.</p>
+                        <span class="inline-flex items-center px-1.5 py-0.5 bg-red-50 text-red-600 text-[10px] font-medium rounded mt-1.5">High Impact</span>
+                      </div>
+                    </div>
+                    <div class="flex items-start gap-3 pb-4 border-b border-gray-100">
+                      <div class="w-7 h-7 bg-blue-50 text-blue-600 flex items-center justify-center rounded flex-shrink-0 mt-0.5">
+                        <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+                      </div>
+                      <div>
+                        <p class="text-xs font-medium text-gray-900">02 Industries announces London office opening</p>
+                        <p class="text-[11px] text-gray-500 mt-0.5">MedTech News • 15 March 2026 — The company plans to establish a UK presence in Shoreditch by Q3 2026, targeting NHS partnerships.</p>
+                        <span class="inline-flex items-center px-1.5 py-0.5 bg-amber-50 text-amber-600 text-[10px] font-medium rounded mt-1.5">Opportunity</span>
+                      </div>
+                    </div>
+                    <div class="flex items-start gap-3 pb-4 border-b border-gray-100">
+                      <div class="w-7 h-7 bg-emerald-50 text-emerald-600 flex items-center justify-center rounded flex-shrink-0 mt-0.5">
+                        <i data-lucide="award" class="w-3.5 h-3.5"></i>
+                      </div>
+                      <div>
+                        <p class="text-xs font-medium text-gray-900">02 Industries named in "Top 50 Health-Tech Innovators 2026"</p>
+                        <p class="text-[11px] text-gray-500 mt-0.5">Forbes • 2 February 2026 — Recognised for their AI-powered remote diagnostics platform and rapid growth trajectory.</p>
+                      </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                      <div class="w-7 h-7 bg-gray-50 text-gray-500 flex items-center justify-center rounded flex-shrink-0 mt-0.5">
+                        <i data-lucide="handshake" class="w-3.5 h-3.5"></i>
+                      </div>
+                      <div>
+                        <p class="text-xs font-medium text-gray-900">02 Industries sponsors HealthTech World Congress 2025</p>
+                        <p class="text-[11px] text-gray-500 mt-0.5">EventBrite Insights • 10 November 2025 — Gold-tier sponsor with dedicated hospitality suite at the London ExCel venue.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Hospitality & Sponsorship Spend Analysis -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                  <div class="flex items-center gap-2 mb-2">
+                    <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-gray-400"></i>
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Hospitality & Sponsorship Spend Analysis</h3>
+                  </div>
+                  <p class="text-[11px] text-gray-400 mb-5">AI analysis based on public filings, event registrations, LinkedIn activity, and news sources</p>
+
+                  <!-- Spend KPI Cards -->
+                  <div class="grid grid-cols-3 gap-3 mb-6">
+                    <div class="bg-emerald-50 rounded-xl p-4 text-center">
+                      <p class="text-[10px] text-emerald-600 font-semibold uppercase tracking-wider mb-1">Est. Annual Event Spend</p>
+                      <p class="text-lg font-bold text-emerald-800">£320K–£450K</p>
+                      <p class="text-[10px] text-emerald-600 mt-1 flex items-center justify-center gap-1"><i data-lucide="trending-up" class="w-3 h-3"></i> +30% YoY growth</p>
+                    </div>
+                    <div class="bg-blue-50 rounded-xl p-4 text-center">
+                      <p class="text-[10px] text-blue-600 font-semibold uppercase tracking-wider mb-1">Events Sponsored (2025)</p>
+                      <p class="text-lg font-bold text-blue-800">8</p>
+                      <p class="text-[10px] text-blue-600 mt-1">Across 4 countries</p>
+                    </div>
+                    <div class="bg-amber-50 rounded-xl p-4 text-center">
+                      <p class="text-[10px] text-amber-600 font-semibold uppercase tracking-wider mb-1">Avg. Per-Event Spend</p>
+                      <p class="text-lg font-bold text-amber-800">£40K–£56K</p>
+                      <p class="text-[10px] text-amber-600 mt-1">Hospitality + branding</p>
+                    </div>
+                  </div>
+
+                  <!-- Spend Breakdown -->
+                  <div class="mb-6">
+                    <h4 class="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-3">Spend Breakdown by Category</h4>
+                    <div class="space-y-3">
+                      <div>
+                        <div class="flex items-center justify-between mb-1">
+                          <span class="text-xs text-gray-600">Corporate Hospitality (VIP Tables, Suites)</span>
+                          <span class="text-xs font-semibold text-gray-800">45%</span>
+                        </div>
+                        <div class="w-full bg-gray-100 rounded-full h-2"><div class="bg-emerald-500 h-2 rounded-full" style="width: 45%"></div></div>
+                      </div>
+                      <div>
+                        <div class="flex items-center justify-between mb-1">
+                          <span class="text-xs text-gray-600">Event Sponsorship (Branding, Naming Rights)</span>
+                          <span class="text-xs font-semibold text-gray-800">30%</span>
+                        </div>
+                        <div class="w-full bg-gray-100 rounded-full h-2"><div class="bg-blue-500 h-2 rounded-full" style="width: 30%"></div></div>
+                      </div>
+                      <div>
+                        <div class="flex items-center justify-between mb-1">
+                          <span class="text-xs text-gray-600">Conference Speaking & Panel Slots</span>
+                          <span class="text-xs font-semibold text-gray-800">15%</span>
+                        </div>
+                        <div class="w-full bg-gray-100 rounded-full h-2"><div class="bg-amber-500 h-2 rounded-full" style="width: 15%"></div></div>
+                      </div>
+                      <div>
+                        <div class="flex items-center justify-between mb-1">
+                          <span class="text-xs text-gray-600">Exhibition Stands & Product Demos</span>
+                          <span class="text-xs font-semibold text-gray-800">10%</span>
+                        </div>
+                        <div class="w-full bg-gray-100 rounded-full h-2"><div class="bg-violet-500 h-2 rounded-full" style="width: 10%"></div></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Known Public Events -->
+                  <div>
+                    <h4 class="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-3">Known Sponsorships & Event Presence (Public Sources)</h4>
+                    <div class="overflow-x-auto">
+                      <table class="w-full text-sm">
+                        <thead>
+                          <tr class="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                            <th class="pb-2 pr-4">Event</th>
+                            <th class="pb-2 pr-4">Year</th>
+                            <th class="pb-2 pr-4">Tier</th>
+                            <th class="pb-2 pr-4 text-right">Est. Spend</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr class="border-t border-gray-50">
+                            <td class="py-2.5 pr-4 text-xs text-gray-800 font-medium">HealthTech World Congress (London)</td>
+                            <td class="py-2.5 pr-4 text-xs text-gray-500">2025</td>
+                            <td class="py-2.5 pr-4"><span class="inline-flex items-center px-1.5 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-medium rounded border border-amber-200">Gold Sponsor</span></td>
+                            <td class="py-2.5 pr-4 text-xs text-gray-800 font-semibold text-right">£65,000</td>
+                          </tr>
+                          <tr class="border-t border-gray-50">
+                            <td class="py-2.5 pr-4 text-xs text-gray-800 font-medium">MedTech Innovation Summit (Toronto)</td>
+                            <td class="py-2.5 pr-4 text-xs text-gray-500">2025</td>
+                            <td class="py-2.5 pr-4"><span class="inline-flex items-center px-1.5 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-medium rounded border border-emerald-200">Platinum Sponsor</span></td>
+                            <td class="py-2.5 pr-4 text-xs text-gray-800 font-semibold text-right">£85,000</td>
+                          </tr>
+                          <tr class="border-t border-gray-50">
+                            <td class="py-2.5 pr-4 text-xs text-gray-800 font-medium">Digital Health Conference (San Francisco)</td>
+                            <td class="py-2.5 pr-4 text-xs text-gray-500">2025</td>
+                            <td class="py-2.5 pr-4"><span class="inline-flex items-center px-1.5 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-medium rounded border border-blue-200">Silver Sponsor</span></td>
+                            <td class="py-2.5 pr-4 text-xs text-gray-800 font-semibold text-right">£35,000</td>
+                          </tr>
+                          <tr class="border-t border-gray-50">
+                            <td class="py-2.5 pr-4 text-xs text-gray-800 font-medium">NHS Innovation Expo (Manchester)</td>
+                            <td class="py-2.5 pr-4 text-xs text-gray-500">2025</td>
+                            <td class="py-2.5 pr-4"><span class="inline-flex items-center px-1.5 py-0.5 bg-gray-50 text-gray-600 text-[10px] font-medium rounded border border-gray-200">Exhibitor</span></td>
+                            <td class="py-2.5 pr-4 text-xs text-gray-800 font-semibold text-right">£18,000</td>
+                          </tr>
+                          <tr class="border-t border-gray-50">
+                            <td class="py-2.5 pr-4 text-xs text-gray-800 font-medium">European Telemedicine Summit (Berlin)</td>
+                            <td class="py-2.5 pr-4 text-xs text-gray-500">2026</td>
+                            <td class="py-2.5 pr-4"><span class="inline-flex items-center px-1.5 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-medium rounded border border-amber-200">Gold Sponsor</span></td>
+                            <td class="py-2.5 pr-4 text-xs text-gray-800 font-semibold text-right">£55,000</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column -->
+              <div class="space-y-6">
+                <!-- AI Recommendation -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-5">
+                  <div class="flex items-center gap-2 mb-3">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-500"></i>
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">AI Recommendations</h3>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="p-3 bg-emerald-50 rounded-lg border border-emerald-100">
+                      <p class="text-xs font-semibold text-emerald-800 mb-1">Upsell Opportunity — High</p>
+                      <p class="text-[11px] text-emerald-700 leading-relaxed">With their Series C funding and London office opening, 02 Industries is primed for a premium hospitality package across multiple properties. Recommend bundled Taste of London + Frieze offer.</p>
+                    </div>
+                    <div class="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                      <p class="text-xs font-semibold text-blue-800 mb-1">Timing — Act Now</p>
+                      <p class="text-[11px] text-blue-700 leading-relaxed">Their new VP of Partnerships role suggests budget allocation for event partnerships. Engage before competitor hospitality providers do.</p>
+                    </div>
+                    <div class="p-3 bg-amber-50 rounded-lg border border-amber-100">
+                      <p class="text-xs font-semibold text-amber-800 mb-1">Cross-sell — Panel Sponsorship</p>
+                      <p class="text-[11px] text-amber-700 leading-relaxed">Their LinkedIn posts show thought-leadership ambitions. Offer Summer Summit healthcare panel sponsorship + hospitality combo package.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Relationship Score -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-5">
+                  <div class="flex items-center gap-2 mb-3">
+                    <i data-lucide="heart" class="w-3.5 h-3.5 text-gray-400"></i>
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Relationship Score</h3>
+                  </div>
+                  <div class="text-center py-3">
+                    <div class="relative w-20 h-20 mx-auto">
+                      <svg viewBox="0 0 36 36" class="w-20 h-20 -rotate-90">
+                        <circle cx="18" cy="18" r="15.5" fill="none" stroke="#f1f1f4" stroke-width="3" />
+                        <circle cx="18" cy="18" r="15.5" fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="72 28" stroke-linecap="round" />
+                      </svg>
+                      <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="text-lg font-bold text-gray-900">72</span>
+                      </div>
+                    </div>
+                    <p class="text-[10px] text-gray-400 font-medium uppercase tracking-wider mt-2">Strong & Growing</p>
+                  </div>
+                  <div class="space-y-2 mt-3 pt-3 border-t border-gray-100">
+                    <div class="flex justify-between"><span class="text-[11px] text-gray-400">Engagement frequency</span><span class="text-[11px] text-gray-800 font-medium">High</span></div>
+                    <div class="flex justify-between"><span class="text-[11px] text-gray-400">Multi-threading</span><span class="text-[11px] text-gray-800 font-medium">3 contacts</span></div>
+                    <div class="flex justify-between"><span class="text-[11px] text-gray-400">Deal velocity</span><span class="text-[11px] text-gray-800 font-medium">Above avg.</span></div>
+                    <div class="flex justify-between"><span class="text-[11px] text-gray-400">Repeat business</span><span class="text-[11px] text-emerald-600 font-medium">Yes (3 seasons)</span></div>
+                  </div>
+                </div>
+
+                <!-- Competitor Watch -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-5">
+                  <div class="flex items-center gap-2 mb-3">
+                    <i data-lucide="eye" class="w-3.5 h-3.5 text-gray-400"></i>
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Competitor Watch</h3>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-2 pb-2 border-b border-gray-100">
+                      <div class="w-5 h-5 bg-red-50 text-red-500 flex items-center justify-center rounded flex-shrink-0"><i data-lucide="alert-triangle" class="w-3 h-3"></i></div>
+                      <div>
+                        <p class="text-[11px] font-medium text-gray-900">Keith Prowse</p>
+                        <p class="text-[10px] text-gray-400">Pitched Wimbledon hospitality — Mar 2026</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2 pb-2 border-b border-gray-100">
+                      <div class="w-5 h-5 bg-amber-50 text-amber-500 flex items-center justify-center rounded flex-shrink-0"><i data-lucide="alert-circle" class="w-3 h-3"></i></div>
+                      <div>
+                        <p class="text-[11px] font-medium text-gray-900">Sodexo Live!</p>
+                        <p class="text-[10px] text-gray-400">Catering partner at 2025 HealthTech congress</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <div class="w-5 h-5 bg-gray-50 text-gray-400 flex items-center justify-center rounded flex-shrink-0"><i data-lucide="info" class="w-3 h-3"></i></div>
+                      <div>
+                        <p class="text-[11px] font-medium text-gray-900">Levy UK</p>
+                        <p class="text-[10px] text-gray-400">Previous hospitality vendor — contract ended 2024</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Industry Trends -->
+                <div class="bg-white rounded-3xl border border-gray-200 p-5">
+                  <div class="flex items-center gap-2 mb-3">
+                    <i data-lucide="trending-up" class="w-3.5 h-3.5 text-gray-400"></i>
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Industry Trends</h3>
+                  </div>
+                  <div class="space-y-2">
+                    <p class="text-[11px] text-gray-600 leading-relaxed">Health-tech companies increased event marketing budgets by <span class="font-semibold text-gray-900">28% in 2025</span>, with corporate hospitality being the fastest-growing category.</p>
+                    <p class="text-[11px] text-gray-600 leading-relaxed">UK-based medical conferences are projected to grow <span class="font-semibold text-gray-900">15% in 2026</span>, driven by post-pandemic demand for in-person networking.</p>
+                    <p class="text-[11px] text-gray-600 leading-relaxed">Average hospitality spend per guest in health sector: <span class="font-semibold text-gray-900">£180–£250</span>, above cross-industry average of £140.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AUDIT HISTORY TAB -->
+          <div data-tab-content="audit" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl border border-gray-200 p-6">
+              <div class="flex items-center gap-2 mb-6">
+                <i data-lucide="history" class="w-3.5 h-3.5 text-gray-400"></i>
+                <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Audit History</h3>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                      <th class="pb-3 pr-4">Changed Date</th>
+                      <th class="pb-3 pr-4">Changed By</th>
+                      <th class="pb-3 pr-4">Event</th>
+                      <th class="pb-3 pr-4">Entity</th>
+                      <th class="pb-3 pr-4">Record Name</th>
+                      <th class="pb-3 pr-4">Changed Field</th>
+                      <th class="pb-3 pr-4">Old Value</th>
+                      <th class="pb-3 pr-4">New Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                      <td class="py-3 pr-4 text-xs text-gray-600">04/08/2026 10:30 AM</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Admin User</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600"><span class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-blue-700 text-[11px] font-medium border border-blue-200 rounded"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>Created</span></td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Account</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">02 Industries</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Name</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">—</td>
+                      <td class="py-3 pr-4 text-xs font-semibold text-gray-900">02 Industries</td>
+                    </tr>
+                    <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                      <td class="py-3 pr-4 text-xs text-gray-600">04/08/2026 10:30 AM</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Admin User</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600"><span class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-blue-700 text-[11px] font-medium border border-blue-200 rounded"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>Created</span></td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Account</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">02 Industries</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Website</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">—</td>
+                      <td class="py-3 pr-4 text-xs font-semibold text-gray-900">02canada.com</td>
+                    </tr>
+                    <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                      <td class="py-3 pr-4 text-xs text-gray-600">04/08/2026 10:30 AM</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Admin User</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600"><span class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-blue-700 text-[11px] font-medium border border-blue-200 rounded"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>Created</span></td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Account</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">02 Industries</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Industry</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">—</td>
+                      <td class="py-3 pr-4 text-xs font-semibold text-gray-900">Health Care / Medical</td>
+                    </tr>
+                    <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                      <td class="py-3 pr-4 text-xs text-gray-600">04/09/2026 02:15 PM</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">John Smith</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600"><span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[11px] font-medium border border-emerald-200 rounded"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>Updated</span></td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Account</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">02 Industries</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Known Name</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">02 Industries Corp</td>
+                      <td class="py-3 pr-4 text-xs font-semibold text-gray-900">02 Industries</td>
+                    </tr>
+                    <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                      <td class="py-3 pr-4 text-xs text-gray-600">04/10/2026 09:45 AM</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Sarah Johnson</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600"><span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[11px] font-medium border border-emerald-200 rounded"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>Updated</span></td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Account</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">02 Industries</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">Key Account</td>
+                      <td class="py-3 pr-4 text-xs text-gray-600">No</td>
+                      <td class="py-3 pr-4 text-xs font-semibold text-gray-900">Yes</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ADMIN TAB -->
+          <div data-tab-content="admin" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl border border-gray-200 p-6">
+              <div class="flex items-center gap-2 mb-4">
+                <i data-lucide="settings" class="w-3.5 h-3.5 text-gray-400"></i>
+                <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Admin Settings</h3>
+              </div>
+              <div class="flex flex-col items-center justify-center py-16 text-center">
+                <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                  <i data-lucide="settings" class="w-5 h-5 text-gray-300"></i>
+                </div>
+                <p class="text-sm text-gray-400 font-medium">No admin fields configured</p>
+                <p class="text-xs text-gray-300 mt-1">Admin settings are not applicable for this account</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tabName) {
+      document.querySelectorAll('[data-tab-trigger]').forEach(btn => {
+        btn.classList.remove('border-gray-900', 'text-gray-900');
+        btn.classList.add('border-transparent', 'text-gray-400');
+      });
+      document.querySelectorAll('[data-tab-content]').forEach(content => {
+        content.classList.add('hidden');
+      });
+      const activeBtn = document.querySelector(`[data-tab-trigger="${tabName}"]`);
+      if (activeBtn) {
+        activeBtn.classList.add('border-gray-900', 'text-gray-900');
+        activeBtn.classList.remove('border-transparent', 'text-gray-400');
+      }
+      const activeContent = document.querySelector(`[data-tab-content="${tabName}"]`);
+      if (activeContent) {
+        activeContent.classList.remove('hidden');
+      }
+    }
+    document.querySelectorAll('[data-tab-trigger]').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tabTrigger));
+    });
+    function toggleInsightsPane() {
+      const expanded = document.getElementById('insights-expanded');
+      const chevron = document.getElementById('insights-chevron');
+      const toggleText = document.getElementById('insights-toggle-text');
+      if (expanded.classList.contains('hidden')) {
+        expanded.classList.remove('hidden');
+        chevron.style.transform = 'rotate(180deg)';
+        toggleText.textContent = 'Show Less';
+      } else {
+        expanded.classList.add('hidden');
+        chevron.style.transform = 'rotate(0deg)';
+        toggleText.textContent = 'Show More';
+      }
+    }
+    lucide.createIcons();
+  </script>
+</body>
+</html>

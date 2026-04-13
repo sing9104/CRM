@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM - Opportunity Detail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * {
+      font-family: 'DM Sans', sans-serif;
+    }
+    body {
+      background-color: #f8f8fa;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Left Sidebar -->
+    <aside class="w-[76px] flex flex-col items-center py-4 space-y-1 border-r border-gray-800" style="background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%);">
+      <!-- Home -->
+      <a href="index.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Home</span>
+      </a>
+      <!-- Mari AI -->
+      <a href="mari-ai.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="sparkles" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Mari AI</span>
+      </a>
+      <!-- Search -->
+      <a href="search.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="search" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Search</span>
+      </a>
+      <div class="w-8 border-t border-gray-700/50 my-1"></div>
+      <!-- Accounts -->
+      <a href="accounts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="building-2" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Accounts</span>
+      </a>
+      <!-- Contacts -->
+      <a href="contacts.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Contacts</span>
+      </a>
+      <!-- Opps -->
+      <a href="opportunities.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg bg-white/15 text-white transition-colors">
+        <i data-lucide="target" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Opps</span>
+      </a>
+      <!-- Deals -->
+      <a href="deals.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="handshake" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Deals</span>
+      </a>
+      <!-- Leads -->
+      <a href="leads.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="megaphone" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Leads</span>
+      </a>
+      <!-- Reports -->
+      <a href="reports.html" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Reports</span>
+      </a>
+
+      <!-- Spacer -->
+      <div class="flex-1"></div>
+
+      <!-- Logout -->
+      <a href="#" class="flex flex-col items-center gap-0.5 w-[60px] py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+        <i data-lucide="log-out" class="w-5 h-5"></i>
+        <span class="text-[9px] font-medium leading-none">Logout</span>
+      </a>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Top Header Bar -->
+      <header class="sticky top-0 z-40 bg-white border-b border-gray-100 border-t-2 border-gray-900 h-14 flex items-center justify-between px-6">
+        <div class="flex items-center gap-4">
+          <a href="opportunities.html" class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span class="font-medium">Opportunities</span>
+          </a>
+          <div class="h-5 border-l border-gray-200"></div>
+          <span class="text-xs text-gray-400 font-mono">OPP-2026-0142</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <button class="text-red-500 hover:text-red-600 text-xs font-medium h-8 px-3 flex items-center gap-1.5">
+            <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
+            Deactivate
+          </button>
+          <button class="bg-gray-900 text-white text-xs font-medium h-8 px-3 rounded flex items-center gap-1.5 hover:bg-gray-800">
+            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+            Edit Opportunity
+          </button>
+          <button class="text-red-500 hover:text-red-600 text-xs font-medium h-8 px-3 flex items-center gap-1.5">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            Delete
+          </button>
+          <div class="w-9 h-9 bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold rounded" style="border-radius: 8px;">JS</div>
+        </div>
+      </header>
+
+      <!-- Main Content Area -->
+      <main class="flex-1 overflow-y-auto">
+        <div class="w-full px-6 py-6">
+          <!-- Opportunity Header -->
+          <div class="mb-6">
+            <div class="flex items-start justify-between gap-6 mb-6">
+              <div class="flex items-start gap-4 min-w-0">
+                <div class="w-12 h-12 bg-gray-900 text-white rounded-lg flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="target" class="w-6 h-6"></i>
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-3 mb-1 flex-wrap">
+                    <h1 class="text-xl font-bold text-gray-900 truncate">Red Global Tech Summit 2026</h1>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-700 text-xs font-medium border border-amber-200 rounded">
+                      <span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
+                      Proposal
+                    </span>
+                  </div>
+                  <div class="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
+                    <span class="flex items-center gap-1.5">
+                      <i data-lucide="building-2" class="w-3.5 h-3.5 text-gray-400"></i>
+                      <a href="#" class="hover:text-blue-600">Red Global</a>
+                    </span>
+                    <span class="text-gray-200">|</span>
+                    <span class="flex items-center gap-1.5">
+                      <i data-lucide="user" class="w-3.5 h-3.5 text-gray-400"></i>
+                      <a href="#" class="hover:text-blue-600">Jaspinder Singh</a>
+                    </span>
+                    <span class="text-gray-200">|</span>
+                    <span class="flex items-center gap-1.5">
+                      <i data-lucide="map-pin" class="w-3.5 h-3.5 text-gray-400"></i>
+                      <a href="#" class="hover:text-blue-600">Taste of London</a>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!-- Probability Gauge -->
+              <div class="shrink-0 text-center">
+                <div class="relative w-16 h-16">
+                  <svg viewBox="0 0 36 36" class="w-16 h-16 -rotate-90">
+                    <circle cx="18" cy="18" r="15.5" fill="none" stroke="#f1f1f4" stroke-width="3" />
+                    <circle cx="18" cy="18" r="15.5" fill="none" stroke="#f59e0b" stroke-width="3" stroke-dasharray="26.8 90" stroke-linecap="round" />
+                  </svg>
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-sm font-bold text-gray-900">75%</span>
+                  </div>
+                </div>
+                <span class="text-[10px] text-gray-400 font-medium uppercase tracking-wider mt-1 block">Probability</span>
+              </div>
+            </div>
+
+            <!-- KPI Strip -->
+            <div class="grid grid-cols-3 gap-3 mb-6">
+              <!-- Estimated Value -->
+              <div class="bg-white rounded-3xl border border-gray-200 p-5">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Estimated Value</span>
+                  <span class="text-gray-400"><i data-lucide="pound-sterling" class="w-3.5 h-3.5"></i></span>
+                </div>
+                <div class="text-xl font-bold text-gray-900">£45,000</div>
+                <div class="text-[10px] text-gray-500 mt-1">Base forecast</div>
+              </div>
+              <!-- Weighted Value -->
+              <div class="bg-white rounded-3xl border border-gray-200 p-5">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Weighted Value</span>
+                  <span class="text-emerald-500"><i data-lucide="zap" class="w-3.5 h-3.5"></i></span>
+                </div>
+                <div class="text-xl font-bold text-gray-900">£33,750</div>
+                <div class="text-[10px] text-gray-500 mt-1">Adjusted for probability</div>
+              </div>
+              <!-- Expected Close -->
+              <div class="bg-white rounded-3xl border border-gray-200 p-5">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Expected Close</span>
+                  <span class="text-amber-500"><i data-lucide="calendar" class="w-3.5 h-3.5"></i></span>
+                </div>
+                <div class="text-xl font-bold text-gray-900">15/06/2026</div>
+                <div class="text-[10px] text-gray-500 mt-1">Estimated close date</div>
+              </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="flex gap-6 mb-6 border-b border-gray-200">
+              <button data-tab-trigger="overview" class="text-sm font-medium pb-3 border-b-2 border-gray-900 text-gray-900">Overview</button>
+              <button data-tab-trigger="deals" class="text-sm font-medium pb-3 border-b-2 border-transparent text-gray-400 hover:text-gray-900">Deals</button>
+              <button data-tab-trigger="notes" class="text-sm font-medium pb-3 border-b-2 border-transparent text-gray-400 hover:text-gray-900">Notes</button>
+              <button data-tab-trigger="documents" class="text-sm font-medium pb-3 border-b-2 border-transparent text-gray-400 hover:text-gray-900">Documents</button>
+              <button data-tab-trigger="audithistory" class="text-sm font-medium pb-3 border-b-2 border-transparent text-gray-400 hover:text-gray-900">Audit History</button>
+            </div>
+
+            <!-- OVERVIEW TAB -->
+            <div data-tab-content="overview">
+              <div class="grid grid-cols-3 gap-6">
+                <!-- Left Column -->
+                <div class="lg:col-span-2 space-y-6">
+                  <!-- Opportunity Information Card -->
+                  <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                    <div class="flex items-center gap-2 mb-4">
+                      <span class="text-gray-400"><i data-lucide="info" class="w-3.5 h-3.5"></i></span>
+                      <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Opportunity Information</h3>
+                    </div>
+                    <div class="grid grid-cols-2 gap-x-10 gap-y-2">
+                      <div class="space-y-3">
+                        <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Opportunity ID</span><span class="text-sm text-gray-800 font-medium text-right">OPP-2026-0142</span></div>
+                        <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Name</span><span class="text-sm text-gray-800 font-medium text-right">Red Global Tech Summit 2026</span></div>
+                        <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Account</span><span class="text-sm text-blue-600 font-medium text-right hover:text-blue-700"><a href="#">Red Global</a></span></div>
+                        <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Contact</span><span class="text-sm text-blue-600 font-medium text-right hover:text-blue-700"><a href="#">Sarah Johnson</a></span></div>
+                        <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Property</span><span class="text-sm text-blue-600 font-medium text-right hover:text-blue-700"><a href="#">Taste of London</a></span></div>
+                        <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Owner</span><span class="text-sm text-gray-800 font-medium text-right">Jaspinder Singh</span></div>
+                        <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Source</span><span class="text-sm text-gray-800 font-medium text-right">Referral</span></div>
+                      </div>
+                      <div class="space-y-3">
+                        <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Stage</span><span class="text-sm text-gray-800 font-medium text-right">Proposal</span></div>
+                        <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Probability</span><span class="text-sm text-gray-800 font-medium text-right">75%</span></div>
+                        <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Estimated Value</span><span class="text-sm text-gray-800 font-medium text-right">£45,000.00</span></div>
+                        <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Weighted Value</span><span class="text-sm text-gray-800 font-medium text-right">£33,750.00</span></div>
+                        <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Expected Close Date</span><span class="text-sm text-gray-800 font-medium text-right">15/06/2026</span></div>
+                        <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Created Date</span><span class="text-sm text-gray-800 font-medium text-right">01/03/2026</span></div>
+                        <div class="flex justify-between py-2"><span class="text-xs text-gray-400 font-medium">Last Modified</span><span class="text-sm text-gray-800 font-medium text-right">08/04/2026</span></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Description & Notes Card -->
+                  <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                    <div class="flex items-center gap-2 mb-4">
+                      <span class="text-gray-400"><i data-lucide="file-text" class="w-3.5 h-3.5"></i></span>
+                      <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Description & Notes</h3>
+                    </div>
+                    <div class="space-y-4">
+                      <div>
+                        <h4 class="text-xs font-semibold text-gray-900 mb-2">Description</h4>
+                        <p class="text-sm text-gray-700">Red Global is looking for a premium hospitality package for their annual tech summit. They are interested in Wednesday evening sessions with full catering and branding opportunities.</p>
+                      </div>
+                      <div>
+                        <h4 class="text-xs font-semibold text-gray-900 mb-2">Next Steps</h4>
+                        <p class="text-sm text-gray-700">Send revised proposal with tiered pricing options. Schedule follow-up call for next week.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Related Deals Card -->
+                  <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                    <div class="flex items-center gap-2 mb-4">
+                      <span class="text-gray-400"><i data-lucide="link-2" class="w-3.5 h-3.5"></i></span>
+                      <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Related Deals</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                      <table class="w-full text-sm">
+                        <thead>
+                          <tr class="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100 bg-gray-50/50">
+                            <th class="px-0 py-3">Deal Name</th>
+                            <th class="px-0 py-3">Status</th>
+                            <th class="px-0 py-3">Total Gross</th>
+                            <th class="px-0 py-3">Property</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                            <td class="px-0 py-3"><a href="#" class="text-xs text-blue-600 hover:text-blue-700 font-medium">TOL26: RED GLOBAL x30 WED EVE</a></td>
+                            <td class="px-0 py-3"><span class="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-700 text-[11px] font-medium border border-amber-200 rounded"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>In Play</span></td>
+                            <td class="px-0 py-3 text-xs font-semibold text-gray-900">£6,300.00</td>
+                            <td class="px-0 py-3 text-xs text-gray-600">Taste of London</td>
+                          </tr>
+                          <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                            <td class="px-0 py-3"><a href="#" class="text-xs text-blue-600 hover:text-blue-700 font-medium">TOL25: RED GLOBAL x20 SAT</a></td>
+                            <td class="px-0 py-3"><span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[11px] font-medium border border-emerald-200 rounded"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>Signed</span></td>
+                            <td class="px-0 py-3 text-xs font-semibold text-gray-900">£4,200.00</td>
+                            <td class="px-0 py-3 text-xs text-gray-600">Taste of London</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="space-y-6">
+                  <!-- Quick Actions -->
+                  <div class="bg-white rounded-3xl border border-gray-200 p-5">
+                    <div class="flex items-center gap-2 mb-3">
+                      <span class="text-gray-400"><i data-lucide="zap" class="w-3.5 h-3.5"></i></span>
+                      <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Quick Actions</h3>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                      <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors text-left rounded-lg">
+                        <span class="text-emerald-500"><i data-lucide="handshake" class="w-4 h-4"></i></span>
+                        Convert to Deal
+                      </button>
+                      <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors text-left rounded-lg">
+                        <span class="text-blue-500"><i data-lucide="sticky-note" class="w-4 h-4"></i></span>
+                        Add Note
+                      </button>
+                      <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-cyan-50 text-cyan-700 hover:bg-cyan-100 transition-colors text-left rounded-lg">
+                        <span class="text-cyan-500"><i data-lucide="send" class="w-4 h-4"></i></span>
+                        Send Email
+                      </button>
+                      <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-amber-50 text-amber-700 hover:bg-amber-100 transition-colors text-left rounded-lg">
+                        <span class="text-amber-500"><i data-lucide="calendar" class="w-4 h-4"></i></span>
+                        Schedule Meeting
+                      </button>
+                      <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-teal-50 text-teal-700 hover:bg-teal-100 transition-colors text-left rounded-lg">
+                        <span class="text-teal-500"><i data-lucide="building-2" class="w-4 h-4"></i></span>
+                        View Account
+                      </button>
+                      <button class="flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-sky-50 text-sky-700 hover:bg-sky-100 transition-colors text-left rounded-lg">
+                        <span class="text-sky-500"><i data-lucide="download" class="w-4 h-4"></i></span>
+                        Export PDF
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Stage History -->
+                  <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 flex items-center gap-2"><i data-lucide="arrow-right" class="w-3.5 h-3.5 text-amber-500"></i>Stage History</h3>
+                    <div class="space-y-4">
+                      <div class="flex gap-3 pb-3 border-b border-gray-100">
+                        <span class="w-2.5 h-2.5 bg-gray-400 rounded-full flex-shrink-0 mt-1.5"></span>
+                        <div class="min-w-0">
+                          <p class="text-xs font-medium text-gray-900">Prospecting</p>
+                          <p class="text-[10px] text-gray-400">Changed by Jaspinder Singh • 01/03/2026</p>
+                        </div>
+                      </div>
+                      <div class="flex gap-3 pb-3 border-b border-gray-100">
+                        <span class="w-2.5 h-2.5 bg-blue-500 rounded-full flex-shrink-0 mt-1.5"></span>
+                        <div class="min-w-0">
+                          <p class="text-xs font-medium text-gray-900">Qualification</p>
+                          <p class="text-[10px] text-gray-400">Changed by Jaspinder Singh • 15/03/2026</p>
+                        </div>
+                      </div>
+                      <div class="flex gap-3 pb-3">
+                        <span class="w-2.5 h-2.5 bg-amber-500 rounded-full flex-shrink-0 mt-1.5"></span>
+                        <div class="min-w-0">
+                          <p class="text-xs font-medium text-gray-900">Proposal</p>
+                          <p class="text-[10px] text-gray-400">Changed by Jaspinder Singh • 08/04/2026</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Activity Timeline -->
+                  <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 flex items-center gap-2"><i data-lucide="activity" class="w-3.5 h-3.5 text-emerald-500"></i>Activity Timeline</h3>
+                    <div class="space-y-3">
+                      <div class="flex gap-3 pb-3 border-b border-gray-100">
+                        <div class="w-8 h-8 bg-amber-50 text-amber-600 rounded flex items-center justify-center flex-shrink-0">
+                          <i data-lucide="target" class="w-3.5 h-3.5"></i>
+                        </div>
+                        <div class="min-w-0">
+                          <p class="text-[10px] text-gray-400">Opportunity created</p>
+                          <p class="text-xs font-medium text-gray-900">2 hours ago</p>
+                        </div>
+                      </div>
+                      <div class="flex gap-3 pb-3 border-b border-gray-100">
+                        <div class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded flex items-center justify-center flex-shrink-0">
+                          <i data-lucide="user" class="w-3.5 h-3.5"></i>
+                        </div>
+                        <div class="min-w-0">
+                          <p class="text-[10px] text-gray-400">Contact assigned</p>
+                          <p class="text-xs font-medium text-gray-900">5 hours ago</p>
+                        </div>
+                      </div>
+                      <div class="flex gap-3 pb-3">
+                        <div class="w-8 h-8 bg-blue-50 text-blue-600 rounded flex items-center justify-center flex-shrink-0">
+                          <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                        </div>
+                        <div class="min-w-0">
+                          <p class="text-[10px] text-gray-400">Proposal sent</p>
+                          <p class="text-xs font-medium text-gray-900">1 day ago</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DEALS TAB -->
+            <div data-tab-content="deals" class="hidden">
+              <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-6">Related Deals</h3>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-sm">
+                    <thead>
+                      <tr class="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100 bg-gray-50/50">
+                        <th class="px-6 py-3">Deal Name</th>
+                        <th class="px-6 py-3">Status</th>
+                        <th class="px-6 py-3">Total Gross</th>
+                        <th class="px-6 py-3">Property</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                        <td class="px-6 py-3"><a href="#" class="text-xs text-blue-600 hover:text-blue-700 font-medium">TOL26: RED GLOBAL x30 WED EVE</a></td>
+                        <td class="px-6 py-3"><span class="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-700 text-[11px] font-medium border border-amber-200 rounded"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>In Play</span></td>
+                        <td class="px-6 py-3 text-xs font-semibold text-gray-900">£6,300.00</td>
+                        <td class="px-6 py-3 text-xs text-gray-600">Taste of London</td>
+                      </tr>
+                      <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                        <td class="px-6 py-3"><a href="#" class="text-xs text-blue-600 hover:text-blue-700 font-medium">TOL25: RED GLOBAL x20 SAT</a></td>
+                        <td class="px-6 py-3"><span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[11px] font-medium border border-emerald-200 rounded"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>Signed</span></td>
+                        <td class="px-6 py-3 text-xs font-semibold text-gray-900">£4,200.00</td>
+                        <td class="px-6 py-3 text-xs text-gray-600">Taste of London</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- NOTES TAB -->
+            <div data-tab-content="notes" class="hidden">
+              <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                <div class="flex items-center justify-between mb-6">
+                  <h3 class="text-lg font-semibold text-gray-900">Notes</h3>
+                  <div class="flex gap-2">
+                    <button class="bg-gray-900 text-white text-xs font-medium h-8 px-3 rounded flex items-center gap-1.5 hover:bg-gray-800">
+                      <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                      New
+                    </button>
+                  </div>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-sm">
+                    <thead>
+                      <tr class="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100 bg-gray-50/50">
+                        <th class="px-6 py-3">Type</th>
+                        <th class="px-6 py-3">Subject</th>
+                        <th class="px-6 py-3">Note</th>
+                        <th class="px-6 py-3">Accepted</th>
+                        <th class="px-6 py-3">Due Date</th>
+                        <th class="px-6 py-3">Created On</th>
+                        <th class="px-6 py-3">Owner</th>
+                        <th class="px-6 py-3">Created By</th>
+                        <th class="px-6 py-3">Modified On</th>
+                        <th class="px-6 py-3">Modified By</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">No notes added yet.</p>
+              </div>
+            </div>
+
+            <!-- DOCUMENTS TAB -->
+            <div data-tab-content="documents" class="hidden">
+              <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                <div class="flex items-center justify-between mb-6">
+                  <h3 class="text-lg font-semibold text-gray-900">Documents</h3>
+                  <button class="bg-gray-900 text-white text-xs font-medium h-8 px-3 rounded flex items-center gap-1.5 hover:bg-gray-800">
+                    <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                    Upload
+                  </button>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-sm">
+                    <thead>
+                      <tr class="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100 bg-gray-50/50">
+                        <th class="px-6 py-3">Document Name</th>
+                        <th class="px-6 py-3">Type</th>
+                        <th class="px-6 py-3">Uploaded By</th>
+                        <th class="px-6 py-3">Date</th>
+                        <th class="px-6 py-3">Size</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                        <td class="px-6 py-3"><a href="#" class="text-xs text-blue-600 hover:text-blue-700 font-medium">Proposal_v2.pdf</a></td>
+                        <td class="px-6 py-3"><span class="text-xs text-gray-600">PDF</span></td>
+                        <td class="px-6 py-3 text-xs text-gray-600">Jaspinder Singh</td>
+                        <td class="px-6 py-3 text-xs text-gray-500">08/04/2026</td>
+                        <td class="px-6 py-3 text-xs text-gray-600">2.4 MB</td>
+                      </tr>
+                      <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                        <td class="px-6 py-3"><a href="#" class="text-xs text-blue-600 hover:text-blue-700 font-medium">Pricing_Schedule.xlsx</a></td>
+                        <td class="px-6 py-3"><span class="text-xs text-gray-600">XLSX</span></td>
+                        <td class="px-6 py-3 text-xs text-gray-600">Sarah Johnson</td>
+                        <td class="px-6 py-3 text-xs text-gray-500">05/04/2026</td>
+                        <td class="px-6 py-3 text-xs text-gray-600">512 KB</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- AUDIT HISTORY TAB -->
+            <div data-tab-content="audithistory" class="hidden">
+              <div class="bg-white rounded-3xl border border-gray-200 p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-6">Audit History</h3>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-sm">
+                    <thead>
+                      <tr class="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100 bg-gray-50/50">
+                        <th class="px-6 py-3">Date & Time</th>
+                        <th class="px-6 py-3">User</th>
+                        <th class="px-6 py-3">Action</th>
+                        <th class="px-6 py-3">Field</th>
+                        <th class="px-6 py-3">Old Value</th>
+                        <th class="px-6 py-3">New Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                        <td class="px-6 py-3 text-xs text-gray-600">08/04/2026 14:32</td>
+                        <td class="px-6 py-3 text-xs text-gray-600">Jaspinder Singh</td>
+                        <td class="px-6 py-3"><span class="text-xs text-blue-600 font-medium">Updated</span></td>
+                        <td class="px-6 py-3 text-xs text-gray-600">Stage</td>
+                        <td class="px-6 py-3 text-xs text-gray-400">Qualification</td>
+                        <td class="px-6 py-3 text-xs text-gray-800 font-medium">Proposal</td>
+                      </tr>
+                      <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                        <td class="px-6 py-3 text-xs text-gray-600">08/04/2026 10:15</td>
+                        <td class="px-6 py-3 text-xs text-gray-600">Sarah Johnson</td>
+                        <td class="px-6 py-3"><span class="text-xs text-emerald-600 font-medium">Created</span></td>
+                        <td class="px-6 py-3 text-xs text-gray-600">Opportunity</td>
+                        <td class="px-6 py-3 text-xs text-gray-300">—</td>
+                        <td class="px-6 py-3 text-xs text-gray-800 font-medium">Red Global Tech Summit 2026</td>
+                      </tr>
+                      <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                        <td class="px-6 py-3 text-xs text-gray-600">07/04/2026 16:48</td>
+                        <td class="px-6 py-3 text-xs text-gray-600">Jaspinder Singh</td>
+                        <td class="px-6 py-3"><span class="text-xs text-blue-600 font-medium">Updated</span></td>
+                        <td class="px-6 py-3 text-xs text-gray-600">Probability</td>
+                        <td class="px-6 py-3 text-xs text-gray-400">50%</td>
+                        <td class="px-6 py-3 text-xs text-gray-800 font-medium">75%</td>
+                      </tr>
+                      <tr class="border-t border-gray-50 hover:bg-gray-50/50">
+                        <td class="px-6 py-3 text-xs text-gray-600">01/03/2026 09:20</td>
+                        <td class="px-6 py-3 text-xs text-gray-600">Jaspinder Singh</td>
+                        <td class="px-6 py-3"><span class="text-xs text-emerald-600 font-medium">Created</span></td>
+                        <td class="px-6 py-3 text-xs text-gray-600">Opportunity</td>
+                        <td class="px-6 py-3 text-xs text-gray-300">—</td>
+                        <td class="px-6 py-3 text-xs text-gray-800 font-medium">OPP-2026-0142</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tabName) {
+      document.querySelectorAll('[data-tab-trigger]').forEach(btn => {
+        btn.classList.remove('border-gray-900', 'text-gray-900');
+        btn.classList.add('border-transparent', 'text-gray-400');
+      });
+      document.querySelectorAll('[data-tab-content]').forEach(content => {
+        content.classList.add('hidden');
+      });
+      const activeBtn = document.querySelector(`[data-tab-trigger="${tabName}"]`);
+      if (activeBtn) {
+        activeBtn.classList.add('border-gray-900', 'text-gray-900');
+        activeBtn.classList.remove('border-transparent', 'text-gray-400');
+      }
+      const activeContent = document.querySelector(`[data-tab-content="${tabName}"]`);
+      if (activeContent) {
+        activeContent.classList.remove('hidden');
+      }
+    }
+    document.querySelectorAll('[data-tab-trigger]').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tabTrigger));
+    });
+    lucide.createIcons();
+  </script>
+</body>
+</html>
