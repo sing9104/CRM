@@ -17,6 +17,25 @@
     body {
       background-color: #f8f8fa;
     }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .spin-slow { animation: spin-slow 1.2s linear infinite; }
+    @keyframes highlightField {
+      0% { background-color: #ede9fe; box-shadow: 0 0 0 2px #8b5cf6; }
+      100% { background-color: transparent; box-shadow: none; }
+    }
+    .ai-highlight { animation: highlightField 1.5s ease-out forwards; }
+    .mari-ai-panel textarea:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
+    }
   </style>
 </head>
 <body class="bg-gray-50">
@@ -100,84 +119,91 @@
             <p class="text-gray-500">Here's what's happening in your CRM</p>
           </div>
 
-          <!-- Quick Links Grid -->
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-            <!-- Accounts -->
-            <a href="accounts.html" class="group p-6 bg-white rounded-3xl border border-gray-200 hover:shadow-sm hover:border-gray-300 transition-all cursor-pointer">
-              <div class="flex items-start justify-between mb-4">
-                <div class="w-12 h-12 bg-blue-100 text-blue-600 flex items-center justify-center rounded-lg">
-                  <i data-lucide="building-2" class="w-6 h-6"></i>
-                </div>
+          <!-- Mari AI Quick Create Widget -->
+          <div id="mari-widget" class="mari-ai-panel mb-8 rounded-3xl border border-gray-200 overflow-hidden" style="background: linear-gradient(135deg, #faf5ff 0%, #f0e7ff 50%, #ede5ff 100%);">
+            <!-- Header -->
+            <div class="px-6 pt-5 pb-3 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #7c3aed, #6d28d9);">
+                <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
               </div>
-              <h3 class="text-gray-900 font-semibold mb-1">Accounts</h3>
-              <p class="text-gray-500 text-sm">46,472 active accounts</p>
-            </a>
+              <div class="flex-1">
+                <h3 class="text-gray-900 font-bold text-base">Create with Mari AI</h3>
+                <p class="text-gray-500 text-xs">Paste a description and let AI create a record for you instantly</p>
+              </div>
+              <a href="mari-ai.html" class="text-xs text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1">
+                <span>Open full assistant</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </a>
+            </div>
 
-            <!-- Contacts -->
-            <a href="contacts.html" class="group p-6 bg-white rounded-3xl border border-gray-200 hover:shadow-sm hover:border-gray-300 transition-all cursor-pointer">
-              <div class="flex items-start justify-between mb-4">
-                <div class="w-12 h-12 bg-emerald-100 text-emerald-600 flex items-center justify-center rounded-lg">
-                  <i data-lucide="users" class="w-6 h-6"></i>
-                </div>
-              </div>
-              <h3 class="text-gray-900 font-semibold mb-1">Contacts</h3>
-              <p class="text-gray-500 text-sm">49,764 active contacts</p>
-            </a>
+            <!-- Entity Selector Tabs -->
+            <div class="px-6 pb-3 flex items-center gap-2">
+              <button onclick="selectEntity('deal')" id="tab-deal" class="entity-tab px-3 py-1.5 rounded-full text-xs font-semibold transition-all bg-violet-600 text-white shadow-sm">
+                <i data-lucide="handshake" class="w-3.5 h-3.5 inline -mt-0.5"></i> Deal
+              </button>
+              <button onclick="selectEntity('contact')" id="tab-contact" class="entity-tab px-3 py-1.5 rounded-full text-xs font-semibold transition-all bg-white/70 text-gray-600 hover:bg-white hover:text-gray-900">
+                <i data-lucide="user" class="w-3.5 h-3.5 inline -mt-0.5"></i> Contact
+              </button>
+              <button onclick="selectEntity('account')" id="tab-account" class="entity-tab px-3 py-1.5 rounded-full text-xs font-semibold transition-all bg-white/70 text-gray-600 hover:bg-white hover:text-gray-900">
+                <i data-lucide="building-2" class="w-3.5 h-3.5 inline -mt-0.5"></i> Account
+              </button>
+              <button onclick="selectEntity('opportunity')" id="tab-opportunity" class="entity-tab px-3 py-1.5 rounded-full text-xs font-semibold transition-all bg-white/70 text-gray-600 hover:bg-white hover:text-gray-900">
+                <i data-lucide="target" class="w-3.5 h-3.5 inline -mt-0.5"></i> Opportunity
+              </button>
+            </div>
 
-            <!-- Opportunities -->
-            <a href="opportunities.html" class="group p-6 bg-white rounded-3xl border border-gray-200 hover:shadow-sm hover:border-gray-300 transition-all cursor-pointer">
-              <div class="flex items-start justify-between mb-4">
-                <div class="w-12 h-12 bg-violet-100 text-violet-600 flex items-center justify-center rounded-lg">
-                  <i data-lucide="target" class="w-6 h-6"></i>
-                </div>
+            <!-- Input State (idle) -->
+            <div id="ai-idle" class="px-6 pb-5">
+              <div class="relative">
+                <textarea id="ai-input" rows="3" class="w-full rounded-2xl border border-violet-200 bg-white/80 backdrop-blur px-4 py-3 text-sm text-gray-800 placeholder-gray-400 resize-none focus:border-violet-400" placeholder="e.g. Burberry want 30 covers for Wednesday evening at Taste of London. Contact is Sarah Thompson, sarah@burberry.com. Budget around £150pp, VIP package preferred."></textarea>
+                <button onclick="processAI()" id="ai-submit-btn" class="absolute bottom-3 right-3 px-4 py-1.5 rounded-xl text-xs font-semibold text-white shadow-sm transition-all hover:shadow-md" style="background: linear-gradient(135deg, #7c3aed, #6d28d9);">
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5 inline -mt-0.5 mr-1"></i> Parse with AI
+                </button>
               </div>
-              <h3 class="text-gray-900 font-semibold mb-1">Opportunities</h3>
-              <p class="text-gray-500 text-sm">238 open opportunities</p>
-            </a>
+              <p class="text-[11px] text-gray-400 mt-2 px-1">Paste an email snippet, meeting notes, or any description. Mari AI will extract the fields and let you create the record in one click.</p>
+            </div>
 
-            <!-- Deals -->
-            <a href="deals.html" class="group p-6 bg-white rounded-3xl border border-gray-200 hover:shadow-sm hover:border-gray-300 transition-all cursor-pointer">
-              <div class="flex items-start justify-between mb-4">
-                <div class="w-12 h-12 bg-amber-100 text-amber-600 flex items-center justify-center rounded-lg">
-                  <i data-lucide="handshake" class="w-6 h-6"></i>
-                </div>
+            <!-- Processing State -->
+            <div id="ai-processing" class="px-6 pb-5 hidden">
+              <div class="flex items-center justify-center gap-3 py-6">
+                <svg class="spin-slow w-5 h-5 text-violet-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+                <span class="text-sm font-medium text-violet-700">Analysing your input...</span>
               </div>
-              <h3 class="text-gray-900 font-semibold mb-1">Deals</h3>
-              <p class="text-gray-500 text-sm">10,238 active deals</p>
-            </a>
+            </div>
 
-            <!-- Leads -->
-            <a href="leads.html" class="group p-6 bg-white rounded-3xl border border-gray-200 hover:shadow-sm hover:border-gray-300 transition-all cursor-pointer">
-              <div class="flex items-start justify-between mb-4">
-                <div class="w-12 h-12 bg-gray-900 text-white flex items-center justify-center rounded-lg">
-                  <i data-lucide="megaphone" class="w-6 h-6"></i>
+            <!-- Results State -->
+            <div id="ai-results" class="px-6 pb-5 hidden">
+              <div class="bg-white/80 backdrop-blur rounded-2xl border border-violet-100 p-4 mb-3">
+                <div class="flex items-center gap-2 mb-3">
+                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i>
+                  <span id="ai-summary" class="text-sm font-semibold text-gray-800"></span>
                 </div>
+                <div id="ai-fields" class="grid grid-cols-2 lg:grid-cols-3 gap-2"></div>
               </div>
-              <h3 class="text-gray-900 font-semibold mb-1">Leads</h3>
-              <p class="text-gray-500 text-sm">Campaign leads & prospects</p>
-            </a>
+              <div class="flex items-center gap-2">
+                <button onclick="confirmAI()" class="flex-1 px-4 py-2 rounded-xl text-xs font-semibold text-white shadow-sm transition-all hover:shadow-md" style="background: linear-gradient(135deg, #7c3aed, #6d28d9);">
+                  <i data-lucide="check" class="w-3.5 h-3.5 inline -mt-0.5 mr-1"></i> Create <span id="confirm-entity-label">Deal</span>
+                </button>
+                <button onclick="resetAI()" class="px-4 py-2 rounded-xl text-xs font-semibold text-gray-600 bg-white/70 border border-gray-200 hover:bg-white transition-all">
+                  <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 inline -mt-0.5 mr-1"></i> Start Over
+                </button>
+              </div>
+            </div>
 
-            <!-- Reports -->
-            <a href="reports.html" class="group p-6 bg-white rounded-3xl border border-gray-200 hover:shadow-sm hover:border-gray-300 transition-all cursor-pointer">
-              <div class="flex items-start justify-between mb-4">
-                <div class="w-12 h-12 bg-gray-900 text-white flex items-center justify-center rounded-lg">
-                  <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
+            <!-- Confirmed State -->
+            <div id="ai-confirmed" class="px-6 pb-5 hidden">
+              <div class="flex items-center justify-center gap-3 py-4">
+                <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                  <i data-lucide="check" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-gray-900" id="confirmed-msg">Deal created successfully!</p>
+                  <p class="text-xs text-gray-500">Redirecting to the record...</p>
                 </div>
               </div>
-              <h3 class="text-gray-900 font-semibold mb-1">Reports</h3>
-              <p class="text-gray-500 text-sm">Dashboards & analytics</p>
-            </a>
-
-            <!-- Mari AI -->
-            <a href="mari-ai.html" class="group p-6 bg-white rounded-3xl border border-gray-200 hover:shadow-sm hover:border-gray-300 transition-all cursor-pointer" style="background: linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%);">
-              <div class="flex items-start justify-between mb-4">
-                <div class="w-12 h-12 bg-violet-100 text-violet-600 flex items-center justify-center rounded-lg">
-                  <i data-lucide="sparkles" class="w-6 h-6"></i>
-                </div>
-              </div>
-              <h3 class="text-gray-900 font-semibold mb-1">Mari AI</h3>
-              <p class="text-gray-500 text-sm">AI-powered assistant</p>
-            </a>
+            </div>
           </div>
 
           <!-- Recent Activity & Recent Payments -->
@@ -469,6 +495,169 @@
 
   <script>
     lucide.createIcons();
+
+    // ── Entity Configuration ──
+    let currentEntity = 'deal';
+
+    const ENTITY_CONFIG = {
+      deal: {
+        label: 'Deal',
+        createUrl: 'deal-create.html',
+        fields: [
+          { key: 'account', label: 'Account', value: 'Burberry', icon: 'building-2', confidence: 'high' },
+          { key: 'property', label: 'Property', value: 'Taste of London', icon: 'map-pin', confidence: 'high' },
+          { key: 'covers', label: 'Covers', value: '30', icon: 'users', confidence: 'high' },
+          { key: 'eventDate', label: 'Event Date', value: 'Wednesday Evening', icon: 'calendar', confidence: 'medium' },
+          { key: 'contact', label: 'Contact', value: 'Sarah Thompson', icon: 'user', confidence: 'high' },
+          { key: 'email', label: 'Email', value: 'sarah@burberry.com', icon: 'mail', confidence: 'high' },
+          { key: 'pricePerHead', label: 'Price / Head', value: '£150', icon: 'banknote', confidence: 'high' },
+          { key: 'package', label: 'Package', value: 'VIP', icon: 'crown', confidence: 'medium' },
+          { key: 'status', label: 'Status', value: 'Enquiry', icon: 'circle-dot', confidence: 'medium' },
+        ],
+        summary: 'Matched 9 fields from your description'
+      },
+      contact: {
+        label: 'Contact',
+        createUrl: 'contact-create.html',
+        fields: [
+          { key: 'firstName', label: 'First Name', value: 'Sarah', icon: 'user', confidence: 'high' },
+          { key: 'lastName', label: 'Last Name', value: 'Thompson', icon: 'user', confidence: 'high' },
+          { key: 'email', label: 'Email', value: 'sarah@burberry.com', icon: 'mail', confidence: 'high' },
+          { key: 'company', label: 'Company', value: 'Burberry', icon: 'building-2', confidence: 'high' },
+          { key: 'jobTitle', label: 'Job Title', value: 'Events Director', icon: 'briefcase', confidence: 'medium' },
+          { key: 'phone', label: 'Phone', value: '+44 20 7946 0958', icon: 'phone', confidence: 'medium' },
+          { key: 'leadSource', label: 'Lead Source', value: 'Event', icon: 'zap', confidence: 'medium' },
+        ],
+        summary: 'Matched 7 fields from your description'
+      },
+      account: {
+        label: 'Account',
+        createUrl: 'account-create.html',
+        fields: [
+          { key: 'companyName', label: 'Company', value: 'Burberry Group PLC', icon: 'building-2', confidence: 'high' },
+          { key: 'industry', label: 'Industry', value: 'Fashion & Luxury', icon: 'tag', confidence: 'high' },
+          { key: 'website', label: 'Website', value: 'burberry.com', icon: 'globe', confidence: 'high' },
+          { key: 'phone', label: 'Phone', value: '+44 20 3367 3000', icon: 'phone', confidence: 'medium' },
+          { key: 'city', label: 'City', value: 'London', icon: 'map-pin', confidence: 'medium' },
+          { key: 'keyAccount', label: 'Key Account', value: 'Yes', icon: 'star', confidence: 'medium' },
+        ],
+        summary: 'Matched 6 fields from your description'
+      },
+      opportunity: {
+        label: 'Opportunity',
+        createUrl: 'opportunity-create.html',
+        fields: [
+          { key: 'name', label: 'Opportunity', value: 'Burberry TOL 2026', icon: 'target', confidence: 'high' },
+          { key: 'account', label: 'Account', value: 'Burberry', icon: 'building-2', confidence: 'high' },
+          { key: 'contact', label: 'Contact', value: 'Sarah Thompson', icon: 'user', confidence: 'high' },
+          { key: 'property', label: 'Property', value: 'Taste of London', icon: 'map-pin', confidence: 'high' },
+          { key: 'value', label: 'Est. Value', value: '£4,500', icon: 'banknote', confidence: 'high' },
+          { key: 'stage', label: 'Stage', value: 'Lead', icon: 'layers', confidence: 'medium' },
+          { key: 'source', label: 'Source', value: 'Inbound', icon: 'inbox', confidence: 'medium' },
+          { key: 'probability', label: 'Probability', value: '60%', icon: 'percent', confidence: 'medium' },
+        ],
+        summary: 'Matched 8 fields from your description'
+      }
+    };
+
+    // ── Entity Selector ──
+    function selectEntity(entity) {
+      currentEntity = entity;
+      document.querySelectorAll('.entity-tab').forEach(tab => {
+        tab.className = 'entity-tab px-3 py-1.5 rounded-full text-xs font-semibold transition-all bg-white/70 text-gray-600 hover:bg-white hover:text-gray-900';
+      });
+      document.getElementById('tab-' + entity).className = 'entity-tab px-3 py-1.5 rounded-full text-xs font-semibold transition-all bg-violet-600 text-white shadow-sm';
+      // Reset to idle if we're in results/confirmed
+      if (!document.getElementById('ai-idle').classList.contains('hidden')) return;
+      resetAI();
+      lucide.createIcons();
+    }
+
+    // ── Process AI ──
+    function processAI() {
+      const input = document.getElementById('ai-input').value.trim();
+      if (!input || input.length < 5) {
+        document.getElementById('ai-input').classList.add('border-red-300');
+        setTimeout(() => document.getElementById('ai-input').classList.remove('border-red-300'), 1500);
+        return;
+      }
+      // Show processing
+      document.getElementById('ai-idle').classList.add('hidden');
+      document.getElementById('ai-processing').classList.remove('hidden');
+      document.getElementById('ai-results').classList.add('hidden');
+      document.getElementById('ai-confirmed').classList.add('hidden');
+      lucide.createIcons();
+
+      // Simulate AI delay
+      setTimeout(() => {
+        showResults();
+      }, 2000);
+    }
+
+    // ── Show Results ──
+    function showResults() {
+      const config = ENTITY_CONFIG[currentEntity];
+      document.getElementById('ai-processing').classList.add('hidden');
+      document.getElementById('ai-results').classList.remove('hidden');
+      document.getElementById('ai-summary').textContent = config.summary;
+      document.getElementById('confirm-entity-label').textContent = config.label;
+
+      const fieldsContainer = document.getElementById('ai-fields');
+      fieldsContainer.innerHTML = '';
+
+      config.fields.forEach((field, i) => {
+        const confColor = field.confidence === 'high' ? 'emerald' : field.confidence === 'medium' ? 'amber' : 'gray';
+        const card = document.createElement('div');
+        card.className = 'animate-fade-in bg-white rounded-xl border border-gray-100 p-2.5 flex items-start gap-2';
+        card.style.animationDelay = (i * 0.06) + 's';
+        card.style.opacity = '0';
+        card.innerHTML = `
+          <div class="w-7 h-7 rounded-lg bg-violet-50 text-violet-500 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="${field.icon}" class="w-3.5 h-3.5"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-[10px] text-gray-400 font-medium">${field.label}</p>
+            <p class="text-xs font-semibold text-gray-900 truncate">${field.value}</p>
+          </div>
+          <span class="w-2 h-2 rounded-full bg-${confColor}-400 mt-1.5 flex-shrink-0" title="${field.confidence} confidence"></span>
+        `;
+        fieldsContainer.appendChild(card);
+      });
+
+      lucide.createIcons();
+    }
+
+    // ── Confirm → redirect to create page ──
+    function confirmAI() {
+      const config = ENTITY_CONFIG[currentEntity];
+      document.getElementById('ai-results').classList.add('hidden');
+      document.getElementById('ai-confirmed').classList.remove('hidden');
+      document.getElementById('confirmed-msg').textContent = config.label + ' record ready! Redirecting...';
+      lucide.createIcons();
+
+      setTimeout(() => {
+        window.location.href = config.createUrl;
+      }, 1500);
+    }
+
+    // ── Reset ──
+    function resetAI() {
+      document.getElementById('ai-idle').classList.remove('hidden');
+      document.getElementById('ai-processing').classList.add('hidden');
+      document.getElementById('ai-results').classList.add('hidden');
+      document.getElementById('ai-confirmed').classList.add('hidden');
+      lucide.createIcons();
+    }
+
+    // ── Toast ──
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.className = 'fixed bottom-6 right-6 bg-gray-900 text-white px-5 py-3 rounded-xl text-sm font-medium shadow-lg z-[9999] animate-fade-in flex items-center gap-2';
+      toast.innerHTML = '<i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>' + message;
+      document.body.appendChild(toast);
+      lucide.createIcons();
+      setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.4s'; setTimeout(() => toast.remove(), 400); }, 3000);
+    }
   </script>
 </body>
 </html>
