@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="auth.js"></script>
+  <script src="../auth.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create New Account - Cerebro CRM</title>
@@ -17,6 +17,16 @@
         body {
             background-color: #f8f8fa;
         }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes highlightField {
+            0% { background-color: #ede9fe; box-shadow: 0 0 0 2px #8b5cf6; }
+            100% { background-color: transparent; box-shadow: none; }
+        }
+        .ai-highlight { animation: highlightField 1.5s ease-out forwards; }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -94,7 +104,7 @@
                     <a href="accounts.html" class="px-4 py-2 text-sm font-medium border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                         Cancel
                     </a>
-                    <button class="px-4 py-2 text-sm font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
+                    <button id="header-save-btn" class="hidden px-4 py-2 text-sm font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
                         Save Account
                     </button>
                     <div class="w-9 h-9 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-semibold">
@@ -106,7 +116,7 @@
             <!-- Main Content -->
             <main class="flex-1 overflow-y-auto p-6">
                 <!-- Page Title Section -->
-                <div class="mb-8">
+                <div class="mb-6">
                     <div class="flex items-center gap-3 mb-4">
                         <div class="w-12 h-12 bg-gray-900 text-white rounded-lg flex items-center justify-center">
                             <i data-lucide="building-2" class="w-6 h-6"></i>
@@ -116,7 +126,111 @@
                             <p class="text-xs text-gray-500 mt-1">Accounts <span class="text-gray-400">></span> New Account</p>
                         </div>
                     </div>
+
+                    <!-- Progress Steps -->
+                    <div class="flex items-center gap-3 mt-5">
+                        <div id="progress-step-1" class="flex items-center gap-2">
+                            <div id="progress-step-1-badge" class="w-6 h-6 rounded-full bg-gray-900 text-white flex items-center justify-center text-[11px] font-bold">1</div>
+                            <span id="progress-step-1-label" class="text-xs font-semibold text-gray-900">Check for duplicates</span>
+                        </div>
+                        <div class="w-14 h-px bg-gray-300"></div>
+                        <div id="progress-step-2" class="flex items-center gap-2 opacity-40">
+                            <div id="progress-step-2-badge" class="w-6 h-6 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-[11px] font-bold">2</div>
+                            <span id="progress-step-2-label" class="text-xs font-medium text-gray-500">Account details</span>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- ─────────────── STEP 1: DUPLICATE CHECK ─────────────── -->
+                <section id="step-dupe-check" class="max-w-2xl">
+                    <div class="bg-white rounded-3xl border border-gray-200 p-8">
+                        <div class="flex items-start gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="scan-search" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-base font-bold text-gray-900">Start with the company name</h2>
+                                <p class="text-xs text-gray-500 mt-1">We'll scan your CRM for similar or matching records to help prevent duplicate accounts before you create a new record.</p>
+                            </div>
+                        </div>
+
+                        <label class="text-xs font-medium text-gray-500 mb-1.5 block">
+                            Account Name <span class="text-red-500">*</span>
+                        </label>
+                        <div class="flex gap-2">
+                            <input type="text" id="dupe-name-input" class="flex-1 px-3 py-2.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400" placeholder="Enter company name (e.g. Diageo, Red Global, Tech…)" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();runDuplicateCheck();}">
+                            <button type="button" id="dupe-check-btn" onclick="runDuplicateCheck()" class="px-5 py-2.5 text-sm font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-1.5 whitespace-nowrap">
+                                <i data-lucide="search" class="w-4 h-4"></i>
+                                Check for duplicates
+                            </button>
+                        </div>
+                        <p class="text-[11px] text-gray-400 mt-2">Tip: try "Red Global", "Tech Innovations", "Global", or "Diageo" to see the three possible outcomes.</p>
+
+                        <!-- Searching state -->
+                        <div id="dupe-searching" class="hidden mt-6 items-center gap-3 py-6 justify-center">
+                            <div class="w-5 h-5 border-2 border-violet-200 border-t-violet-600 rounded-full animate-spin"></div>
+                            <span class="text-sm font-medium text-gray-700">Searching CRM records…</span>
+                        </div>
+
+                        <!-- No matches -->
+                        <div id="dupe-no-match" class="hidden mt-6 bg-emerald-50 border border-emerald-200 rounded-2xl p-5 animate-fade-in">
+                            <div class="flex items-start gap-3">
+                                <div class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="text-sm font-semibold text-emerald-900">No duplicates found</h3>
+                                    <p class="text-xs text-emerald-700 mt-1">No existing accounts matched "<span id="no-match-name" class="font-semibold"></span>". You're clear to create a new record.</p>
+                                    <button type="button" onclick="proceedToFullForm()" class="mt-4 px-5 py-2 text-sm font-semibold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2">
+                                        Continue creating new account
+                                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Matches found -->
+                        <div id="dupe-matches" class="hidden mt-6 animate-fade-in">
+                            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-4">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0">
+                                        <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <h3 class="text-sm font-semibold text-amber-900"><span id="match-count">0</span> possible match<span id="match-plural"></span> found</h3>
+                                        <p class="text-xs text-amber-800 mt-1">Review these existing accounts before creating a new record. Select one to use it, or continue below to create a new account anyway.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Match cards -->
+                            <div id="match-list" class="space-y-2 mb-4"></div>
+
+                            <!-- Fallback: create anyway -->
+                            <div class="border-t border-dashed border-gray-300 pt-4 mt-4">
+                                <div class="bg-gray-50 rounded-2xl p-4 flex items-center justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <p class="text-sm font-semibold text-gray-900">None of these match?</p>
+                                        <p class="text-xs text-gray-500 mt-0.5">Create a new account using "<span id="new-anyway-name" class="font-semibold"></span>".</p>
+                                    </div>
+                                    <button type="button" onclick="proceedToFullForm()" class="px-5 py-2 text-sm font-semibold bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 flex-shrink-0 whitespace-nowrap">
+                                        <i data-lucide="plus" class="w-4 h-4"></i>
+                                        Create new anyway
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ─────────────── STEP 2: FULL FORM (hidden until step 1 passes) ─────────────── -->
+                <section id="step-full-form" class="hidden">
+
+                <!-- Back to step 1 -->
+                <button type="button" onclick="backToDupeCheck()" class="mb-4 inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-gray-900 transition-colors">
+                    <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+                    Back to duplicate check
+                </button>
 
                 <!-- Two-Column Container -->
                 <div class="flex gap-8">
@@ -338,109 +452,80 @@
                     <div class="w-[400px] flex-shrink-0">
                         <div class="sticky" style="top: 24px;">
                             <!-- Mari AI Card -->
-                            <div class="bg-white rounded-3xl border border-gray-200 p-6" style="background: linear-gradient(135deg, #fafafa 0%, #f5f3ff 100%);">
+                            <div class="rounded-3xl border border-gray-200 overflow-hidden" style="background: linear-gradient(135deg, #faf5ff 0%, #f0e7ff 50%, #ede5ff 100%);">
                                 <!-- Header -->
-                                <div class="flex items-start gap-3 mb-6">
-                                    <div class="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center flex-shrink-0">
-                                        <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <h3 class="text-sm font-semibold text-gray-900">Create with Mari AI</h3>
-                                        <p class="text-xs text-gray-500 mt-0.5">Paste or type company details</p>
+                                <div class="px-6 pt-5 pb-3">
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #7c3aed, #6d28d9);">
+                                            <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <h3 class="text-sm font-bold text-gray-900">Create with Mari AI</h3>
+                                            <p class="text-[11px] text-gray-500 mt-0.5">Paste company info and let AI fill the form</p>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <!-- Input Textarea -->
-                                <textarea id="mariInput" rows="5" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 mb-3 resize-none" placeholder="e.g. Diageo PLC, a leading global beverages company. Industry: Beverages & Spirits. Website: diageo.com. Tel: +44 20 7927 5200. Address: 16 Great Marlborough Street, London, W1F 7HS, United Kingdom. Key account, GBP currency."></textarea>
-
-                                <!-- Hint Text -->
-                                <p class="text-xs text-gray-500 mb-4">Try: "Samsung Electronics UK, technology company, Samsung House, 2000 Hillswood Drive, Chertsey, KT16 0RS"</p>
-
-                                <!-- Map to Fields Button -->
-                                <button type="button" onclick="processAIAccount()" class="w-full px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 mb-4" id="mapButton">
-                                    <i data-lucide="sparkles" class="w-4 h-4"></i>
-                                    Map to Fields
-                                </button>
+                                <!-- Idle State -->
+                                <div id="ai-idle" class="px-6 pb-5">
+                                    <textarea id="mariInput" rows="5" class="w-full px-3 py-2.5 text-sm border border-violet-200 rounded-xl bg-white/80 backdrop-blur focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-400 mb-2 resize-none" placeholder="e.g. Diageo PLC, a leading global beverages company. Industry: Beverages & Spirits. Website: diageo.com. Tel: +44 20 7927 5200. Address: 16 Great Marlborough Street, London, W1F 7HS, United Kingdom. Key account, GBP currency."></textarea>
+                                    <p class="text-[11px] text-gray-400 mb-3 px-1">Paste an email, LinkedIn profile, or any company description. Mari AI will extract all the fields.</p>
+                                    <button type="button" onclick="processAIAccount()" class="w-full px-4 py-2.5 text-sm font-semibold text-white rounded-xl flex items-center justify-center gap-2 transition-all hover:shadow-md" style="background: linear-gradient(135deg, #7c3aed, #6d28d9);">
+                                        <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                        Map to Fields
+                                    </button>
+                                </div>
 
                                 <!-- Processing State -->
-                                <div id="processingState" class="hidden mb-4 flex items-center justify-center gap-2 py-4 px-3 bg-white rounded-lg border border-gray-200">
-                                    <div class="w-4 h-4 border-2 border-gray-200 border-t-gray-900 rounded-full animate-spin"></div>
-                                    <span class="text-xs font-medium text-gray-600">Mari AI is mapping your data...</span>
+                                <div id="ai-processing" class="px-6 pb-5 hidden">
+                                    <div class="flex items-center justify-center gap-3 py-8">
+                                        <div class="w-5 h-5 border-2 border-violet-200 border-t-violet-600 rounded-full animate-spin"></div>
+                                        <span class="text-sm font-medium text-violet-700">Analysing company information...</span>
+                                    </div>
                                 </div>
 
                                 <!-- Results State -->
-                                <div id="resultsState" class="hidden">
-                                    <div class="bg-white rounded-2xl border border-gray-200 p-4 mb-4 max-h-80 overflow-y-auto">
-                                        <!-- Mapped Fields -->
-                                        <div class="space-y-3">
-                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
-                                                <span class="text-xs font-medium text-gray-500">Name</span>
-                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-name">Diageo PLC</span>
-                                            </div>
-                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
-                                                <span class="text-xs font-medium text-gray-500">Known Name</span>
-                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-known-name">Diageo</span>
-                                            </div>
-                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
-                                                <span class="text-xs font-medium text-gray-500">Industry</span>
-                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-industry">Food Products</span>
-                                            </div>
-                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
-                                                <span class="text-xs font-medium text-gray-500">Website</span>
-                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-website">https://diageo.com</span>
-                                            </div>
-                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
-                                                <span class="text-xs font-medium text-gray-500">Telephone</span>
-                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-telephone">+44 20 7927 5200</span>
-                                            </div>
-                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
-                                                <span class="text-xs font-medium text-gray-500">Street</span>
-                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-street">16 Great Marlborough Street</span>
-                                            </div>
-                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
-                                                <span class="text-xs font-medium text-gray-500">City</span>
-                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-city">London</span>
-                                            </div>
-                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
-                                                <span class="text-xs font-medium text-gray-500">Postal Code</span>
-                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-postcode">W1F 7HS</span>
-                                            </div>
-                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
-                                                <span class="text-xs font-medium text-gray-500">Country</span>
-                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-country">uk</span>
-                                            </div>
-                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
-                                                <span class="text-xs font-medium text-gray-500">Currency</span>
-                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-currency">gbp</span>
-                                            </div>
-                                            <div class="flex justify-between items-start gap-3 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0">
-                                                <span class="text-xs font-medium text-gray-500">Key Account</span>
-                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-key-account">Yes</span>
-                                            </div>
-                                            <div class="flex justify-between items-start gap-3 pb-3">
-                                                <span class="text-xs font-medium text-gray-500">Description</span>
-                                                <span class="text-xs text-gray-900 font-medium text-right" id="result-description">Leading global beverages company</span>
-                                            </div>
+                                <div id="ai-results" class="px-6 pb-5 hidden">
+                                    <div class="bg-white/80 backdrop-blur rounded-2xl border border-violet-100 p-4 mb-3 max-h-[400px] overflow-y-auto">
+                                        <div class="flex items-center gap-2 mb-3">
+                                            <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i>
+                                            <span class="text-xs font-semibold text-gray-800">Matched 12 fields from your description</span>
+                                        </div>
+                                        <div id="ai-fields-container" class="space-y-1.5">
+                                            <!-- Populated by JS -->
                                         </div>
                                     </div>
-
-                                    <!-- Result Action Buttons -->
-                                    <button type="button" onclick="confirmAIAccount()" class="w-full px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors mb-3">
+                                    <button type="button" onclick="confirmAIAccount()" class="w-full px-4 py-2.5 text-sm font-semibold text-white rounded-xl flex items-center justify-center gap-2 transition-all hover:shadow-md mb-2" style="background: linear-gradient(135deg, #7c3aed, #6d28d9);">
+                                        <i data-lucide="check" class="w-4 h-4"></i>
                                         Confirm & Fill Form
                                     </button>
                                     <div class="flex gap-2">
-                                        <button type="button" onclick="editAIAccount()" class="flex-1 px-4 py-2 bg-gray-100 text-gray-900 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">
+                                        <button type="button" onclick="editAIAccount()" class="flex-1 px-4 py-2 bg-white/70 text-gray-700 text-xs font-semibold rounded-xl border border-gray-200 hover:bg-white transition-colors">
                                             Edit in Form
                                         </button>
-                                        <button type="button" onclick="resetAIAccount()" class="flex-1 px-4 py-2 bg-gray-100 text-gray-900 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">
+                                        <button type="button" onclick="resetAIAccount()" class="flex-1 px-4 py-2 bg-white/70 text-gray-700 text-xs font-semibold rounded-xl border border-gray-200 hover:bg-white transition-colors">
                                             Start Over
                                         </button>
+                                    </div>
+                                </div>
+
+                                <!-- Confirmed State -->
+                                <div id="ai-confirmed" class="px-6 pb-5 hidden">
+                                    <div class="flex items-center justify-center gap-3 py-6">
+                                        <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                                            <i data-lucide="check" class="w-5 h-5"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-semibold text-gray-900">Form populated successfully!</p>
+                                            <p class="text-xs text-gray-500">Review the fields and save when ready</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                </section>
             </main>
         </div>
     </div>
@@ -448,80 +533,354 @@
     <script>
         lucide.createIcons();
 
-        // Mari AI Functions
-        function processAIAccount() {
-            const mapButton = document.getElementById('mapButton');
-            const processingState = document.getElementById('processingState');
-            const resultsState = document.getElementById('resultsState');
-            const mariInput = document.getElementById('mariInput');
+        // ══════════════════════════════════════════════════════════════════
+        // ── DUPLICATE DETECTION (Step 1) ──
+        // ══════════════════════════════════════════════════════════════════
 
-            // Hide input and show processing
-            mapButton.classList.add('hidden');
-            mariInput.classList.add('hidden');
-            document.querySelector('p.text-xs.text-gray-500').classList.add('hidden');
-            processingState.classList.remove('hidden');
+        // Simulated CRM account database. In production this would be an API call.
+        const EXISTING_ACCOUNTS = [
+            { name: 'Red Global',           knownName: 'Red',            industry: 'Technology',    city: 'London',    country: 'UK',        phone: '+44 20 7946 0958', website: 'redglobal.com',          created: '2025-10-15' },
+            { name: 'Red Global International', knownName: 'Red Global Intl', industry: 'Technology', city: 'Singapore', country: 'Singapore', phone: '+65 6500 1200',    website: 'redglobal-intl.com',     created: '2024-11-02' },
+            { name: 'Red Global Technologies LLC', knownName: 'Red Global Tech', industry: 'Technology', city: 'New York', country: 'USA',    phone: '+1 212 555 0100',  website: 'redglobaltech.com',      created: '2023-06-18' },
+            { name: 'Tech Innovations Ltd', knownName: 'Tech Innov.',    industry: 'Software',      city: 'Manchester',country: 'UK',        phone: '+44 161 234 5678', website: 'techinnovations.com',    created: '2025-09-22' },
+            { name: 'Tech Innovation Inc',  knownName: 'Tech Innov',     industry: 'Software',      city: 'San Francisco', country: 'USA',  phone: '+1 415 555 0145',  website: 'techinnovation.io',      created: '2024-03-11' },
+            { name: 'Global Events Co',     knownName: 'Global Events',  industry: 'Events',        city: 'New York',  country: 'USA',       phone: '+1 212 555 0123',  website: 'globalevents.com',       created: '2025-08-10' },
+            { name: 'Global Ventures',      knownName: 'Global Ventures',industry: 'Finance',       city: 'Sydney',    country: 'Australia', phone: '+61 2 8246 8800',  website: 'globalventures.au',      created: '2025-03-25' },
+            { name: 'Brand Solutions',      knownName: 'Brand Solutions',industry: 'Marketing',     city: 'Berlin',    country: 'Germany',   phone: '+49 30 123 456',   website: 'brandsolutions.de',      created: '2025-07-05' },
+            { name: 'Creative Studios',     knownName: 'Creative Studios',industry:'Design',        city: 'Paris',     country: 'France',    phone: '+33 1 42 86 82 00',website: 'creativestudios.fr',     created: '2025-06-18' },
+            { name: 'Enterprise Solutions', knownName: 'Enterprise Sol.',industry: 'Consulting',    city: 'Toronto',   country: 'Canada',    phone: '+1 416 555 0199',  website: 'enterprisesol.ca',       created: '2025-05-30' },
+            { name: 'Digital Innovations',  knownName: 'Digital Innov.', industry: 'Technology',    city: 'Singapore', country: 'Singapore', phone: '+65 6234 5678',    website: 'digitalinno.sg',         created: '2025-04-12' },
+            { name: 'Premium Partners',     knownName: 'Premium Partners',industry:'Retail',        city: 'Dubai',     country: 'UAE',       phone: '+971 4 308 3333',  website: 'premiumpartners.ae',     created: '2025-02-08' },
+            { name: 'Summit Corporation',   knownName: 'Summit Corp',    industry: 'Manufacturing', city: 'Tokyo',     country: 'Japan',     phone: '+81 3 6234 8800',  website: 'summitcorp.jp',          created: '2025-01-14' },
+        ];
 
-            // Simulate AI processing
+        // Normalise a company name for fuzzy comparison
+        function normalizeCompanyName(s) {
+            return (s || '').toLowerCase()
+                .replace(/[^a-z0-9\s]/g, ' ')
+                .replace(/\b(ltd|limited|llc|plc|inc|incorporated|corp|corporation|co|company|gmbh|pty|group|holdings|international|intl|technologies)\b/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        // Score match between query and candidate. Returns { score, reason }.
+        function scoreMatch(query, candidateName) {
+            const q = query.toLowerCase().trim();
+            const c = candidateName.toLowerCase().trim();
+            const qn = normalizeCompanyName(query);
+            const cn = normalizeCompanyName(candidateName);
+            if (!q || !qn) return { score: 0, reason: '' };
+
+            // Exact (case-insensitive) match
+            if (q === c) return { score: 100, reason: 'Exact match' };
+            // Normalised exact match (ignoring suffixes)
+            if (qn === cn) return { score: 95, reason: 'Same company (ignoring suffix)' };
+            // Candidate starts with query
+            if (c.startsWith(q) || cn.startsWith(qn)) return { score: 88, reason: 'Starts with your name' };
+            // Query contained in candidate
+            if (c.includes(q) || cn.includes(qn)) return { score: 78, reason: 'Contains your name' };
+            // Candidate contained in query
+            if (q.includes(c) || qn.includes(cn)) return { score: 74, reason: 'Your name contains this account' };
+            // Token overlap
+            const qTokens = new Set(qn.split(' ').filter(Boolean));
+            const cTokens = new Set(cn.split(' ').filter(Boolean));
+            const overlap = [...qTokens].filter(t => cTokens.has(t)).length;
+            const union = new Set([...qTokens, ...cTokens]).size;
+            if (overlap >= 1 && union > 0) {
+                const jaccard = overlap / union;
+                if (jaccard >= 0.5) return { score: 65, reason: 'Similar words' };
+                if (jaccard >= 0.34) return { score: 55, reason: 'Some words in common' };
+            }
+            return { score: 0, reason: '' };
+        }
+
+        const MATCH_THRESHOLD = 55;
+
+        function findDuplicates(query) {
+            return EXISTING_ACCOUNTS
+                .map(acc => {
+                    const nameScore = scoreMatch(query, acc.name);
+                    const knownScore = scoreMatch(query, acc.knownName || '');
+                    const best = nameScore.score >= knownScore.score ? nameScore : knownScore;
+                    return { ...acc, score: best.score, reason: best.reason };
+                })
+                .filter(r => r.score >= MATCH_THRESHOLD)
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 6);
+        }
+
+        function confidenceBadge(score) {
+            if (score >= 95) return { label: 'Exact match',  color: 'red',     bg: 'bg-red-50',     text: 'text-red-700',     border: 'border-red-200' };
+            if (score >= 85) return { label: 'High match',   color: 'amber',   bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200' };
+            if (score >= 70) return { label: 'Likely match', color: 'amber',   bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200' };
+            return                { label: 'Possible match',color: 'gray',    bg: 'bg-gray-50',    text: 'text-gray-600',    border: 'border-gray-200' };
+        }
+
+        // ── Run Check ──
+        function runDuplicateCheck() {
+            const input = document.getElementById('dupe-name-input');
+            const name = input.value.trim();
+            if (!name || name.length < 2) {
+                input.classList.add('border-red-300', 'ring-2', 'ring-red-100');
+                setTimeout(() => input.classList.remove('border-red-300','ring-2','ring-red-100'), 1500);
+                return;
+            }
+
+            // Reset any previous results
+            document.getElementById('dupe-no-match').classList.add('hidden');
+            document.getElementById('dupe-matches').classList.add('hidden');
+            const searching = document.getElementById('dupe-searching');
+            searching.classList.remove('hidden');
+            searching.classList.add('flex');
+
             setTimeout(() => {
-                processingState.classList.add('hidden');
-                resultsState.classList.remove('hidden');
+                searching.classList.add('hidden');
+                searching.classList.remove('flex');
+
+                const matches = findDuplicates(name);
+                if (matches.length === 0) {
+                    document.getElementById('no-match-name').textContent = name;
+                    document.getElementById('dupe-no-match').classList.remove('hidden');
+                } else {
+                    renderMatches(matches, name);
+                    document.getElementById('dupe-matches').classList.remove('hidden');
+                }
+                lucide.createIcons();
+            }, 700);
+        }
+
+        function renderMatches(matches, query) {
+            const container = document.getElementById('match-list');
+            container.innerHTML = '';
+            document.getElementById('match-count').textContent = matches.length;
+            document.getElementById('match-plural').textContent = matches.length === 1 ? '' : 'es';
+            document.getElementById('new-anyway-name').textContent = query;
+
+            matches.forEach((m, i) => {
+                const badge = confidenceBadge(m.score);
+                const card = document.createElement('div');
+                card.className = 'animate-fade-in bg-white border border-gray-200 rounded-2xl p-4 hover:border-gray-900 hover:shadow-sm transition-all cursor-pointer';
+                card.style.animationDelay = (i * 0.04) + 's';
+                card.onclick = () => selectExistingAccount(m.name);
+                card.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center flex-shrink-0 font-semibold text-sm">
+                            ${m.name.split(' ').map(w => w[0]).filter(Boolean).slice(0,2).join('').toUpperCase()}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <p class="text-sm font-semibold text-gray-900 truncate">${m.name}</p>
+                                <span class="text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full ${badge.bg} ${badge.text} border ${badge.border}">${badge.label}</span>
+                            </div>
+                            <p class="text-[11px] text-gray-500 mt-1">${m.reason} · ${m.score}% confidence</p>
+                            <div class="flex items-center gap-x-4 gap-y-1 flex-wrap mt-2 text-[11px] text-gray-600">
+                                <span class="inline-flex items-center gap-1"><i data-lucide="factory" class="w-3 h-3 text-gray-400"></i>${m.industry}</span>
+                                <span class="inline-flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3 text-gray-400"></i>${m.city}, ${m.country}</span>
+                                <span class="inline-flex items-center gap-1"><i data-lucide="phone" class="w-3 h-3 text-gray-400"></i>${m.phone}</span>
+                                <span class="inline-flex items-center gap-1"><i data-lucide="globe" class="w-3 h-3 text-gray-400"></i>${m.website}</span>
+                                <span class="inline-flex items-center gap-1 text-gray-400"><i data-lucide="calendar" class="w-3 h-3"></i>Created ${m.created}</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-1.5 flex-shrink-0 items-end">
+                            <button type="button" onclick="event.stopPropagation(); selectExistingAccount('${m.name.replace(/'/g, "\\'")}')" class="px-3 py-1.5 text-[11px] font-semibold bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors whitespace-nowrap">Use this account</button>
+                            <a href="account-detail.html" onclick="event.stopPropagation()" class="px-3 py-1.5 text-[11px] font-semibold text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap">View record</a>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectExistingAccount(name) {
+            showToast(`Opening "${name}" — no duplicate created`);
+            setTimeout(() => { window.location.href = 'account-detail.html'; }, 800);
+        }
+
+        function proceedToFullForm() {
+            const name = document.getElementById('dupe-name-input').value.trim();
+            // Pre-fill the name field in the full form
+            document.getElementById('acc-name').value = name;
+            // Hide step 1, show step 2
+            document.getElementById('step-dupe-check').classList.add('hidden');
+            document.getElementById('step-full-form').classList.remove('hidden');
+            // Show header save button
+            document.getElementById('header-save-btn').classList.remove('hidden');
+            // Update progress indicator
+            const s1Badge = document.getElementById('progress-step-1-badge');
+            s1Badge.classList.remove('bg-gray-900','text-white');
+            s1Badge.classList.add('bg-emerald-500','text-white');
+            s1Badge.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5"></i>';
+            document.getElementById('progress-step-1').classList.add('opacity-60');
+            const s2 = document.getElementById('progress-step-2');
+            s2.classList.remove('opacity-40');
+            const s2Badge = document.getElementById('progress-step-2-badge');
+            s2Badge.classList.remove('bg-gray-200','text-gray-500');
+            s2Badge.classList.add('bg-gray-900','text-white');
+            const s2Label = document.getElementById('progress-step-2-label');
+            s2Label.classList.remove('text-gray-500','font-medium');
+            s2Label.classList.add('text-gray-900','font-semibold');
+            lucide.createIcons();
+            // Scroll to top
+            document.querySelector('main').scrollTo({ top: 0, behavior: 'smooth' });
+            // Highlight the name field briefly
+            setTimeout(() => {
+                const el = document.getElementById('acc-name');
+                el.classList.add('ai-highlight');
+                el.addEventListener('animationend', () => el.classList.remove('ai-highlight'), { once: true });
+            }, 200);
+        }
+
+        function backToDupeCheck() {
+            document.getElementById('step-full-form').classList.add('hidden');
+            document.getElementById('step-dupe-check').classList.remove('hidden');
+            document.getElementById('header-save-btn').classList.add('hidden');
+            // Reset progress
+            const s1Badge = document.getElementById('progress-step-1-badge');
+            s1Badge.classList.remove('bg-emerald-500');
+            s1Badge.classList.add('bg-gray-900','text-white');
+            s1Badge.textContent = '1';
+            document.getElementById('progress-step-1').classList.remove('opacity-60');
+            const s2 = document.getElementById('progress-step-2');
+            s2.classList.add('opacity-40');
+            const s2Badge = document.getElementById('progress-step-2-badge');
+            s2Badge.classList.add('bg-gray-200','text-gray-500');
+            s2Badge.classList.remove('bg-gray-900','text-white');
+            const s2Label = document.getElementById('progress-step-2-label');
+            s2Label.classList.add('text-gray-500','font-medium');
+            s2Label.classList.remove('text-gray-900','font-semibold');
+            lucide.createIcons();
+            document.querySelector('main').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ── Simulated AI Result ──
+        const SIMULATED_AI_RESULT = {
+            fields: [
+                { key: 'name',       label: 'Company Name',  value: 'Diageo PLC',       displayValue: 'Diageo PLC',                  icon: 'building-2', confidence: 'high' },
+                { key: 'knownName',  label: 'Known Name',    value: 'Diageo',            displayValue: 'Diageo',                      icon: 'tag',        confidence: 'high' },
+                { key: 'industry',   label: 'Industry',      value: 'food',              displayValue: 'Food Products',               icon: 'factory',    confidence: 'high' },
+                { key: 'website',    label: 'Website',       value: 'https://diageo.com',displayValue: 'diageo.com',                  icon: 'globe',      confidence: 'high' },
+                { key: 'telephone',  label: 'Telephone',     value: '+44 20 7927 5200',  displayValue: '+44 20 7927 5200',            icon: 'phone',      confidence: 'high' },
+                { key: 'street1',    label: 'Street',        value: '16 Great Marlborough Street', displayValue: '16 Great Marlborough St', icon: 'map-pin', confidence: 'medium' },
+                { key: 'city',       label: 'City',          value: 'London',            displayValue: 'London',                      icon: 'map',        confidence: 'high' },
+                { key: 'postcode',   label: 'Postal Code',   value: 'W1F 7HS',           displayValue: 'W1F 7HS',                     icon: 'hash',       confidence: 'high' },
+                { key: 'country',    label: 'Country',       value: 'uk',                displayValue: 'United Kingdom',              icon: 'flag',       confidence: 'high' },
+                { key: 'currency',   label: 'Currency',      value: 'gbp',               displayValue: 'GBP',                         icon: 'banknote',   confidence: 'medium' },
+                { key: 'keyAccount', label: 'Key Account',   value: true,                displayValue: 'Yes',                         icon: 'star',       confidence: 'medium' },
+                { key: 'description',label: 'Description',   value: 'Leading global beverages company', displayValue: 'Leading global beverages company', icon: 'file-text', confidence: 'low' },
+            ]
+        };
+
+        // ── Process AI ──
+        function processAIAccount() {
+            const input = document.getElementById('mariInput').value.trim();
+            if (!input || input.length < 5) {
+                document.getElementById('mariInput').classList.add('border-red-300');
+                setTimeout(() => document.getElementById('mariInput').classList.remove('border-red-300'), 1500);
+                return;
+            }
+            document.getElementById('ai-idle').classList.add('hidden');
+            document.getElementById('ai-processing').classList.remove('hidden');
+            lucide.createIcons();
+
+            setTimeout(() => {
+                document.getElementById('ai-processing').classList.add('hidden');
+                renderResults();
+                document.getElementById('ai-results').classList.remove('hidden');
+                lucide.createIcons();
             }, 2000);
         }
 
-        function confirmAIAccount() {
-            const data = {
-                name: document.getElementById('result-name').textContent,
-                knownName: document.getElementById('result-known-name').textContent,
-                industry: 'food', // Maps "Food Products" to value
-                website: document.getElementById('result-website').textContent,
-                telephone: document.getElementById('result-telephone').textContent,
-                street1: document.getElementById('result-street').textContent,
-                city: document.getElementById('result-city').textContent,
-                postcode: document.getElementById('result-postcode').textContent,
-                country: document.getElementById('result-country').textContent,
-                currency: document.getElementById('result-currency').textContent,
-                keyAccount: true,
-                description: document.getElementById('result-description').textContent
+        // ── Render Result Cards ──
+        function renderResults() {
+            const container = document.getElementById('ai-fields-container');
+            container.innerHTML = '';
+            SIMULATED_AI_RESULT.fields.forEach((f, i) => {
+                const confColor = f.confidence === 'high' ? 'emerald' : f.confidence === 'medium' ? 'amber' : 'gray';
+                const card = document.createElement('div');
+                card.className = 'animate-fade-in flex items-center gap-2.5 p-2 rounded-lg bg-white border border-gray-100 hover:border-violet-200 transition-colors';
+                card.style.animationDelay = (i * 0.05) + 's';
+                card.style.opacity = '0';
+                card.innerHTML = `
+                    <div class="w-7 h-7 rounded-lg bg-violet-50 text-violet-500 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="${f.icon}" class="w-3.5 h-3.5"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[10px] text-gray-400 font-medium leading-none">${f.label}</p>
+                        <p class="text-xs font-semibold text-gray-900 truncate mt-0.5">${f.displayValue}</p>
+                    </div>
+                    <span class="w-2 h-2 rounded-full bg-${confColor}-400 flex-shrink-0" title="${f.confidence} confidence"></span>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // ── Fill Form from AI ──
+        function fillFormFromAI() {
+            const fieldMap = {
+                'name':       'acc-name',
+                'knownName':  'acc-known-name',
+                'industry':   'acc-industry',
+                'website':    'acc-website',
+                'telephone':  'acc-telephone',
+                'street1':    'acc-street1',
+                'city':       'acc-city',
+                'postcode':   'acc-postcode',
+                'country':    'acc-country',
+                'currency':   'acc-currency',
+                'description':'acc-description',
             };
-
-            // Fill form fields
-            document.getElementById('acc-name').value = data.name;
-            document.getElementById('acc-known-name').value = data.knownName;
-            document.getElementById('acc-industry').value = data.industry;
-            document.getElementById('acc-website').value = data.website;
-            document.getElementById('acc-telephone').value = data.telephone;
-            document.getElementById('acc-street1').value = data.street1;
-            document.getElementById('acc-city').value = data.city;
-            document.getElementById('acc-postcode').value = data.postcode;
-            document.getElementById('acc-country').value = data.country;
-            document.getElementById('acc-currency').value = data.currency;
-            document.getElementById('keyAccount').checked = data.keyAccount;
-            document.getElementById('acc-description').value = data.description;
-
-            // Reset Mari panel
-            resetAIAccount();
+            SIMULATED_AI_RESULT.fields.forEach((f, i) => {
+                if (f.key === 'keyAccount') {
+                    document.getElementById('keyAccount').checked = !!f.value;
+                    return;
+                }
+                const el = document.getElementById(fieldMap[f.key]);
+                if (el) {
+                    el.value = f.value;
+                    // Highlight animation
+                    setTimeout(() => {
+                        el.classList.add('ai-highlight');
+                        el.addEventListener('animationend', () => el.classList.remove('ai-highlight'), { once: true });
+                    }, i * 80);
+                }
+            });
         }
 
+        // ── Confirm ──
+        function confirmAIAccount() {
+            fillFormFromAI();
+            document.getElementById('ai-results').classList.add('hidden');
+            document.getElementById('ai-confirmed').classList.remove('hidden');
+            lucide.createIcons();
+            showToast('Account form populated with 12 fields');
+            setTimeout(() => resetAIAccount(), 3000);
+        }
+
+        // ── Edit in Form ──
         function editAIAccount() {
-            const form = document.getElementById('accountForm');
-            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            fillFormFromAI();
+            document.getElementById('accountForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
             resetAIAccount();
+            showToast('Fields populated — review and edit as needed');
         }
 
+        // ── Reset ──
         function resetAIAccount() {
-            const mapButton = document.getElementById('mapButton');
-            const processingState = document.getElementById('processingState');
-            const resultsState = document.getElementById('resultsState');
-            const mariInput = document.getElementById('mariInput');
-            const hintText = document.querySelector('p.text-xs.text-gray-500');
+            document.getElementById('ai-idle').classList.remove('hidden');
+            document.getElementById('ai-processing').classList.add('hidden');
+            document.getElementById('ai-results').classList.add('hidden');
+            document.getElementById('ai-confirmed').classList.add('hidden');
+            lucide.createIcons();
+        }
 
-            // Reset to initial state
-            mapButton.classList.remove('hidden');
-            processingState.classList.add('hidden');
-            resultsState.classList.add('hidden');
-            mariInput.classList.remove('hidden');
-            hintText.classList.remove('hidden');
-            mariInput.value = '';
+        // ── Toast ──
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-6 right-6 bg-gray-900 text-white px-5 py-3 rounded-xl text-sm font-medium shadow-lg z-[9999] animate-fade-in flex items-center gap-2';
+            toast.innerHTML = '<i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>' + message;
+            document.body.appendChild(toast);
+            lucide.createIcons();
+            setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.4s'; setTimeout(() => toast.remove(), 400); }, 3000);
         }
     </script>
 </body>

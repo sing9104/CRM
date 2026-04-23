@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <title>Payment received — TOL26: RED GLOBAL x30 WED EVE</title>
+
+  <!--
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    CerebroCRM · Transactional Email Template
+    Template:  payment_received_v1
+    Trigger:   Stripe webhook `charge.succeeded` / `invoice.paid`
+               → matched to CRM deal via metadata.deal_id
+    Recipients:
+        TO   – deal creator (createdBy)
+        CC   – sales exec named on the deal (leadSalesPerson)
+        BCC  – WNS distribution group (hardcoded):
+                 wns.receivables@marigrp.com
+                 wns.reconciliation@marigrp.com
+                 wns.ap@marigrp.com
+    Merge fields are written as {{token}} below for the mail-merge engine.
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  -->
+
+  <style>
+    /* Client-specific resets */
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; }
+    body { margin: 0 !important; padding: 0 !important; width: 100% !important; background: #f1f2f6; }
+    a { color: #7c3aed; text-decoration: none; }
+
+    /* Mobile */
+    @media only screen and (max-width: 620px) {
+      .container { width: 100% !important; }
+      .p-32 { padding: 20px !important; }
+      .p-24 { padding: 16px !important; }
+      .hero-amount { font-size: 34px !important; }
+      .stack td { display: block !important; width: 100% !important; padding-right: 0 !important; padding-bottom: 12px !important; }
+      .stack td:last-child { padding-bottom: 0 !important; }
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background:#f1f2f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','DM Sans',Helvetica,Arial,sans-serif;color:#111827;">
+
+  <!-- Preheader (hidden, shown in inbox preview) -->
+  <div style="display:none;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;color:#f1f2f6;">
+    Payment of £6,300.00 received via Stripe for TOL26: RED GLOBAL x30 WED EVE — Invoice INV-2026-00842 is now paid in full.
+  </div>
+
+  <!-- ───────────── Wrapper ───────────── -->
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background:#f1f2f6;padding:24px 0;">
+    <tr>
+      <td align="center">
+        <!-- Container -->
+        <table role="presentation" class="container" border="0" cellpadding="0" cellspacing="0" width="600" style="width:600px;max-width:600px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(17,24,39,0.04);">
+
+          <!-- ───────────── Header bar ───────────── -->
+          <tr>
+            <td style="background:#0a0a0a;background:linear-gradient(180deg,#0a0a0a 0%,#1a1a2e 100%);padding:16px 28px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="color:#ffffff;font-size:13px;font-weight:700;letter-spacing:0.5px;">
+                    CerebroCRM
+                  </td>
+                  <td align="right" style="color:#9ca3af;font-size:11px;font-weight:500;">
+                    Automated notification · {{current_date}}
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ───────────── Success hero ───────────── -->
+          <tr>
+            <td style="background:#ecfdf5;padding:32px 28px;border-bottom:1px solid #d1fae5;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="vertical-align:top;width:48px;padding-right:14px;">
+                    <!-- Check circle icon -->
+                    <table role="presentation" width="44" height="44" cellpadding="0" cellspacing="0" border="0" style="width:44px;height:44px;background:#10b981;border-radius:22px;">
+                      <tr>
+                        <td align="center" valign="middle" style="color:#ffffff;font-size:22px;font-weight:700;line-height:44px;">✓</td>
+                      </tr>
+                    </table>
+                  </td>
+                  <td style="vertical-align:top;">
+                    <div style="font-size:12px;font-weight:700;color:#047857;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Payment received</div>
+                    <div class="hero-amount" style="font-size:30px;font-weight:700;color:#064e3b;line-height:1.15;margin:0 0 4px 0;">£6,300.00 <span style="font-size:16px;color:#059669;font-weight:600;">GBP</span></div>
+                    <div style="font-size:13px;color:#065f46;line-height:1.5;">
+                      Stripe confirmed payment for <strong>TOL26: RED GLOBAL x30 WED EVE</strong> on <strong>23 Apr 2026 at 14:23 BST</strong>. Invoice <strong>INV-2026-00842</strong> is now paid in full.
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ───────────── Deal summary ───────────── -->
+          <tr>
+            <td class="p-32" style="padding:24px 28px 8px 28px;">
+              <div style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Deal summary</div>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;">
+                <tr>
+                  <td style="padding:16px 18px;">
+                    <div style="font-size:15px;font-weight:700;color:#111827;line-height:1.35;margin-bottom:2px;">TOL26: RED GLOBAL x30 WED EVE</div>
+                    <div style="font-size:12px;color:#6b7280;margin-bottom:14px;">Deal ID <a href="{{deal_url}}" style="color:#6b7280;text-decoration:underline;">DEAL-2026-01847</a></div>
+
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:13px;color:#111827;">
+                      <tr>
+                        <td style="padding:6px 0;width:40%;color:#6b7280;">Property</td>
+                        <td style="padding:6px 0;font-weight:600;">Taste of London 2026</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:6px 0;color:#6b7280;border-top:1px solid #f3f4f6;vertical-align:top;">Inventory</td>
+                        <td style="padding:6px 0;font-weight:600;border-top:1px solid #f3f4f6;">30 × Wed Eve Premium Hospitality — 18 Jun 2026 @ £210.00/head</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:6px 0;color:#6b7280;border-top:1px solid #f3f4f6;">Deal value</td>
+                        <td style="padding:6px 0;font-weight:700;border-top:1px solid #f3f4f6;">£6,300.00 GBP</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:6px 0;color:#6b7280;border-top:1px solid #f3f4f6;">Lead sales exec</td>
+                        <td style="padding:6px 0;font-weight:600;border-top:1px solid #f3f4f6;">Mollie Stoneham</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:6px 0;color:#6b7280;border-top:1px solid #f3f4f6;">Created by</td>
+                        <td style="padding:6px 0;font-weight:600;border-top:1px solid #f3f4f6;">Jaspinder Singh · 02 Apr 2026</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ───────────── Payment details ───────────── -->
+          <tr>
+            <td class="p-32" style="padding:20px 28px 8px 28px;">
+              <div style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Payment details</div>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;">
+                <tr>
+                  <td style="padding:16px 18px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:13px;color:#111827;">
+                      <tr>
+                        <td style="padding:6px 0;width:40%;color:#6b7280;">Amount received</td>
+                        <td style="padding:6px 0;font-weight:700;">£6,300.00 GBP</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:6px 0;color:#6b7280;border-top:1px solid #f3f4f6;">Stripe charge ID</td>
+                        <td style="padding:6px 0;font-weight:600;border-top:1px solid #f3f4f6;font-family:'SFMono-Regular',Consolas,monospace;font-size:12px;">ch_3NxYK2ABC123xyz</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ───────────── Sales order & invoice ───────────── -->
+          <tr>
+            <td class="p-32" style="padding:20px 28px 8px 28px;">
+              <div style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Sales order &amp; invoice</div>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="stack">
+                <tr>
+                  <td width="50%" style="padding-right:8px;vertical-align:top;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;">
+                      <tr>
+                        <td style="padding:14px 16px;">
+                          <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Sales order</div>
+                          <div style="font-size:15px;font-weight:700;color:#111827;font-family:'SFMono-Regular',Consolas,monospace;">SO-2026-04218</div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                  <td width="50%" style="padding-left:8px;vertical-align:top;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;">
+                      <tr>
+                        <td style="padding:14px 16px;">
+                          <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Invoice</div>
+                          <div style="font-size:15px;font-weight:700;color:#111827;font-family:'SFMono-Regular',Consolas,monospace;">INV-2026-00842</div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ───────────── Recipients disclosure ───────────── -->
+          <tr>
+            <td class="p-32" style="padding:22px 28px;">
+              <div style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Delivery</div>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:12px;color:#4b5563;line-height:1.65;">
+                <tr>
+                  <td style="padding:3px 0;width:50px;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;font-size:10px;vertical-align:top;">To</td>
+                  <td style="padding:3px 0;"><strong style="color:#111827;">Jaspinder Singh</strong> &lt;jaspinder.singh@marigrp.com&gt; <span style="color:#9ca3af;">· deal creator</span></td>
+                </tr>
+                <tr>
+                  <td style="padding:3px 0;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;font-size:10px;vertical-align:top;">Cc</td>
+                  <td style="padding:3px 0;"><strong style="color:#111827;">Mollie Stoneham</strong> &lt;mollie.stoneham@marigrp.com&gt; <span style="color:#9ca3af;">· lead sales exec on deal</span></td>
+                </tr>
+                <tr>
+                  <td style="padding:3px 0;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;font-size:10px;vertical-align:top;">Bcc</td>
+                  <td style="padding:3px 0;">
+                    wns.receivables@marigrp.com<br>
+                    wns.reconciliation@marigrp.com<br>
+                    wns.ap@marigrp.com
+                    <span style="color:#9ca3af;">· WNS distribution (hardcoded)</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ───────────── Footer ───────────── -->
+          <tr>
+            <td style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:18px 28px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="font-size:11px;color:#9ca3af;line-height:1.6;">
+                    This is an automated notification from <strong style="color:#6b7280;">CerebroCRM</strong>, triggered by Stripe event <span style="font-family:'SFMono-Regular',Consolas,monospace;color:#6b7280;">charge.succeeded</span> on deal <span style="font-family:'SFMono-Regular',Consolas,monospace;color:#6b7280;">DEAL-2026-01847</span>.<br>
+                    Replies to this address are not monitored. For questions, contact the deal owner or <a href="mailto:crm-support@marigrp.com" style="color:#6b7280;text-decoration:underline;">crm-support@marigrp.com</a>.
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+        </table>
+        <!-- /Container -->
+
+        <!-- Legal footer -->
+        <table role="presentation" class="container" border="0" cellpadding="0" cellspacing="0" width="600" style="width:600px;max-width:600px;">
+          <tr>
+            <td style="padding:16px 8px;text-align:center;font-size:11px;color:#9ca3af;line-height:1.6;">
+              © 2026 Mari Group Holdings Ltd · 18 Green Lanes, London N16 9NH, United Kingdom<br>
+              Company registration 08247910 · VAT GB 824 991 022
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
