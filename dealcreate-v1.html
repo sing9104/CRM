@@ -1,0 +1,1745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Deal · Focus | CerebroCRM (V1)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  /* Palette + tokens — matched to account-create.html */
+  :root {
+    --bg:        #f8f8fa;
+    --card:      #FFFFFF;
+    --ink:       #111827;
+    --ink-soft:  #374151;
+    --muted:     #6B7280;
+    --line:      #E5E7EB;
+    --line-soft: #F3F4F6;
+    --accent:    #111827; /* primary action — dark like account-create */
+    --accent-d:  #1F2937;
+    --violet:    #7C3AED;
+    --violet-d:  #6D28D9;
+    --violet-l:  #F3EBFF;
+    --sage:      #059669;
+    --sage-l:    #D1FAE5;
+    --warn:      #B45309;
+    --warn-l:    #FEF3C7;
+    --rose:      #DC2626;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
+  html, body { background: var(--bg); color: var(--ink); }
+
+  /* Top bar — slim, just brand and breadcrumb (action buttons live above the form now) */
+  .topbar {
+    background: white;
+    border-bottom: 1px solid var(--line);
+    border-top: 2px solid var(--ink);
+    padding: 0 24px;
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px; color: var(--ink); }
+  .brand-mark { width: 26px; height: 26px; border-radius: 6px; background: var(--ink); display: inline-flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 700; }
+  .crumbs { color: var(--muted); font-size: 13px; }
+  .crumbs span.cur { color: var(--ink); font-weight: 500; }
+  .topbar-back { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; text-decoration: none; }
+  .topbar-back:hover { color: var(--ink); }
+
+  /* Buttons — match account-create's gray-900 primary */
+  .btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all .15s; border: 1px solid transparent; display: inline-flex; align-items: center; gap: 6px; }
+  .btn-ghost { background: transparent; color: var(--ink-soft); border-color: var(--line); }
+  .btn-ghost:hover { background: var(--line-soft); }
+  .btn-prim { background: var(--ink); color: white; }
+  .btn-prim:hover { background: var(--accent-d); }
+  .btn-prim:disabled { background: #D1D5DB; color: white; cursor: not-allowed; }
+  .btn-sm { padding: 5px 11px; font-size: 11.5px; border-radius: 6px; }
+
+  /* Page-level action bar — sits directly above the form column */
+  .form-actions {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 18px; flex-wrap: wrap;
+  }
+  .form-actions .form-title { font-size: 20px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
+  .form-actions .form-title-sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .form-actions-right { display: flex; gap: 8px; align-items: center; }
+
+  /* Main layout */
+  .page { max-width: 1280px; margin: 0 auto; padding: 32px; display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 32px; }
+  @media (max-width: 1100px) { .page { grid-template-columns: 1fr; } }
+
+  /* Hero deal-name input */
+  .hero { margin-bottom: 22px; }
+  .hero .eyebrow { font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .hero .name-input {
+    font-size: 28px; font-weight: 700; letter-spacing: -0.02em;
+    color: var(--ink); width: 100%; line-height: 1.2;
+    border: none; background: transparent; outline: none;
+    padding: 4px 0;
+  }
+  .hero .name-input::placeholder { color: #B8BAC2; font-weight: 500; }
+  .hero .auto-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--muted); margin-top: 6px; }
+  .hero .auto-tag .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--sage); }
+
+  /* Card section — match account-create's rounded-3xl + gray-200 border */
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 24px; padding: 24px 26px;
+    margin-bottom: 16px;
+    transition: box-shadow .25s ease, border-color .25s ease;
+  }
+  .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .card-head h3 { font-size: 11px; font-weight: 700; color: var(--muted); display: flex; align-items: center; gap: 8px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .card-head h3 .step { width: 20px; height: 20px; border-radius: 50%; background: var(--line-soft); color: var(--ink); font-size: 10.5px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+  .card-head h3 .step.done { background: var(--sage-l); color: var(--sage); }
+  .card-head .meta { font-size: 11px; color: var(--muted); }
+
+  /* Focus shift — when the user advances past a step we briefly highlight the next card */
+  .card.focus-now {
+    border-color: var(--violet);
+    box-shadow: 0 0 0 4px rgba(124,58,237,0.10);
+  }
+  .card.focus-now .card-head h3 .step { background: var(--violet-l); color: var(--violet); }
+  .card-head .meta { font-size: 11.5px; color: var(--muted); }
+
+  .field { display: block; margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .field-row.three { grid-template-columns: 1fr 1fr 1fr; }
+  .field-row:last-child { margin-bottom: 0; }
+  .lbl { font-size: 12px; font-weight: 500; color: var(--ink-soft); margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+  .lbl .req { color: var(--rose); font-weight: 700; }
+  .ipt, .sel {
+    width: 100%; padding: 9px 12px; font-size: 13.5px; line-height: 1.4;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--card); color: var(--ink);
+    transition: all .15s; outline: none; font-family: inherit;
+  }
+  .ipt:hover, .sel:hover { border-color: #D8D1C2; }
+  .ipt:focus, .sel:focus { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(17,24,39,0.10); }
+  .ipt::placeholder { color: #B8B3A8; }
+  .with-prefix { position: relative; }
+  .with-prefix .pre { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 13px; }
+  .with-prefix .ipt { padding-left: 32px; }
+  .suf { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 12px; }
+
+  .hint { font-size: 11px; color: var(--sage); margin-top: 5px; display: none; align-items: center; gap: 4px; font-weight: 500; }
+  .hint.show { display: inline-flex; }
+  .hint i { width: 11px; height: 11px; }
+
+  /* Account picker */
+  .acct-box { position: relative; }
+  .acct-search { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); cursor: text; transition: all .15s; }
+  .acct-search:hover { border-color: #D8D1C2; }
+  .acct-search:focus-within { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(17,24,39,0.10); }
+  .acct-search input { border: none; outline: none; flex: 1; font-size: 14px; background: transparent; font-family: inherit; }
+  .acct-dd { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: white; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(31,31,30,0.08); z-index: 30; max-height: 260px; overflow-y: auto; display: none; }
+  .acct-dd.open { display: block; }
+  .acct-dd-item { padding: 6px 11px; display: flex; align-items: center; gap: 9px; cursor: pointer; border-bottom: 1px solid var(--line-soft); }
+  .acct-dd-item:last-child { border-bottom: none; }
+  .acct-dd-item:hover { background: #FAF7F1; }
+  .acct-avatar { width: 24px; height: 24px; border-radius: 6px; background: var(--ink); color: white; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; letter-spacing: 0; }
+  .acct-info { flex: 1; min-width: 0; }
+  .acct-info .nm { font-size: 12.5px; font-weight: 600; color: var(--ink); line-height: 1.25; }
+  .acct-info .sub { font-size: 10.5px; color: var(--muted); margin-top: 0; line-height: 1.2; }
+  .acct-stat { font-size: 10px; color: var(--ink); background: var(--line-soft); padding: 2px 7px; border-radius: 10px; font-weight: 600; }
+  /* Create-new affordance — sticky at the bottom of the scrollable dropdown so it
+     stays visible even when the search returns 10+ matches. */
+  .acct-dd-create {
+    padding: 8px 12px; display: flex; align-items: center; gap: 9px;
+    cursor: pointer; border-top: 1px solid rgba(255,255,255,0.2);
+    background: linear-gradient(135deg, var(--violet) 0%, var(--violet-d) 100%);
+    color: white;
+    transition: filter .15s, transform .15s;
+    position: sticky; bottom: 0; left: 0; right: 0;
+    box-shadow: 0 -6px 14px -8px rgba(0,0,0,0.15);
+  }
+  .acct-dd-create:hover { filter: brightness(1.08); }
+  .acct-dd-create:active { transform: translateY(1px); }
+  .acct-create-mark {
+    width: 22px; height: 22px; border-radius: 5px;
+    background: rgba(255,255,255,0.2);
+    color: white; display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0; border: 1px solid rgba(255,255,255,0.3);
+  }
+  .acct-create-text { flex: 1; min-width: 0; }
+  .acct-create-text .nm { font-size: 12px; font-weight: 700; color: white; letter-spacing: -0.01em; line-height: 1.25; }
+  .acct-create-text .sub { font-size: 10.5px; color: rgba(255,255,255,0.85); margin-top: 0; line-height: 1.2; }
+  .acct-create-text .sub strong { color: white; font-weight: 700; }
+  .acct-dd-create .acct-create-arrow { color: white; opacity: 0.85; }
+
+  .acct-chip { display: inline-flex; align-items: center; gap: 10px; padding: 8px 12px 8px 8px; background: var(--line-soft); border: 1px solid var(--line); border-radius: 10px; }
+  .acct-chip .x { background: transparent; border: none; cursor: pointer; color: var(--muted); padding: 2px 6px; font-size: 14px; }
+  .acct-chip .x:hover { color: var(--rose); }
+  .acct-chip .nm { font-weight: 600; font-size: 13.5px; color: var(--ink); }
+  .acct-chip .meta { font-size: 11.5px; color: var(--muted); }
+
+  /* Inventory cards */
+  .inv-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .inv-pick { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: all .15s; }
+  .inv-pick:hover { border-color: #D8D1C2; }
+  .inv-pick.selected { border-color: var(--ink); background: var(--line-soft); }
+  .inv-pick .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .inv-pick .nm { font-weight: 600; font-size: 13px; color: var(--ink); }
+  .inv-pick .cat { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
+  .inv-pick .price { font-weight: 700; font-size: 14px; color: var(--ink); font-feature-settings: "tnum"; }
+  .inv-pick .price-sub { font-size: 10.5px; color: var(--muted); font-weight: 400; }
+  .inv-pick .qty-row { display: none; align-items: center; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .inv-pick.selected .qty-row { display: flex; }
+  .inv-pick .qty-row label { font-size: 11px; color: var(--muted); flex: 1; }
+  .inv-pick .qty-row input { width: 56px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 5px; font-size: 12px; text-align: right; font-feature-settings: "tnum"; }
+  .inv-pick .qty-row .ln-total { font-size: 12px; font-weight: 700; color: var(--ink); }
+
+  /* Payment row */
+  .pay-tbl { width: 100%; }
+  .pay-tbl thead th { text-align: left; padding: 0 12px 8px; font-size: 10.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .pay-tbl thead th.num { text-align: right; }
+  .pay-tbl tbody td { padding: 6px 12px 6px 0; vertical-align: middle; }
+  .pay-tbl tbody td:first-child { padding-left: 12px; }
+  .pay-tbl tbody td input, .pay-tbl tbody td select { padding: 7px 10px; font-size: 12.5px; border: 1px solid var(--line); border-radius: 6px; background: white; width: 100%; outline: none; transition: all .15s; }
+  .pay-tbl tbody td input:focus, .pay-tbl tbody td select:focus { border-color: var(--ink); box-shadow: 0 0 0 2px rgba(17,24,39,0.10); }
+  .pay-tbl .amt { text-align: right; font-feature-settings: "tnum"; font-weight: 600; }
+  .pay-tbl .trash { background: transparent; border: none; color: var(--muted); cursor: pointer; padding: 4px; }
+  .pay-tbl .trash:hover { color: var(--ink); }
+
+  /* Live Preview (right rail) */
+  .preview {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 22px; position: sticky; top: 80px;
+  }
+  .preview h4 { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .preview .pv-name { font-size: 19px; font-weight: 600; color: var(--ink); line-height: 1.25; margin-bottom: 14px; letter-spacing: -0.015em; }
+  .preview .pv-name.empty { color: var(--muted); font-style: italic; font-weight: 500; }
+  .preview .pv-row { display: flex; gap: 8px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--line-soft); font-size: 12.5px; }
+  .preview .pv-row:last-of-type { border-bottom: none; }
+  .preview .pv-row .lbl-pv { color: var(--muted); width: 96px; flex-shrink: 0; font-weight: 500; }
+  .preview .pv-row .val { color: var(--ink); font-weight: 500; flex: 1; word-break: break-word; }
+  .preview .pv-row .val.muted { color: var(--muted); font-weight: 400; font-style: italic; }
+  .preview .pv-amt { font-size: 28px; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; font-feature-settings: "tnum"; line-height: 1; margin: 16px 0 4px; }
+  .preview .pv-amt-sub { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+  .preview .pv-progress { margin: 16px 0 14px; }
+  .preview .pv-bar { height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; margin-top: 6px; }
+  .preview .pv-bar > span { display: block; height: 100%; background: var(--sage); transition: width .3s ease; }
+  .preview .pv-progress .lbl-pg { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--muted); font-weight: 500; }
+  .preview .pv-progress .lbl-pg strong { color: var(--ink); font-weight: 600; }
+  .preview .pv-cta { width: 100%; padding: 12px; font-size: 14px; }
+  .preview .kbd { font-size: 10px; background: var(--line-soft); border: 1px solid var(--line); padding: 1px 5px; border-radius: 3px; color: var(--muted); font-family: ui-monospace, monospace; margin-left: auto; }
+
+  .small-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  @media (max-width: 720px) { .small-grid-3 { grid-template-columns: 1fr 1fr; } }
+
+  /* Cards stay fully visible — focus-now class on the next card signals where to go */
+  .reveal { opacity: 1; }
+  .reveal.active { opacity: 1; }
+
+  /* Currency dropdown style for compact areas */
+  .cur-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 4px 10px; border-radius: 999px; background: var(--line-soft); color: var(--ink); font-weight: 600; border: 1px solid var(--line); }
+
+  /* Add payment button */
+  .add-pay { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--ink); background: var(--line-soft); border: 1px dashed var(--line); padding: 8px 14px; border-radius: 8px; cursor: pointer; }
+  .add-pay:hover { background: var(--line); border-color: var(--ink); }
+
+  /* Notes textarea */
+  textarea.ipt { resize: vertical; min-height: 90px; line-height: 1.5; padding: 12px; }
+
+  /* ─── Inline 'Create new account' modal ─── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(17,24,39,0.55);
+    backdrop-filter: blur(2px);
+    align-items: flex-start; justify-content: center;
+    padding: 40px 20px; overflow-y: auto;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: white; border-radius: 24px;
+    width: 100%; max-width: 760px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    display: flex; flex-direction: column;
+    max-height: calc(100vh - 80px);
+    overflow: hidden;
+  }
+  .modal-head {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .modal-head .mh-mark {
+    width: 36px; height: 36px; border-radius: 9px;
+    background: linear-gradient(135deg, var(--violet) 0%, var(--violet-d) 100%);
+    color: white; display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .modal-head h3 { font-size: 17px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
+  .modal-head .mh-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .modal-head .mh-close {
+    margin-left: auto; background: transparent; border: none;
+    font-size: 22px; cursor: pointer; color: var(--muted); padding: 4px 10px; line-height: 1;
+  }
+  .modal-head .mh-close:hover { color: var(--ink); }
+
+  .modal-body { padding: 18px 22px; overflow-y: auto; }
+  .modal-section { margin-bottom: 16px; }
+  .modal-section:last-child { margin-bottom: 0; }
+  .modal-section h4 {
+    font-size: 11px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .modal-section h4 .h-actions { margin-left: auto; }
+
+  .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+  .modal-grid .full { grid-column: 1 / span 2; }
+
+  /* Side-aligned labels inside the modal — labels sit to the LEFT of the input
+     instead of stacked above. Saves vertical space significantly. */
+  .modal-grid > div { display: flex; align-items: center; gap: 10px; }
+  .modal-grid > div > .lbl {
+    width: 105px; flex-shrink: 0;
+    margin-bottom: 0;
+    font-size: 11.5px; font-weight: 500; color: var(--ink-soft);
+    line-height: 1.3;
+  }
+  .modal-grid > div > .ipt,
+  .modal-grid > div > .sel { flex: 1; min-width: 0; padding: 7px 10px; font-size: 12.5px; }
+
+  /* Compact modal contact row */
+  .mc-row {
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 8px; background: var(--bg);
+  }
+  .mc-row-head {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+    font-size: 10.5px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .mc-primary-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 9.5px; font-weight: 700; padding: 2px 7px; border-radius: 999px;
+    background: var(--sage-l); color: var(--sage);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .mc-row-head .mc-trash { margin-left: auto; background: transparent; border: none; cursor: pointer; color: var(--muted); padding: 2px 4px; }
+  .mc-row-head .mc-trash:hover { color: var(--rose); }
+
+  .mc-empty {
+    text-align: center; padding: 22px 14px; font-size: 12px; color: var(--muted);
+    background: var(--bg); border: 1px dashed var(--line); border-radius: 10px;
+    font-style: italic;
+  }
+  .mc-add-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--line-soft); border: 1px solid var(--line);
+    color: var(--ink); font-size: 12px; font-weight: 600;
+    padding: 6px 12px; border-radius: 8px; cursor: pointer;
+    transition: all .15s;
+  }
+  .mc-add-btn:hover { background: var(--line); border-color: var(--ink); }
+
+  .modal-foot {
+    padding: 16px 24px;
+    border-top: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    background: var(--bg);
+  }
+  .modal-foot .mf-hint { font-size: 11.5px; color: var(--muted); }
+  .modal-foot .mf-actions { display: flex; gap: 8px; }
+
+  /* Toast for "account created" confirmation */
+  .toast {
+    position: fixed; bottom: 28px; right: 28px; z-index: 300;
+    background: var(--ink); color: white;
+    padding: 11px 16px; border-radius: 10px;
+    font-size: 13px; font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    animation: toast-in .25s ease;
+  }
+  @keyframes toast-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .toast.fade-out { animation: toast-out .35s ease forwards; }
+  @keyframes toast-out { to { opacity: 0; transform: translateY(10px); } }
+
+  /* ─── Mari AI card (violet, matches account-create) ─── */
+  .ai-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f0e7ff 50%, #ede5ff 100%);
+    border: 1px solid #E4D5FF;
+    border-radius: 24px; margin-bottom: 16px;
+    position: relative; overflow: hidden;
+  }
+  .ai-head-btn {
+    width: 100%; background: transparent; border: none; cursor: pointer;
+    padding: 16px 24px; display: flex; align-items: center; gap: 12px;
+    text-align: left; font-family: inherit; position: relative; z-index: 1;
+    transition: background .15s;
+  }
+  .ai-head-btn:hover { background: rgba(255,255,255,0.35); }
+  .ai-mark {
+    width: 32px; height: 32px; border-radius: 9px;
+    background: linear-gradient(135deg, var(--violet) 0%, var(--violet-d) 100%);
+    color: white; display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .ai-head-text { flex: 1; min-width: 0; }
+  .ai-title-row { display: flex; align-items: center; gap: 8px; }
+  .ai-title-row h3 { font-size: 15px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
+  .ai-tag {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; padding: 2px 7px; border-radius: 999px;
+    background: white; color: var(--violet-d); border: 1px solid #DDD0FF;
+  }
+  .ai-collapsed-sub { display: block; font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+  .ai-card:not(.collapsed) .ai-collapsed-sub { display: none; }
+  .ai-chevron { color: var(--violet-d); flex-shrink: 0; transition: transform .25s ease; }
+  .ai-card:not(.collapsed) .ai-chevron { transform: rotate(180deg); }
+  .ai-body {
+    padding: 0 24px 24px;
+    overflow: hidden;
+    max-height: 600px;
+    opacity: 1;
+    transition: max-height .3s ease, opacity .25s ease, padding .25s ease;
+  }
+  .ai-card.collapsed .ai-body {
+    max-height: 0; opacity: 0; padding-top: 0; padding-bottom: 0;
+    pointer-events: none;
+  }
+  .ai-card .ai-sub { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 14px; line-height: 1.5; }
+  .ai-textarea {
+    width: 100%; padding: 12px 14px; font-size: 13.5px; line-height: 1.55;
+    border: 1px solid #DDD0FF; border-radius: 12px;
+    background: rgba(255,255,255,0.8); color: var(--ink);
+    transition: all .15s; outline: none; resize: vertical; min-height: 90px;
+    font-family: inherit;
+  }
+  .ai-textarea:hover { border-color: #C4B0F8; }
+  .ai-textarea:focus { border-color: var(--violet); background: white; box-shadow: 0 0 0 3px rgba(124,58,237,0.15); }
+  .ai-textarea::placeholder { color: #A89BC0; }
+  .ai-actions { display: flex; gap: 10px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+  .ai-actions .btn-prim { background: var(--violet); }
+  .ai-actions .btn-prim:hover { background: var(--violet-d); }
+  .ai-chip {
+    font-size: 11px; padding: 5px 10px; border-radius: 14px; cursor: pointer;
+    background: rgba(255,255,255,0.7); border: 1px solid #E4D5FF;
+    color: var(--ink-soft); font-weight: 500; transition: all .15s;
+  }
+  .ai-chip:hover { background: white; border-color: var(--violet); color: var(--violet-d); }
+  .ai-banner {
+    display: none; align-items: center; gap: 9px; margin-top: 12px;
+    padding: 10px 14px; border-radius: 9px;
+    background: var(--sage-l); border: 1px solid #A7E3C2;
+    font-size: 12.5px; color: #065F46; font-weight: 500;
+  }
+  .ai-banner.show { display: flex; }
+  .ai-banner .x { margin-left: auto; background: transparent; border: none; cursor: pointer; color: var(--sage); padding: 2px 6px; font-size: 14px; }
+  .ai-banner .x:hover { color: #355243; }
+  @keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+  .spin { animation: spin .9s linear infinite; }
+
+  /* ─── Previous deals card (right-rail companion) ─── */
+  .prior-deals-card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 18px 20px; margin-top: 14px;
+  }
+  .prior-deals-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; gap: 8px; flex-wrap: wrap; }
+  .prior-deals-head .h { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; display: flex; align-items: center; gap: 6px; }
+  .prior-deals-head .h-count { color: var(--ink); background: var(--line-soft); padding: 1px 7px; border-radius: 10px; font-size: 11px; }
+  .prior-deals-head .lifetime { font-size: 11px; color: var(--muted); font-weight: 500; }
+  .prior-deals-head .lifetime strong { color: var(--ink); font-weight: 700; font-feature-settings: "tnum"; }
+  .pd-list { display: flex; flex-direction: column; gap: 5px; }
+  .pd-row {
+    display: grid; grid-template-columns: auto 1fr auto;
+    gap: 8px; align-items: center;
+    padding: 8px 10px; border-radius: 7px;
+    background: var(--line-soft); border: 1px solid transparent;
+    cursor: pointer; transition: all .15s;
+  }
+  .pd-row:hover { background: white; border-color: var(--line); }
+  .pd-row .pd-stat {
+    font-size: 9px; font-weight: 700; padding: 2px 6px;
+    border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em;
+    flex-shrink: 0; line-height: 1.4;
+  }
+  .pd-stat.signed     { background: var(--sage-l);          color: #355243; }
+  .pd-stat.contracted { background: #DBEAFE;                color: #1E40AF; }
+  .pd-stat.in-play    { background: rgba(212,129,62,0.18);  color: var(--warn); }
+  .pd-stat.lost       { background: rgba(196,82,74,0.12);   color: #8B3A36; }
+  .pd-row .pd-main { min-width: 0; }
+  .pd-row .pd-name { font-size: 12px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pd-row .pd-meta { font-size: 10.5px; color: var(--muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pd-row .pd-right { text-align: right; min-width: 0; }
+  .pd-row .pd-value { font-size: 12px; font-weight: 700; color: var(--ink); font-feature-settings: "tnum"; white-space: nowrap; }
+  .pd-row .pd-date { font-size: 10px; color: var(--muted); font-feature-settings: "tnum"; white-space: nowrap; margin-top: 1px; }
+  .pd-empty { text-align: center; padding: 16px 12px; font-size: 12px; color: var(--muted); background: var(--line-soft); border-radius: 7px; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- ============= TOP BAR (slim — back link only) ============= -->
+<div class="topbar">
+  <div class="brand">
+    <span class="brand-mark">C</span>
+    Cerebro<span style="color: var(--muted); font-weight: 400;">/CRM</span>
+    <span class="crumbs" style="margin-left: 14px;">Deals <span style="color: var(--muted); margin: 0 6px;">›</span> <span class="cur">New deal</span></span>
+  </div>
+  <a href="#" onclick="window.history.back();return false;" class="topbar-back">
+    <i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back to Deals
+  </a>
+</div>
+
+<div class="page">
+<!-- ============= LEFT: FORM ============= -->
+<div>
+
+  <!-- Action bar — moved here from the far right of the screen, sitting just above the form -->
+  <div class="form-actions">
+    <div>
+      <div class="form-title">New deal</div>
+      <div class="form-title-sub">Account → Property → Inventory → Save</div>
+    </div>
+    <div class="form-actions-right">
+      <button class="btn btn-ghost" onclick="window.history.back()">Cancel</button>
+      <button id="saveBtn" class="btn btn-prim" disabled onclick="saveDeal()">
+        <i data-lucide="check" style="width:14px;height:14px;"></i>
+        Create deal
+      </button>
+    </div>
+  </div>
+
+  <!-- Hero: Deal Name -->
+  <div class="hero">
+    <div class="eyebrow">Deal name</div>
+    <input id="dealName" class="name-input" placeholder="Pick an account and property to auto-name…" oninput="onDealNameEdit()" />
+    <div id="autoTag" class="auto-tag" style="display:none;"><span class="dot"></span> Auto-generated · click to edit</div>
+  </div>
+
+  <!-- Mari AI quick-create (collapsible — collapsed by default) -->
+  <div id="aiCard" class="ai-card collapsed">
+    <button class="ai-head-btn" type="button" onclick="toggleAiPanel()" aria-expanded="false">
+      <span class="ai-mark"><i data-lucide="sparkles" style="width:15px;height:15px;"></i></span>
+      <span class="ai-head-text">
+        <span class="ai-title-row">
+          <h3>Create with Mari AI</h3>
+          <span class="ai-tag">Faster</span>
+        </span>
+        <span class="ai-collapsed-sub">Paste a brief — Mari AI will prefill the form for you.</span>
+      </span>
+      <i data-lucide="chevron-down" class="ai-chevron" style="width:18px;height:18px;"></i>
+    </button>
+
+    <div class="ai-body">
+      <p class="ai-sub">Paste a brief — meeting notes, an email, or a quick description — and Mari AI will extract the details and prefill the form below. Review and adjust before saving.</p>
+      <textarea id="aiInput" class="ai-textarea" placeholder="e.g. Red Global want 30 covers for Wednesday evening at Taste of London 2026. They want the premium package at £210 per head. Mollie is the sales lead. Split into 3 payments." rows="4"></textarea>
+      <div class="ai-actions">
+        <button id="aiGenerateBtn" class="btn btn-prim" onclick="processAIBrief()">
+          <i data-lucide="sparkles" style="width:13px;height:13px;"></i>
+          Generate from text
+        </button>
+        <span style="font-size:11px; color: var(--muted); font-weight: 500;">Or try:</span>
+        <span class="ai-chip" onclick="useAiSample(0)">Red Global · Taste of London · 30 covers premium</span>
+        <span class="ai-chip" onclick="useAiSample(1)">BMW · Frieze 26 entrance sponsor</span>
+      </div>
+      <div id="aiBanner" class="ai-banner">
+        <i data-lucide="check-circle-2" style="width:15px;height:15px;color:var(--sage);flex-shrink:0;"></i>
+        <span id="aiBannerText">Mari AI prefilled the form. Review and adjust the details below.</span>
+        <button class="x" onclick="dismissAiBanner()">×</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 1: Account & contacts -->
+  <div class="card" id="cardAccount">
+    <div class="card-head">
+      <h3><span class="step">1</span> Account &amp; relationship</h3>
+      <span class="meta">Who is this deal with?</span>
+    </div>
+
+    <div class="field acct-box" id="acctBox">
+      <label class="lbl">Account <span class="req">*</span></label>
+      <div id="acctSearch" class="acct-search">
+        <i data-lucide="search" style="width:14px; height:14px; color: var(--muted);"></i>
+        <input id="acctInput" type="text" placeholder="Search accounts by name or industry…" oninput="onAcctInput(this.value)" onfocus="onAcctInput(this.value)" />
+      </div>
+      <div id="acctSelected" style="display:none; margin-top: 8px;"></div>
+      <div id="acctDd" class="acct-dd"></div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="lbl">Sales contact</label>
+        <input id="salesContact" class="ipt" placeholder="Search contacts…" />
+        <div id="salesHint" class="hint"><i data-lucide="zap"></i> Auto-filled · sole contact on account</div>
+      </div>
+      <div class="field">
+        <label class="lbl">Billing contact</label>
+        <input id="billingContact" class="ipt" placeholder="Search contacts…" />
+        <div id="billingHint" class="hint"><i data-lucide="zap"></i> Auto-filled · sole contact on account</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Property & basics -->
+  <div class="card reveal" id="cardProperty">
+    <div class="card-head">
+      <h3><span class="step">2</span> Property &amp; commercial basics</h3>
+      <span class="meta">Where, when, on what terms</span>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="lbl">Property <span class="req">*</span></label>
+        <select id="dProperty" class="sel" onchange="onPropertyChange()">
+          <option value="">Choose a property</option>
+          <option value="taste">Taste of London</option>
+          <option value="frieze">Frieze London</option>
+          <option value="hyde">Hyde Park Winter Wonderland</option>
+          <option value="summit">Summer Summit</option>
+          <option value="gala">Gala London</option>
+          <option value="hampton">Hampton Court Palace Festival</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="lbl">Contract type <span class="req">*</span></label>
+        <select id="dContractType" class="sel" onchange="onContractTypeUserChange()">
+          <option value="">—</option>
+          <option value="new">New</option>
+          <option value="renewal">Renewal</option>
+        </select>
+        <div id="contractHint" class="hint"></div>
+      </div>
+    </div>
+
+    <div class="field-row three">
+      <div class="field">
+        <label class="lbl">Start date</label>
+        <input id="dStart" type="date" class="ipt" />
+      </div>
+      <div class="field">
+        <label class="lbl">End date</label>
+        <input id="dEnd" type="date" class="ipt" />
+      </div>
+      <div class="field">
+        <label class="lbl">Currency <span class="req">*</span></label>
+        <select id="dCurrency" class="sel" onchange="onCurrencyUserChange()">
+          <option value="GBP">GBP — £</option>
+          <option value="USD">USD — $</option>
+          <option value="EUR">EUR — €</option>
+          <option value="AUD">AUD — A$</option>
+        </select>
+        <div id="curHint" class="hint"><i data-lucide="zap"></i> From property</div>
+      </div>
+    </div>
+
+    <div class="field-row three">
+      <div class="field">
+        <label class="lbl">Lead salesperson <span class="req">*</span></label>
+        <input id="dOwner" class="ipt" value="Jaspinder Singh" />
+      </div>
+      <div class="field">
+        <label class="lbl">Status <span class="req">*</span></label>
+        <select id="dStatus" class="sel">
+          <option value="in-play" selected>In Play</option>
+          <option value="signed">Signed Agreement</option>
+          <option value="fully-contracted">Fully Contracted</option>
+          <option value="lost">Lost</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="lbl">Probability</label>
+        <div class="with-prefix">
+          <input id="dProb" type="number" min="0" max="100" value="10" class="ipt" style="padding-right:28px;" />
+          <span class="suf">%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="field" style="max-width: 50%;">
+      <label class="lbl">Commission <span class="req">*</span></label>
+      <div class="with-prefix">
+        <input id="dCommission" type="number" min="0" max="100" step="0.01" value="100.00" class="ipt" style="padding-right:28px;" />
+        <span class="suf">%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Inventory -->
+  <div class="card reveal" id="cardInventory">
+    <div class="card-head">
+      <h3><span class="step">3</span> Inventory</h3>
+      <span class="meta" id="invMeta">Pick a property first</span>
+    </div>
+    <div id="invEmpty" style="text-align:center; padding: 24px; color: var(--muted); font-size: 13px; background: var(--line-soft); border-radius: 10px;">
+      <i data-lucide="package" style="width:18px; height:18px; margin-bottom: 6px; opacity: 0.7;"></i>
+      <div>Choose a property above to see available inventory</div>
+    </div>
+    <div id="invGrid" class="inv-card-grid" style="display:none;"></div>
+  </div>
+
+  <!-- Step 4: Payment schedule -->
+  <div class="card reveal" id="cardPayment">
+    <div class="card-head">
+      <h3><span class="step">4</span> Payment schedule</h3>
+      <span class="meta" id="payMeta">A single payment will mirror the inventory total</span>
+    </div>
+    <table class="pay-tbl">
+      <thead><tr><th>Label</th><th>Due date</th><th>Type</th><th>Currency</th><th class="num">Amount</th><th></th></tr></thead>
+      <tbody id="payRows">
+        <tr id="pay-row-1">
+          <td><input id="pay-row-1-label" type="text" value="Payment #1" /></td>
+          <td><input id="pay-row-1-date" type="date" /></td>
+          <td><select id="pay-row-1-type"><option value="">Type</option><option value="bank">Bank Transfer</option><option value="card">Card Payment</option></select></td>
+          <td><select id="pay-row-1-currency"><option value="GBP">GBP — £</option><option value="USD">USD — $</option><option value="EUR">EUR — €</option><option value="AUD">AUD — A$</option></select></td>
+          <td class="amt"><input id="pay-row-1-amount" type="number" step="0.01" min="0" value="0.00" style="text-align:right; font-weight:600;"/></td>
+          <td><button class="trash" onclick="removePaymentRow('pay-row-1')"><i data-lucide="trash-2" style="width:13px;height:13px;"></i></button></td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top: 12px;">
+      <button class="add-pay" onclick="addPaymentRow()"><i data-lucide="plus" style="width:11px;height:11px;"></i> Add payment</button>
+    </div>
+  </div>
+
+  <!-- Notes -->
+  <div class="card">
+    <div class="card-head">
+      <h3><span class="step">5</span> Notes</h3>
+      <span class="meta">Optional · context for the team</span>
+    </div>
+    <textarea id="dNotes" class="ipt" placeholder="Anything worth recording about this deal — negotiation points, contacts mentioned, follow-ups…" rows="4"></textarea>
+  </div>
+
+  <!-- Bottom action bar — same actions as the top so users don't have to scroll back up -->
+  <div class="form-actions" style="margin-top: 8px; margin-bottom: 24px;">
+    <span style="font-size: 12px; color: var(--muted);">Press <span style="font-size: 10px; background: var(--line-soft); border: 1px solid var(--line); padding: 1px 5px; border-radius: 3px; font-family: ui-monospace, monospace;">⌘ ↵</span> to save anytime</span>
+    <div class="form-actions-right">
+      <button class="btn btn-ghost" onclick="window.history.back()">Cancel</button>
+      <button id="saveBtnBottom" class="btn btn-prim" disabled onclick="saveDeal()">
+        <i data-lucide="check" style="width:14px;height:14px;"></i>
+        Create deal
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============= RIGHT: LIVE PREVIEW ============= -->
+<div>
+  <div class="preview">
+    <h4>Live Preview</h4>
+    <div id="pvName" class="pv-name empty">Untitled deal</div>
+
+    <div class="pv-row"><span class="lbl-pv">Account</span><span id="pvAccount" class="val muted">—</span></div>
+    <div class="pv-row"><span class="lbl-pv">Property</span><span id="pvProperty" class="val muted">—</span></div>
+    <div class="pv-row"><span class="lbl-pv">Status</span><span id="pvStatus" class="val">In Play · 10%</span></div>
+    <div class="pv-row"><span class="lbl-pv">Owner</span><span id="pvOwner" class="val">Jaspinder Singh</span></div>
+    <div class="pv-row"><span class="lbl-pv">Term</span><span id="pvTerm" class="val muted">Not set</span></div>
+
+    <div id="pvAmt" class="pv-amt">£0.00</div>
+    <div id="pvAmtSub" class="pv-amt-sub">No inventory selected</div>
+
+    <div class="pv-progress">
+      <div class="lbl-pg"><span>Required fields</span><span><strong id="pvFilled">0</strong> / 6</span></div>
+      <div class="pv-bar"><span id="pvBar" style="width:0%"></span></div>
+    </div>
+
+    <button id="saveBtnRail" class="btn btn-prim pv-cta" disabled onclick="saveDeal()">
+      <i data-lucide="check" style="width:15px;height:15px;"></i>
+      Create deal
+      <span class="kbd">⌘ ↵</span>
+    </button>
+    <div style="font-size: 11px; color: var(--muted); margin-top: 8px; text-align: center;">Press <span class="kbd" style="display:inline-block; margin: 0 2px;">⌘ ↵</span> to save anytime</div>
+  </div>
+
+  <!-- Previous deals on this account (renders below the live preview when an account is selected) -->
+  <div id="priorDeals" class="prior-deals-card" style="display:none;"></div>
+</div>
+</div>
+
+<script>
+// ============================
+// Sample data
+// ============================
+// Each account carries who last touched it and when (audit metadata, kept on the record).
+const CURRENT_USER = 'Jaspinder Singh';
+const NOW = new Date('2026-04-25T10:00:00Z'); // pinned for stable demo
+
+const ACCOUNTS = [
+  { id:'a1', name:'Red Global',         initials:'RG', industry:'Health Care', country:'Canada',
+    contacts:['Caroline Hubbard'],
+    lastTouchedBy:'Jaspinder Singh', lastTouchedAt:'2026-04-23T14:22:00Z', lastAction:'amended',
+    deals:[
+      {status:'signed',     name:'TOL25: RED GLOBAL x20 SAT LUNCH',  property:'Taste of London 2025', date:'2025-03-14', value:4200,  owner:'Mollie Stoneham'},
+      {status:'contracted', name:'TOL24: RED GLOBAL x15 FRI EVE',     property:'Taste of London 2024', date:'2024-02-22', value:3150,  owner:'Jaspinder Singh'},
+      {status:'signed',     name:'GALA25: RED GLOBAL TABLE x1',        property:'Gala London 2025',     date:'2025-01-10', value:2200,  owner:'Mollie Stoneham'}
+    ] },
+  { id:'a2', name:'Barclays Corporate', initials:'BC', industry:'Financial Services', country:'United Kingdom',
+    contacts:['Daniel Pearce','Olivia Carr'],
+    lastTouchedBy:'Mike Torres',     lastTouchedAt:'2026-04-18T09:30:00Z', lastAction:'amended',
+    deals:[
+      {status:'contracted', name:'TOL25: BARCLAYS x50 WED EVE PREMIUM', property:'Taste of London 2025', date:'2025-04-05', value:12500, owner:'Mike Torres'},
+      {status:'signed',     name:'FRIEZE25: BARCLAYS COLLECTORS DINNER', property:'Frieze London 2025',   date:'2025-09-18', value:7000,  owner:'Mike Torres'},
+      {status:'contracted', name:'GALA24: BARCLAYS VIP TABLE x2',         property:'Gala London 2024',     date:'2024-11-12', value:7000,  owner:'Mike Torres'}
+    ] },
+  { id:'a3', name:'Diageo PLC',         initials:'DG', industry:'Spirits',           country:'United Kingdom',
+    contacts:['Tom Reilly'],
+    lastTouchedBy:'Jaspinder Singh', lastTouchedAt:'2026-04-17T16:05:00Z', lastAction:'amended',
+    deals:[
+      {status:'contracted', name:'TOL25: DIAGEO BAR SPONSOR',     property:'Taste of London 2025', date:'2025-03-01', value:3000, owner:'Jaspinder Singh'},
+      {status:'signed',     name:'GALA25: DIAGEO PREMIUM BAR',     property:'Gala London 2025',     date:'2025-01-20', value:5000, owner:'Jaspinder Singh'},
+      {status:'in-play',    name:'HYDE25: DIAGEO MULLED WINE PARTNER', property:'Hyde Park Winter 2025', date:'2025-09-08', value:4000, owner:'Jaspinder Singh'}
+    ] },
+  { id:'a4', name:'BMW Group UK',       initials:'BM', industry:'Automotive',         country:'Germany',
+    contacts:['Stefan Bauer'],
+    lastTouchedBy:'Jaspinder Singh', lastTouchedAt:'2026-04-24T11:12:00Z', lastAction:'created',
+    deals:[
+      {status:'contracted', name:'FRIEZE25: BMW ENTRANCE SPONSOR', property:'Frieze London 2025', date:'2025-07-12', value:15000, owner:'Jaspinder Singh'}
+    ] },
+  { id:'a5', name:'Heineken International', initials:'HI', industry:'Beverages',     country:'Netherlands',
+    contacts:['Lars Bakker','Pien de Jong'],
+    lastTouchedBy:'Sarah Chen',      lastTouchedAt:'2026-04-22T08:45:00Z', lastAction:'created',
+    deals:[] },
+  { id:'a6', name:'Goldman Sachs',       initials:'GS', industry:'Finance',           country:'United States',
+    contacts:['Rebecca Klein','Marcus Vega','Tony Lim'],
+    lastTouchedBy:'Jaspinder Singh', lastTouchedAt:'2026-04-04T13:20:00Z', lastAction:'amended',
+    deals:[
+      {status:'contracted', name:'FRIEZE25: GOLDMAN SACHS VIP LOUNGE', property:'Frieze London 2025', date:'2025-08-05', value:6000, owner:'Jaspinder Singh'},
+      {status:'signed',     name:'GALA25: GOLDMAN SACHS PLATINUM TABLE', property:'Gala London 2025', date:'2025-01-28', value:5000, owner:'Jaspinder Singh'}
+    ] },
+  { id:'a7', name:'Tech Innovations Ltd',initials:'TI', industry:'SaaS',              country:'United Kingdom',
+    contacts:['Jasmine Wright'],
+    lastTouchedBy:'Mollie Stoneham', lastTouchedAt:'2026-04-23T17:55:00Z', lastAction:'amended',
+    deals:[
+      {status:'signed', name:'SUMMIT25: TECH INNOVATIONS BOOTH STD', property:'Summer Summit 2025', date:'2025-04-18', value:3000, owner:'Mollie Stoneham'}
+    ] },
+];
+
+const PROPERTY = {
+  taste:   { label:'Taste of London',                currency:'GBP', defaultStart:'2026-06-17', defaultEnd:'2026-06-21' },
+  frieze:  { label:'Frieze London',                  currency:'GBP', defaultStart:'2026-10-15', defaultEnd:'2026-10-19' },
+  hyde:    { label:'Hyde Park Winter Wonderland',    currency:'GBP', defaultStart:'2026-11-21', defaultEnd:'2027-01-04' },
+  summit:  { label:'Summer Summit',                  currency:'USD', defaultStart:'2026-05-12', defaultEnd:'2026-05-14' },
+  gala:    { label:'Gala London',                    currency:'GBP', defaultStart:'2026-01-22', defaultEnd:'2026-01-22' },
+  hampton: { label:'Hampton Court Palace Festival',  currency:'GBP', defaultStart:'2026-06-08', defaultEnd:'2026-06-25' },
+};
+
+const INVENTORY = {
+  taste:  [
+    { id:'t1', name:'Standard Cover · Mid-week eve', cat:'Cover', price:175 },
+    { id:'t2', name:'Premium Cover · Sat lunch',     cat:'Cover', price:210 },
+    { id:'t3', name:'VIP Suite ×8',                  cat:'Hospitality', price:2400 },
+    { id:'t4', name:'Bar Sponsor — Drinks Partner',  cat:'Branding', price:8000 },
+  ],
+  frieze: [
+    { id:'f1', name:'Collectors Dinner · 1 table',   cat:'Hospitality', price:7000 },
+    { id:'f2', name:'Gallery Lounge Sponsor',        cat:'Branding', price:6000 },
+    { id:'f3', name:'Entrance Sponsor',              cat:'Branding', price:15000 },
+    { id:'f4', name:'VIP Preview Pass',              cat:'Cover', price:1200 },
+  ],
+  hyde:   [
+    { id:'h1', name:'VIP Lodge ×10',                 cat:'Hospitality', price:1500 },
+    { id:'h2', name:'Mulled Wine Partner',           cat:'Branding', price:4000 },
+  ],
+  summit: [
+    { id:'s1', name:'Premium Booth',                 cat:'Booth', price:5500 },
+    { id:'s2', name:'Speaker Slot + VIP',            cat:'Programming', price:8000 },
+    { id:'s3', name:'EV Showcase Bay',               cat:'Branding', price:8000 },
+  ],
+  gala: [
+    { id:'g1', name:'Platinum Table',                cat:'Hospitality', price:5000 },
+    { id:'g2', name:'Standard Table ×3',             cat:'Hospitality', price:6600 },
+  ],
+  hampton: [
+    { id:'hp1', name:'Block C × 2',                  cat:'Hospitality', price:9000 },
+    { id:'hp2', name:'Premium Cover · Wed eve',      cat:'Cover', price:240 },
+  ],
+};
+
+// ============================
+// State
+// ============================
+let selectedAccount = null;
+let selectedInventory = {}; // id → { ...item, qty }
+let dealNameEdited = false;
+let _payRowSeq = 1;
+
+// ============================
+// Format helpers
+// ============================
+const CUR_SYMBOL = { GBP:'£', USD:'$', EUR:'€', AUD:'A$' };
+const fmt = v => {
+  const cur = document.getElementById('dCurrency').value || 'GBP';
+  const sym = CUR_SYMBOL[cur] || '£';
+  const n = Number(v) || 0;
+  return sym + n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
+const esc = s => (s||'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// ============================
+// Account dropdown
+// ============================
+// Friendly "x days ago" / "yesterday" / "today" rendering, anchored to NOW.
+function relTime(iso) {
+  const t = new Date(iso).getTime();
+  const diffH = Math.round((NOW - t) / 36e5);
+  if (diffH < 1) return 'just now';
+  if (diffH < 24) return diffH + 'h ago';
+  const days = Math.round(diffH / 24);
+  if (days === 1) return 'yesterday';
+  if (days < 7) return days + 'd ago';
+  if (days < 30) return Math.round(days/7) + 'w ago';
+  return Math.round(days/30) + 'mo ago';
+}
+
+function onAcctInput(query) {
+  const q = (query||'').toLowerCase().trim();
+  const rawQuery = (query||'').trim();
+  const dd = document.getElementById('acctDd');
+
+  // EMPTY QUERY → simple search prompt only.
+  // The Create-new-account CTA is INTENTIONALLY HIDDEN here — users must search
+  // first so they don't create a duplicate of an account that already exists.
+  if (!q) {
+    dd.innerHTML = `<div style="padding: 22px 16px; text-align: center; color: var(--muted); font-size: 12px; line-height: 1.5;">
+      <i data-lucide="search" style="width:16px;height:16px;display:block;margin:0 auto 6px;opacity:0.7;"></i>
+      Start typing to search ${ACCOUNTS.length} accounts.
+      <div style="font-size: 11px; color: var(--muted); margin-top: 6px; font-style: italic;">Search first — you can create a new account if no match exists.</div>
+    </div>`;
+    dd.classList.add('open');
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
+
+  // QUERY PRESENT → fuzzy match across all accounts. Show all matches; the
+  // sticky Create-new-account row pins to the bottom so it's always visible.
+  const matches = ACCOUNTS.filter(a => a.name.toLowerCase().includes(q) || a.industry.toLowerCase().includes(q) || a.country.toLowerCase().includes(q));
+  let html = `<div style="padding: 9px 14px; font-size: 10.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; background: var(--line-soft); border-bottom: 1px solid var(--line);">
+    ${matches.length} match${matches.length===1?'':'es'}
+  </div>`;
+  html += matches.map(a => `
+    <div class="acct-dd-item" onclick="selectAccount('${a.id}')">
+      <div class="acct-avatar">${a.initials}</div>
+      <div class="acct-info">
+        <div class="nm">${esc(a.name)}</div>
+        <div class="sub">${esc(a.industry)} · ${esc(a.country)}</div>
+      </div>
+      <span class="acct-stat">${a.deals.length} prior</span>
+    </div>`).join('') || `<div style="padding: 18px 16px; text-align:center; color: var(--muted); font-size: 12px;">No matches for "${esc(rawQuery)}".</div>`;
+  html += createNewAccountFooter(rawQuery);
+  dd.innerHTML = html;
+  dd.classList.add('open');
+  if (window.lucide) lucide.createIcons();
+}
+
+// Footer affordance to create a new account, carrying the typed search text.
+function createNewAccountFooter(query) {
+  const safeQuery = esc(query).replace(/'/g, "\\'");
+  const subtitle = query
+    ? `New account using <strong style="color: var(--ink);">${esc(query)}</strong>`
+    : `Open the account create flow`;
+  return `<div class="acct-dd-create" onclick="createNewAccount('${safeQuery}')">
+    <div class="acct-create-mark"><i data-lucide="plus" style="width:11px;height:11px;"></i></div>
+    <div class="acct-create-text">
+      <div class="nm">Create new account</div>
+      <div class="sub">${subtitle}</div>
+    </div>
+    <i data-lucide="arrow-up-right" class="acct-create-arrow" style="width:12px;height:12px;"></i>
+  </div>`;
+}
+
+// Navigate to the account-create page, passing the typed search text via ?name=
+function createNewAccount(query) {
+  const qs = query ? '?name=' + encodeURIComponent(query) : '';
+  window.location.href = 'account-create.html' + qs;
+}
+
+function selectAccount(id) {
+  const a = ACCOUNTS.find(x => x.id === id);
+  if (!a) return;
+  selectedAccount = a;
+  document.getElementById('acctSearch').style.display = 'none';
+  const sel = document.getElementById('acctSelected');
+  sel.style.display = 'block';
+  sel.innerHTML = `<span class="acct-chip">
+      <span class="acct-avatar">${a.initials}</span>
+      <span>
+        <span class="nm">${esc(a.name)}</span><br/>
+        <span class="meta">${esc(a.industry)} · ${esc(a.country)} · ${a.deals.length} prior deal${a.deals.length===1?'':'s'}</span>
+      </span>
+      <button class="x" onclick="clearAccount()" title="Remove">×</button>
+    </span>`;
+  document.getElementById('acctDd').classList.remove('open');
+  // Auto-fill cascade
+  autoFillContacts(a);
+  autoFillContractType(a);
+  renderPriorDeals(a);
+  updateAutoName();
+  updateAll();
+  // Move focus visually to the next section so it doesn't look greyed-out
+  shiftFocusTo('cardProperty');
+}
+
+// Highlight a card briefly with a violet ring + scroll it into view, signalling
+// "this is your next step" without dimming the rest of the form.
+function shiftFocusTo(elId) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  // Clear focus on any other card first so we never have two glows at once
+  document.querySelectorAll('.card.focus-now').forEach(c => c.classList.remove('focus-now'));
+  el.classList.add('focus-now');
+  // Smooth scroll the section into view, but do NOT scroll the page if it's already visible
+  const rect = el.getBoundingClientRect();
+  if (rect.top < 60 || rect.top > window.innerHeight - 100) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  // Auto-fade the highlight after a short while so it doesn't shout forever
+  setTimeout(() => el.classList.remove('focus-now'), 2200);
+  // Move keyboard focus into the card's first focusable input
+  setTimeout(() => {
+    const target = el.querySelector('input, select, textarea, button');
+    if (target && typeof target.focus === 'function') target.focus({ preventScroll: true });
+  }, 250);
+}
+function clearAccount() {
+  selectedAccount = null;
+  document.getElementById('acctSearch').style.display = '';
+  document.getElementById('acctSelected').innerHTML = '';
+  document.getElementById('acctSelected').style.display = 'none';
+  document.getElementById('acctInput').value = '';
+  document.getElementById('acctInput').focus();
+  autoFillContacts(null);
+  autoFillContractType(null);
+  renderPriorDeals(null);
+  updateAutoName();
+  updateAll();
+}
+
+// Render the list of previous deals signed on this account.
+function renderPriorDeals(account) {
+  const wrap = document.getElementById('priorDeals');
+  if (!account) { wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+  const deals = (account.deals || []).slice().sort((a, b) => (b.date||'').localeCompare(a.date||''));
+  const lifetime = deals.reduce((s, d) => s + (d.value || 0), 0);
+  const fmtVal = v => '£' + (Number(v)||0).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  const fmtDate = iso => {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' });
+  };
+  wrap.style.display = 'block';
+  if (!deals.length) {
+    wrap.innerHTML = `
+      <div class="prior-deals-head">
+        <span class="h"><i data-lucide="file-text" style="width:11px;height:11px;"></i> Previous deals</span>
+      </div>
+      <div class="pd-empty">No prior deals on this account yet.</div>`;
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
+  wrap.innerHTML = `
+    <div class="prior-deals-head">
+      <span class="h"><i data-lucide="file-text" style="width:11px;height:11px;"></i> Previous deals <span class="h-count">${deals.length}</span></span>
+      <span class="lifetime">Lifetime · <strong>${fmtVal(lifetime)}</strong></span>
+    </div>
+    <div class="pd-list">${deals.map(d => `
+      <div class="pd-row" title="${esc(d.name)} — ${esc(d.property||'')} · ${esc(d.owner||'Unassigned')}">
+        <span class="pd-stat ${d.status}">${d.status === 'in-play' ? 'in play' : d.status}</span>
+        <div class="pd-main">
+          <div class="pd-name">${esc(d.name)}</div>
+          <div class="pd-meta">${esc(d.property || '—')}</div>
+        </div>
+        <div class="pd-right">
+          <div class="pd-value">${fmtVal(d.value)}</div>
+          <div class="pd-date">${fmtDate(d.date)}</div>
+        </div>
+      </div>`).join('')}</div>`;
+  if (window.lucide) lucide.createIcons();
+}
+
+// Toggle the Mari AI panel open/closed.
+function toggleAiPanel() {
+  const card = document.getElementById('aiCard');
+  const btn = card.querySelector('.ai-head-btn');
+  const wasCollapsed = card.classList.contains('collapsed');
+  card.classList.toggle('collapsed');
+  btn.setAttribute('aria-expanded', wasCollapsed ? 'true' : 'false');
+}
+document.addEventListener('click', (e) => {
+  if (!document.getElementById('acctBox').contains(e.target)) document.getElementById('acctDd').classList.remove('open');
+});
+
+// ============================
+// Smart defaults
+// ============================
+function autoFillContacts(account) {
+  const sales = document.getElementById('salesContact');
+  const billing = document.getElementById('billingContact');
+  const sH = document.getElementById('salesHint');
+  const bH = document.getElementById('billingHint');
+  sH.classList.remove('show'); bH.classList.remove('show');
+  if (!account || !account.contacts) {
+    if (sales.dataset.auto === '1') { sales.value = ''; delete sales.dataset.auto; }
+    if (billing.dataset.auto === '1') { billing.value = ''; delete billing.dataset.auto; }
+    return;
+  }
+  if (account.contacts.length === 1) {
+    const c = account.contacts[0];
+    if (!sales.value || sales.dataset.auto === '1') { sales.value = c; sales.dataset.auto = '1'; sH.classList.add('show'); }
+    if (!billing.value || billing.dataset.auto === '1') { billing.value = c; billing.dataset.auto = '1'; bH.classList.add('show'); }
+  } else {
+    if (sales.dataset.auto === '1') { sales.value = ''; delete sales.dataset.auto; }
+    if (billing.dataset.auto === '1') { billing.value = ''; delete billing.dataset.auto; }
+  }
+}
+function autoFillContractType(account) {
+  const ct = document.getElementById('dContractType');
+  const hint = document.getElementById('contractHint');
+  if (ct.dataset.userSet === '1') return;
+  if (!account) { ct.value = ''; hint.classList.remove('show'); return; }
+  const confirmed = (account.deals || []).filter(d => d.status === 'signed' || d.status === 'contracted').length;
+  if (confirmed > 0) {
+    ct.value = 'renewal';
+    hint.innerHTML = '<i data-lucide="zap"></i> Renewal — ' + confirmed + ' confirmed booking' + (confirmed===1?'':'s');
+  } else {
+    ct.value = 'new';
+    hint.innerHTML = '<i data-lucide="zap"></i> New — no prior confirmed bookings';
+  }
+  hint.classList.add('show');
+  ct.dataset.auto = '1';
+  if (window.lucide) lucide.createIcons();
+}
+function onContractTypeUserChange() {
+  const ct = document.getElementById('dContractType');
+  ct.dataset.userSet = '1';
+  delete ct.dataset.auto;
+  document.getElementById('contractHint').classList.remove('show');
+}
+function onCurrencyUserChange() {
+  const sel = document.getElementById('dCurrency');
+  sel.dataset.userSet = '1';
+  document.getElementById('curHint').classList.remove('show');
+  document.querySelectorAll('#payRows select[id$="-currency"]').forEach(el => el.value = sel.value);
+  updateAll();
+}
+
+// ============================
+// Property change
+// ============================
+function onPropertyChange() {
+  const v = document.getElementById('dProperty').value;
+  if (!v) {
+    document.getElementById('cardInventory').classList.remove('active');
+    document.getElementById('invEmpty').style.display = 'block';
+    document.getElementById('invGrid').style.display = 'none';
+    selectedInventory = {};
+    syncPaymentTotal();
+    updateAutoName();
+    updateAll();
+    return;
+  }
+  const p = PROPERTY[v];
+  // Currency
+  const sel = document.getElementById('dCurrency');
+  if (sel.dataset.userSet !== '1') {
+    sel.value = p.currency;
+    document.getElementById('curHint').classList.add('show');
+    document.querySelectorAll('#payRows select[id$="-currency"]').forEach(el => el.value = p.currency);
+  }
+  // Default dates if empty
+  if (!document.getElementById('dStart').value) document.getElementById('dStart').value = p.defaultStart;
+  if (!document.getElementById('dEnd').value) document.getElementById('dEnd').value = p.defaultEnd;
+  // Render inventory
+  document.getElementById('invEmpty').style.display = 'none';
+  document.getElementById('invGrid').style.display = 'grid';
+  document.getElementById('invMeta').textContent = (INVENTORY[v]||[]).length + ' items available';
+  renderInventoryGrid(v);
+  document.getElementById('cardInventory').classList.add('active');
+  // Reset selection on property change
+  selectedInventory = {};
+  syncPaymentTotal();
+  updateAutoName();
+  updateAll();
+  // Advance focus to the inventory section
+  shiftFocusTo('cardInventory');
+}
+
+function renderInventoryGrid(propKey) {
+  const items = INVENTORY[propKey] || [];
+  document.getElementById('invGrid').innerHTML = items.map(it => {
+    const sel = !!selectedInventory[it.id];
+    const qty = sel ? selectedInventory[it.id].qty : 1;
+    const lineTotal = qty * it.price;
+    return `<div class="inv-pick ${sel?'selected':''}" onclick="toggleInv('${it.id}')">
+      <div class="top">
+        <div>
+          <div class="nm">${esc(it.name)}</div>
+          <div class="cat">${esc(it.cat)}</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="price">${fmt(it.price)}</div>
+          <div class="price-sub">per unit</div>
+        </div>
+      </div>
+      <div class="qty-row" onclick="event.stopPropagation();">
+        <label>Qty</label>
+        <input type="number" min="1" value="${qty}" oninput="updateInvQty('${it.id}', this.value)" />
+        <span class="ln-total">${fmt(lineTotal)}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+function toggleInv(id) {
+  const propKey = document.getElementById('dProperty').value;
+  const item = (INVENTORY[propKey]||[]).find(x => x.id === id);
+  if (!item) return;
+  if (selectedInventory[id]) delete selectedInventory[id];
+  else selectedInventory[id] = { ...item, qty: 1 };
+  renderInventoryGrid(propKey);
+  syncPaymentTotal();
+  updateAll();
+}
+function updateInvQty(id, v) {
+  if (!selectedInventory[id]) return;
+  selectedInventory[id].qty = Math.max(1, parseInt(v) || 1);
+  // Update only the affected line totals — inline patch via re-render of grid
+  renderInventoryGrid(document.getElementById('dProperty').value);
+  syncPaymentTotal();
+  updateAll();
+}
+
+// ============================
+// Payment rows
+// ============================
+function syncPaymentTotal() {
+  const total = Object.values(selectedInventory).reduce((s, it) => s + it.qty * it.price, 0);
+  const amt = document.getElementById('pay-row-1-amount');
+  const cur = document.getElementById('pay-row-1-currency');
+  if (amt) amt.value = total.toFixed(2);
+  if (cur) cur.value = document.getElementById('dCurrency').value;
+  document.getElementById('payMeta').textContent = total > 0 ? 'Auto-filled · single payment for the inventory total' : 'A single payment will mirror the inventory total';
+}
+function addPaymentRow() {
+  const tbody = document.getElementById('payRows');
+  _payRowSeq += 1;
+  const labelN = tbody.querySelectorAll('tr').length + 1;
+  const cur = document.getElementById('dCurrency').value || 'GBP';
+  const rowId = 'pay-row-' + _payRowSeq;
+  const tr = document.createElement('tr');
+  tr.id = rowId;
+  tr.innerHTML = `
+    <td><input id="${rowId}-label" type="text" value="Payment #${labelN}"></td>
+    <td><input id="${rowId}-date" type="date"></td>
+    <td><select id="${rowId}-type"><option value="">Type</option><option value="bank">Bank Transfer</option><option value="card">Card Payment</option></select></td>
+    <td><select id="${rowId}-currency">${['GBP','USD','EUR','AUD'].map(c => `<option value="${c}" ${c===cur?'selected':''}>${c} — ${CUR_SYMBOL[c]}</option>`).join('')}</select></td>
+    <td class="amt"><input id="${rowId}-amount" type="number" step="0.01" min="0" value="0.00" style="text-align:right; font-weight:600;"></td>
+    <td><button class="trash" onclick="removePaymentRow('${rowId}')"><i data-lucide="trash-2" style="width:13px;height:13px;"></i></button></td>`;
+  tbody.appendChild(tr);
+  if (window.lucide) lucide.createIcons();
+}
+function removePaymentRow(rowId) {
+  const tr = document.getElementById(rowId);
+  if (tr) tr.remove();
+  document.querySelectorAll('#payRows tr').forEach((r, i) => {
+    const lbl = r.querySelector('input[id$="-label"]');
+    if (lbl && /^Payment #\d+$/.test(lbl.value)) lbl.value = 'Payment #' + (i+1);
+  });
+}
+
+// ============================
+// Auto name + preview
+// ============================
+function onDealNameEdit() { dealNameEdited = !!document.getElementById('dealName').value; updateAll(); }
+function updateAutoName() {
+  if (dealNameEdited) return;
+  const a = selectedAccount;
+  const p = document.getElementById('dProperty').value;
+  const propLabel = p ? PROPERTY[p].label : '';
+  if (a && propLabel) {
+    document.getElementById('dealName').value = `${propLabel.split(' ').map(w=>w[0]).join('').toUpperCase()}26: ${a.name.toUpperCase()}`;
+    document.getElementById('autoTag').style.display = 'inline-flex';
+  } else {
+    document.getElementById('dealName').value = '';
+    document.getElementById('autoTag').style.display = 'none';
+  }
+}
+
+function totalAmount() {
+  return Object.values(selectedInventory).reduce((s, it) => s + it.qty * it.price, 0);
+}
+
+function updateAll() {
+  // Preview
+  const a = selectedAccount;
+  const p = document.getElementById('dProperty').value;
+  const propLabel = p ? PROPERTY[p].label : '';
+  const name = document.getElementById('dealName').value;
+  const pvName = document.getElementById('pvName');
+  if (name) { pvName.textContent = name; pvName.classList.remove('empty'); }
+  else { pvName.textContent = 'Untitled deal'; pvName.classList.add('empty'); }
+
+  const setPv = (id, val, mute) => {
+    const el = document.getElementById(id);
+    el.textContent = val || '—';
+    el.classList.toggle('muted', !!mute || !val);
+  };
+  setPv('pvAccount', a ? a.name : '', !a);
+  setPv('pvProperty', propLabel || '', !propLabel);
+  const status = document.getElementById('dStatus');
+  const prob = document.getElementById('dProb').value || '0';
+  setPv('pvStatus', status.options[status.selectedIndex].text + ' · ' + prob + '%');
+  setPv('pvOwner', document.getElementById('dOwner').value);
+  const s = document.getElementById('dStart').value, e = document.getElementById('dEnd').value;
+  setPv('pvTerm', (s && e) ? `${s} → ${e}` : (s || e || ''), !(s||e));
+
+  document.getElementById('pvAmt').textContent = fmt(totalAmount());
+  const itemCount = Object.keys(selectedInventory).length;
+  const payCount = document.querySelectorAll('#payRows tr').length;
+  document.getElementById('pvAmtSub').textContent = itemCount === 0 ? 'No inventory selected' :
+    `${itemCount} item${itemCount===1?'':'s'} · ${payCount} payment${payCount===1?'':'s'}`;
+
+  // Required fields gauge: Account, Property, Contract Type, Status, Currency, Commission, Owner
+  const filled = [
+    !!a,
+    !!p,
+    !!document.getElementById('dContractType').value,
+    !!status.value,
+    !!document.getElementById('dCurrency').value,
+    !!document.getElementById('dCommission').value,
+  ].filter(Boolean).length;
+  document.getElementById('pvFilled').textContent = filled;
+  document.getElementById('pvBar').style.width = (filled/6*100).toFixed(0) + '%';
+  const ready = filled === 6;
+  document.getElementById('saveBtn').disabled = !ready;
+  document.getElementById('saveBtnRail').disabled = !ready;
+  const bottom = document.getElementById('saveBtnBottom');
+  if (bottom) bottom.disabled = !ready;
+}
+function saveDeal() {
+  alert('Mock: deal would be created and the user would be redirected to the deal detail page.');
+}
+
+// ============================
+// Mari AI quick-create
+// ============================
+const AI_SAMPLES = [
+  {
+    text: "Red Global want 30 covers for Wednesday evening at Taste of London 2026. They want the premium package at £210 per head. Mollie is the sales lead. Split into 3 payments.",
+    apply: () => {
+      selectAccount('a1');
+      document.getElementById('dProperty').value = 'taste';
+      onPropertyChange();
+      // Pick premium cover ×30
+      if (!selectedInventory['t2']) selectedInventory['t2'] = { ...INVENTORY.taste.find(x => x.id==='t2'), qty: 30 };
+      else selectedInventory['t2'].qty = 30;
+      renderInventoryGrid('taste');
+      syncPaymentTotal();
+      document.getElementById('dOwner').value = 'Mollie Stoneham';
+      document.getElementById('dStatus').value = 'in-play';
+      document.getElementById('dProb').value = 60;
+      document.getElementById('dNotes').value = 'AI prefilled from brief: Wed evening, premium package, split into 3 payments per buyer request.';
+      return ['Account', 'Property', 'Inventory', 'Lead', 'Status', 'Probability', 'Notes'];
+    }
+  },
+  {
+    text: "BMW Group UK to renew the Frieze London 2026 entrance sponsor at £15k. Stefan is the contact. Single payment up front.",
+    apply: () => {
+      selectAccount('a4');
+      document.getElementById('dProperty').value = 'frieze';
+      onPropertyChange();
+      if (!selectedInventory['f3']) selectedInventory['f3'] = { ...INVENTORY.frieze.find(x => x.id==='f3'), qty: 1 };
+      renderInventoryGrid('frieze');
+      syncPaymentTotal();
+      document.getElementById('dStatus').value = 'in-play';
+      document.getElementById('dProb').value = 75;
+      document.getElementById('dNotes').value = 'AI prefilled from brief: renewal of Frieze entrance sponsor, single payment up front.';
+      return ['Account', 'Property', 'Inventory', 'Status', 'Probability', 'Notes'];
+    }
+  }
+];
+
+function useAiSample(idx) {
+  document.getElementById('aiInput').value = AI_SAMPLES[idx].text;
+  document.getElementById('aiInput').focus();
+}
+
+async function processAIBrief() {
+  const txt = document.getElementById('aiInput').value.trim();
+  if (!txt) {
+    document.getElementById('aiInput').focus();
+    return;
+  }
+  const btn = document.getElementById('aiGenerateBtn');
+  const originalBtn = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i data-lucide="loader-2" class="spin" style="width:13px;height:13px;"></i> Generating…';
+  if (window.lucide) lucide.createIcons();
+
+  // Simulate AI processing
+  await new Promise(r => setTimeout(r, 900));
+
+  // Pick a sample to apply (in a real app this is where we'd parse the brief).
+  // We try to keyword-match the user's text first; otherwise we apply the first sample.
+  const lower = txt.toLowerCase();
+  let sample = AI_SAMPLES[0];
+  if (lower.includes('bmw') || lower.includes('frieze')) sample = AI_SAMPLES[1];
+  else if (lower.includes('red global') || lower.includes('taste')) sample = AI_SAMPLES[0];
+  const fields = sample.apply();
+
+  // Banner
+  const banner = document.getElementById('aiBanner');
+  document.getElementById('aiBannerText').textContent =
+    `Mari AI prefilled ${fields.length} fields (${fields.join(', ')}). Review and adjust below.`;
+  banner.classList.add('show');
+
+  btn.disabled = false;
+  btn.innerHTML = originalBtn;
+  if (window.lucide) lucide.createIcons();
+  updateAll();
+}
+
+function dismissAiBanner() {
+  document.getElementById('aiBanner').classList.remove('show');
+}
+
+// Bind change listeners for live preview update
+document.querySelectorAll('input, select, textarea').forEach(el => {
+  el.addEventListener('input', updateAll);
+  el.addEventListener('change', updateAll);
+});
+
+// Cmd/Ctrl+Enter shortcut
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+    if (!document.getElementById('saveBtn').disabled) { e.preventDefault(); saveDeal(); }
+  }
+});
+
+lucide.createIcons();
+updateAll();
+</script>
+
+<!-- ============= NEW-ACCOUNT MODAL ============= -->
+<div id="newAcctModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="newAcctTitle" onclick="onModalBackdropClick(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <span class="mh-mark"><i data-lucide="building-2" style="width:18px;height:18px;"></i></span>
+      <div>
+        <h3 id="newAcctTitle">Create new account</h3>
+        <div class="mh-sub">Add the essentials and one or more contacts. You'll come straight back to your deal.</div>
+      </div>
+      <button class="mh-close" onclick="closeCreateAccountModal()" aria-label="Close">×</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Essentials -->
+      <div class="modal-section">
+        <h4>Essentials</h4>
+        <div class="modal-grid">
+          <div class="full">
+            <label class="lbl">Account name <span class="req">*</span></label>
+            <input id="newAcctName" type="text" class="ipt" placeholder="Enter company name" />
+          </div>
+          <div>
+            <label class="lbl">Website</label>
+            <input id="newAcctWebsite" type="url" class="ipt" placeholder="https://example.com" />
+          </div>
+          <div>
+            <label class="lbl">Industry</label>
+            <select id="newAcctIndustry" class="sel">
+              <option value="">Select an industry</option>
+              <option value="Media">Media</option>
+              <option value="Health Care">Health Care / Medical</option>
+              <option value="Financial Services">Financial Services</option>
+              <option value="Spirits">Spirits / Beverages</option>
+              <option value="Technology">Information Technology</option>
+              <option value="Automotive">Automotive</option>
+              <option value="Marketing">Marketing Agency</option>
+              <option value="Consumer">Consumer Goods</option>
+              <option value="Hotels">Hotels</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="full">
+            <label class="lbl">Street</label>
+            <input id="newAcctStreet" type="text" class="ipt" placeholder="Street address" />
+          </div>
+          <div>
+            <label class="lbl">City</label>
+            <input id="newAcctCity" type="text" class="ipt" placeholder="City" />
+          </div>
+          <div>
+            <label class="lbl">Postal code</label>
+            <input id="newAcctPostcode" type="text" class="ipt" placeholder="Postal code" />
+          </div>
+          <div class="full">
+            <label class="lbl">Country</label>
+            <select id="newAcctCountry" class="sel">
+              <option value="">Select a country</option>
+              <option>United Kingdom</option><option>United States</option><option>Canada</option><option>Germany</option>
+              <option>France</option><option>Netherlands</option><option>Australia</option><option>Singapore</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contacts -->
+      <div class="modal-section">
+        <h4>
+          Contacts
+          <span class="h-actions">
+            <button type="button" class="mc-add-btn" onclick="addModalContact()">
+              <i data-lucide="plus" style="width:11px;height:11px;"></i> Add contact
+            </button>
+          </span>
+        </h4>
+        <div id="modalContactsList"></div>
+        <div id="modalContactsEmpty" class="mc-empty" style="display:none;">No contacts yet. Add at least one — they'll auto-populate as the deal's sales and billing contacts.</div>
+      </div>
+    </div>
+
+    <div class="modal-foot">
+      <span class="mf-hint">Required: account name and at least one contact (first name, last name, email).</span>
+      <div class="mf-actions">
+        <button class="btn btn-ghost" onclick="closeCreateAccountModal()">Cancel</button>
+        <button id="saveNewAcctBtn" class="btn btn-prim" onclick="saveNewAccountFromModal()">
+          <i data-lucide="check" style="width:14px;height:14px;"></i> Save & use
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================
+// New-account modal
+// ============================
+let _modalContactSeq = 0;
+
+function openCreateAccountModal(prefillName) {
+  // Reset all fields
+  document.getElementById('newAcctName').value = (prefillName || '').trim();
+  document.getElementById('newAcctWebsite').value = '';
+  document.getElementById('newAcctIndustry').value = '';
+  document.getElementById('newAcctStreet').value = '';
+  document.getElementById('newAcctCity').value = '';
+  document.getElementById('newAcctPostcode').value = '';
+  document.getElementById('newAcctCountry').value = '';
+  document.getElementById('modalContactsList').innerHTML = '';
+  _modalContactSeq = 0;
+  // Default to one empty contact row
+  addModalContact();
+  // Show modal
+  document.getElementById('newAcctModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  if (window.lucide) lucide.createIcons();
+  // Focus the first relevant field
+  setTimeout(() => {
+    const nm = document.getElementById('newAcctName');
+    if (!nm.value) nm.focus(); else document.getElementById('mc-1-first').focus();
+  }, 80);
+}
+
+function closeCreateAccountModal() {
+  document.getElementById('newAcctModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function onModalBackdropClick(ev) {
+  // Click outside the modal-box closes it
+  if (ev.target.id === 'newAcctModal') closeCreateAccountModal();
+}
+
+function addModalContact() {
+  _modalContactSeq += 1;
+  const id = 'mc-' + _modalContactSeq;
+  const list = document.getElementById('modalContactsList');
+  const isFirst = list.querySelectorAll('.mc-row').length === 0;
+  const row = document.createElement('div');
+  row.id = id;
+  row.className = 'mc-row';
+  row.innerHTML = `
+    <div class="mc-row-head">
+      <i data-lucide="user" style="width:12px;height:12px;"></i>
+      <span class="mc-row-label">Contact #${list.querySelectorAll('.mc-row').length + 1}</span>
+      ${isFirst ? '<span class="mc-primary-tag">Primary</span>' : ''}
+      <button type="button" class="mc-trash" onclick="removeModalContact('${id}')" title="Remove">
+        <i data-lucide="trash-2" style="width:12px;height:12px;"></i>
+      </button>
+    </div>
+    <div class="modal-grid">
+      <div>
+        <label class="lbl">First name <span class="req">*</span></label>
+        <input id="${id}-first" type="text" class="ipt" placeholder="First name" />
+      </div>
+      <div>
+        <label class="lbl">Last name <span class="req">*</span></label>
+        <input id="${id}-last" type="text" class="ipt" placeholder="Last name" />
+      </div>
+      <div>
+        <label class="lbl">Email <span class="req">*</span></label>
+        <input id="${id}-email" type="email" class="ipt" placeholder="name@company.com" />
+      </div>
+      <div>
+        <label class="lbl">Job title</label>
+        <input id="${id}-title" type="text" class="ipt" placeholder="Optional" />
+      </div>
+    </div>`;
+  list.appendChild(row);
+  document.getElementById('modalContactsEmpty').style.display = 'none';
+  if (window.lucide) lucide.createIcons();
+}
+
+function removeModalContact(id) {
+  const row = document.getElementById(id);
+  if (row) row.remove();
+  // Renumber labels and reset Primary tag to the new first row
+  const list = document.getElementById('modalContactsList');
+  const rows = list.querySelectorAll('.mc-row');
+  rows.forEach((r, i) => {
+    const lbl = r.querySelector('.mc-row-label');
+    if (lbl) lbl.textContent = 'Contact #' + (i + 1);
+    // Strip any existing Primary tag and re-add to first row only
+    const existingPrimary = r.querySelector('.mc-primary-tag');
+    if (existingPrimary) existingPrimary.remove();
+    if (i === 0) {
+      const head = r.querySelector('.mc-row-head');
+      const tag = document.createElement('span');
+      tag.className = 'mc-primary-tag';
+      tag.textContent = 'Primary';
+      // Insert before the trash button
+      const trash = head.querySelector('.mc-trash');
+      head.insertBefore(tag, trash);
+    }
+  });
+  if (rows.length === 0) document.getElementById('modalContactsEmpty').style.display = 'block';
+}
+
+function collectModalContacts() {
+  const out = [];
+  document.querySelectorAll('#modalContactsList .mc-row').forEach(r => {
+    const id = r.id;
+    const f = (document.getElementById(id + '-first').value || '').trim();
+    const l = (document.getElementById(id + '-last').value || '').trim();
+    const e = (document.getElementById(id + '-email').value || '').trim();
+    const t = (document.getElementById(id + '-title').value || '').trim();
+    if (f || l || e) {
+      out.push({
+        full: (f + ' ' + l).trim() || e,
+        firstName: f, lastName: l, email: e, title: t
+      });
+    }
+  });
+  return out;
+}
+
+function flashFieldError(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.transition = 'box-shadow .15s, border-color .15s';
+  el.style.borderColor = 'var(--rose)';
+  el.style.boxShadow = '0 0 0 3px rgba(220,38,38,0.15)';
+  setTimeout(() => { el.style.borderColor = ''; el.style.boxShadow = ''; }, 1600);
+  el.focus();
+}
+
+function saveNewAccountFromModal() {
+  const name = (document.getElementById('newAcctName').value || '').trim();
+  if (!name) { flashFieldError('newAcctName'); return; }
+  const contactsRaw = collectModalContacts();
+  if (!contactsRaw.length) {
+    // Highlight the first contact row's first-name field
+    const first = document.querySelector('#modalContactsList .mc-row');
+    if (first) flashFieldError(first.id + '-first');
+    return;
+  }
+  // Each contact must have first name, last name, and email
+  for (let i = 0; i < contactsRaw.length; i++) {
+    const c = contactsRaw[i];
+    if (!c.firstName || !c.lastName || !c.email) {
+      const id = document.querySelectorAll('#modalContactsList .mc-row')[i].id;
+      flashFieldError(id + (!c.firstName ? '-first' : !c.lastName ? '-last' : '-email'));
+      return;
+    }
+  }
+
+  // Build the new account record
+  const initials = name.split(/\s+/).map(w => (w||'')[0]).filter(Boolean).slice(0, 2).join('').toUpperCase() || '?';
+  const country = document.getElementById('newAcctCountry').value || '';
+  const industry = document.getElementById('newAcctIndustry').value || 'Other';
+  const newAcct = {
+    id: 'a-new-' + Date.now(),
+    name: name,
+    initials: initials,
+    industry: industry,
+    country: country || '—',
+    contacts: contactsRaw.map(c => c.full),
+    contactsRich: contactsRaw, // keep rich detail for downstream
+    address: {
+      street: document.getElementById('newAcctStreet').value || '',
+      city: document.getElementById('newAcctCity').value || '',
+      postcode: document.getElementById('newAcctPostcode').value || '',
+      country: country
+    },
+    website: document.getElementById('newAcctWebsite').value || '',
+    deals: [],
+    lastTouchedBy: CURRENT_USER,
+    lastTouchedAt: new Date().toISOString(),
+    lastAction: 'created'
+  };
+
+  // Push to top of the list so it shows first in 'Recently active by you'
+  ACCOUNTS.unshift(newAcct);
+
+  // Select the new account in the deal form (this triggers the existing cascade)
+  selectAccount(newAcct.id);
+
+  // The existing autoFillContacts only fills both fields when contacts.length === 1.
+  // For a freshly-created account with multiple contacts, force-fill both fields
+  // with the primary (first) contact — the user can change either one afterwards.
+  if (contactsRaw.length > 1) {
+    const sales = document.getElementById('salesContact');
+    const billing = document.getElementById('billingContact');
+    const primary = contactsRaw[0].full;
+    sales.value = primary; sales.dataset.auto = '1';
+    billing.value = primary; billing.dataset.auto = '1';
+    document.getElementById('salesHint').classList.add('show');
+    document.getElementById('billingHint').classList.add('show');
+    // Update the hint text so the source is honest
+    document.getElementById('salesHint').innerHTML = '<i data-lucide="zap"></i> Auto-filled · primary contact · ' + (contactsRaw.length - 1) + ' more available';
+    document.getElementById('billingHint').innerHTML = '<i data-lucide="zap"></i> Auto-filled · primary contact · ' + (contactsRaw.length - 1) + ' more available';
+    if (window.lucide) lucide.createIcons();
+  }
+
+  closeCreateAccountModal();
+  showToast('Account created — ' + name + ' selected with ' + contactsRaw.length + ' contact' + (contactsRaw.length === 1 ? '' : 's'));
+  updateAll();
+}
+
+// Override createNewAccount so the dropdown affordance opens the modal instead of navigating
+function createNewAccount(query) {
+  // Close the dropdown first so it doesn't sit on top of the modal
+  document.getElementById('acctDd').classList.remove('open');
+  openCreateAccountModal(query);
+}
+
+// Lightweight toast
+function showToast(message) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = '<i data-lucide="check-circle-2" style="width:15px;height:15px;color:#34d399;"></i><span>' + esc(message) + '</span>';
+  document.body.appendChild(t);
+  if (window.lucide) lucide.createIcons();
+  setTimeout(() => { t.classList.add('fade-out'); setTimeout(() => t.remove(), 350); }, 2800);
+}
+
+// ESC closes the modal
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('newAcctModal').classList.contains('open')) {
+    closeCreateAccountModal();
+  }
+});
+</script>
+</body>
+</html>
