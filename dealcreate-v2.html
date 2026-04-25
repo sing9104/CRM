@@ -3,35 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>New Deal · Focus | CerebroCRM (V1)</title>
+<title>New Deal · Claude | CerebroCRM (V2)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
-  /* Palette + tokens — matched to account-create.html */
+  /* Claude-style palette — warm cream + coral, inspired by anthropic.com */
   :root {
-    --bg:        #f8f8fa;
+    --bg:        #F8F5F0;
     --card:      #FFFFFF;
-    --ink:       #111827;
-    --ink-soft:  #374151;
-    --muted:     #6B7280;
-    --line:      #E5E7EB;
-    --line-soft: #F3F4F6;
-    --accent:    #111827; /* primary action — dark like account-create */
-    --accent-d:  #1F2937;
-    --violet:    #7C3AED;
-    --violet-d:  #6D28D9;
-    --violet-l:  #F3EBFF;
-    --sage:      #059669;
-    --sage-l:    #D1FAE5;
-    --warn:      #B45309;
-    --warn-l:    #FEF3C7;
-    --rose:      #DC2626;
+    --ink:       #1F1F1E;
+    --ink-soft:  #4B4A47;
+    --muted:     #87837C;
+    --line:      #E8E3D8;
+    --line-soft: #F0EBE0;
+    --accent:    #D97757; /* primary action — Claude coral */
+    --accent-d:  #C56644;
+    /* Coral aliased through --violet so existing rules keep working without rewrite */
+    --violet:    #D97757;
+    --violet-d:  #C56644;
+    --violet-l:  #FBE7DD;
+    --coral:     #D97757;
+    --coral-d:   #C56644;
+    --coral-l:   #FBE7DD;
+    --sage:      #6B8E73;
+    --sage-l:    #E5EFE7;
+    --warn:      #C06A35;
+    --warn-l:    #FCEFD8;
+    --rose:      #C4524A;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  * { font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
+  * { font-family: 'Inter', system-ui, -apple-system, sans-serif; font-feature-settings: "ss01", "cv11"; }
   html, body { background: var(--bg); color: var(--ink); }
 
   /* Top bar — slim, just brand and breadcrumb (action buttons live above the form now) */
@@ -45,7 +49,7 @@
     position: sticky; top: 0; z-index: 50;
   }
   .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px; color: var(--ink); }
-  .brand-mark { width: 26px; height: 26px; border-radius: 6px; background: var(--ink); display: inline-flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 700; }
+  .brand-mark { width: 26px; height: 26px; border-radius: 6px; background: var(--accent); display: inline-flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 700; }
   .crumbs { color: var(--muted); font-size: 13px; }
   .crumbs span.cur { color: var(--ink); font-weight: 500; }
   .topbar-back { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; text-decoration: none; }
@@ -55,7 +59,7 @@
   .btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all .15s; border: 1px solid transparent; display: inline-flex; align-items: center; gap: 6px; }
   .btn-ghost { background: transparent; color: var(--ink-soft); border-color: var(--line); }
   .btn-ghost:hover { background: var(--line-soft); }
-  .btn-prim { background: var(--ink); color: white; }
+  .btn-prim { background: var(--accent); color: white; }
   .btn-prim:hover { background: var(--accent-d); }
   .btn-prim:disabled { background: #D1D5DB; color: white; cursor: not-allowed; }
   .btn-sm { padding: 5px 11px; font-size: 11.5px; border-radius: 6px; }
@@ -65,8 +69,8 @@
     display: flex; align-items: center; justify-content: space-between;
     gap: 12px; margin-bottom: 18px; flex-wrap: wrap;
   }
-  .form-actions .form-title { font-size: 20px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
-  .form-actions .form-title-sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .form-actions .form-title { font-family: 'Source Serif 4', serif; font-size: 22px; font-weight: 600; color: var(--ink); letter-spacing: -0.015em; }
+  .form-actions .form-title-sub { font-size: 12.5px; color: var(--muted); margin-top: 4px; font-style: italic; }
   .form-actions-right { display: flex; gap: 8px; align-items: center; }
 
   /* Main layout */
@@ -75,14 +79,15 @@
 
   /* Hero deal-name input */
   .hero { margin-bottom: 22px; }
-  .hero .eyebrow { font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .hero .eyebrow { font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
   .hero .name-input {
-    font-size: 28px; font-weight: 700; letter-spacing: -0.02em;
-    color: var(--ink); width: 100%; line-height: 1.2;
+    font-family: 'Source Serif 4', 'Charter', 'Georgia', serif;
+    font-size: 30px; font-weight: 600; letter-spacing: -0.02em;
+    color: var(--ink); width: 100%; line-height: 1.15;
     border: none; background: transparent; outline: none;
     padding: 4px 0;
   }
-  .hero .name-input::placeholder { color: #B8BAC2; font-weight: 500; }
+  .hero .name-input::placeholder { color: #C9C2B5; font-weight: 500; }
   .hero .auto-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--muted); margin-top: 6px; }
   .hero .auto-tag .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--sage); }
 
@@ -94,15 +99,15 @@
     transition: box-shadow .25s ease, border-color .25s ease;
   }
   .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
-  .card-head h3 { font-size: 11px; font-weight: 700; color: var(--muted); display: flex; align-items: center; gap: 8px; letter-spacing: 0.08em; text-transform: uppercase; }
-  .card-head h3 .step { width: 20px; height: 20px; border-radius: 50%; background: var(--line-soft); color: var(--ink); font-size: 10.5px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+  .card-head h3 { font-family: 'Source Serif 4', serif; font-size: 16px; font-weight: 600; color: var(--ink); display: flex; align-items: center; gap: 8px; letter-spacing: -0.005em; text-transform: none; }
+  .card-head h3 .step { width: 22px; height: 22px; border-radius: 50%; background: var(--coral-l); color: var(--accent); font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-family: 'Inter', sans-serif; }
   .card-head h3 .step.done { background: var(--sage-l); color: var(--sage); }
   .card-head .meta { font-size: 11px; color: var(--muted); }
 
   /* Focus shift — when the user advances past a step we briefly highlight the next card */
   .card.focus-now {
     border-color: var(--violet);
-    box-shadow: 0 0 0 4px rgba(124,58,237,0.10);
+    box-shadow: 0 0 0 4px rgba(217,119,87,0.12);
   }
   .card.focus-now .card-head h3 .step { background: var(--violet-l); color: var(--violet); }
   .card-head .meta { font-size: 11.5px; color: var(--muted); }
@@ -225,8 +230,8 @@
     background: var(--card); border: 1px solid var(--line);
     border-radius: 14px; padding: 22px; position: sticky; top: 80px;
   }
-  .preview h4 { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.08em; }
-  .preview .pv-name { font-size: 19px; font-weight: 600; color: var(--ink); line-height: 1.25; margin-bottom: 14px; letter-spacing: -0.015em; }
+  .preview h4 { font-family: 'Source Serif 4', serif; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .preview .pv-name { font-family: 'Source Serif 4', serif; font-size: 21px; font-weight: 600; color: var(--ink); line-height: 1.25; margin-bottom: 14px; letter-spacing: -0.015em; }
   .preview .pv-name.empty { color: var(--muted); font-style: italic; font-weight: 500; }
   .preview .pv-row { display: flex; gap: 8px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--line-soft); font-size: 12.5px; }
   .preview .pv-row:last-of-type { border-bottom: none; }
@@ -243,7 +248,7 @@
   }
   .preview .pv-row .pv-addr-line.show { display: block; }
   .preview .pv-row .val.muted .pv-name-line { color: var(--muted); font-style: italic; font-weight: 400; }
-  .preview .pv-amt { font-size: 28px; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; font-feature-settings: "tnum"; line-height: 1; margin: 16px 0 4px; }
+  .preview .pv-amt { font-family: 'Source Serif 4', serif; font-size: 32px; font-weight: 700; color: var(--accent); letter-spacing: -0.02em; font-feature-settings: "tnum"; line-height: 1; margin: 16px 0 4px; }
   .preview .pv-amt-sub { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
   .preview .pv-progress { margin: 16px 0 14px; }
   .preview .pv-bar { height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; margin-top: 6px; }
@@ -393,7 +398,7 @@
     color: white; display: inline-flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
-  .modal-head h3 { font-size: 17px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
+  .modal-head h3 { font-family: 'Source Serif 4', serif; font-size: 20px; font-weight: 600; color: var(--ink); letter-spacing: -0.015em; }
   .modal-head .mh-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
   .modal-head .mh-close {
     margin-left: auto; background: transparent; border: none;
@@ -502,8 +507,8 @@
 
   /* ─── Mari AI card (violet, matches account-create) ─── */
   .ai-card {
-    background: linear-gradient(135deg, #faf5ff 0%, #f0e7ff 50%, #ede5ff 100%);
-    border: 1px solid #E4D5FF;
+    background: linear-gradient(135deg, #FFF7F1 0%, #FCE9DD 100%);
+    border: 1px solid rgba(217,119,87,0.25);
     border-radius: 24px; margin-bottom: 16px;
     position: relative; overflow: hidden;
   }
@@ -522,11 +527,11 @@
   }
   .ai-head-text { flex: 1; min-width: 0; }
   .ai-title-row { display: flex; align-items: center; gap: 8px; }
-  .ai-title-row h3 { font-size: 15px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
+  .ai-title-row h3 { font-family: 'Source Serif 4', serif; font-size: 17px; font-weight: 600; color: var(--ink); letter-spacing: -0.015em; }
   .ai-tag {
     font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
     text-transform: uppercase; padding: 2px 7px; border-radius: 999px;
-    background: white; color: var(--violet-d); border: 1px solid #DDD0FF;
+    background: white; color: var(--violet-d); border: 1px solid rgba(217,119,87,0.3);
   }
   .ai-collapsed-sub { display: block; font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
   .ai-card:not(.collapsed) .ai-collapsed-sub { display: none; }
@@ -546,20 +551,20 @@
   .ai-card .ai-sub { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 14px; line-height: 1.5; }
   .ai-textarea {
     width: 100%; padding: 12px 14px; font-size: 13.5px; line-height: 1.55;
-    border: 1px solid #DDD0FF; border-radius: 12px;
+    border: 1px solid rgba(217,119,87,0.3); border-radius: 12px;
     background: rgba(255,255,255,0.8); color: var(--ink);
     transition: all .15s; outline: none; resize: vertical; min-height: 90px;
     font-family: inherit;
   }
-  .ai-textarea:hover { border-color: #C4B0F8; }
-  .ai-textarea:focus { border-color: var(--violet); background: white; box-shadow: 0 0 0 3px rgba(124,58,237,0.15); }
-  .ai-textarea::placeholder { color: #A89BC0; }
+  .ai-textarea:hover { border-color: rgba(217,119,87,0.4); }
+  .ai-textarea:focus { border-color: var(--violet); background: white; box-shadow: 0 0 0 3px rgba(217,119,87,0.15); }
+  .ai-textarea::placeholder { color: #B89A87; }
   .ai-actions { display: flex; gap: 10px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
   .ai-actions .btn-prim { background: var(--violet); }
   .ai-actions .btn-prim:hover { background: var(--violet-d); }
   .ai-chip {
     font-size: 11px; padding: 5px 10px; border-radius: 14px; cursor: pointer;
-    background: rgba(255,255,255,0.7); border: 1px solid #E4D5FF;
+    background: rgba(255,255,255,0.7); border: 1px solid rgba(217,119,87,0.25);
     color: var(--ink-soft); font-weight: 500; transition: all .15s;
   }
   .ai-chip:hover { background: white; border-color: var(--violet); color: var(--violet-d); }
@@ -618,7 +623,7 @@
 <div class="topbar">
   <div class="brand">
     <span class="brand-mark">C</span>
-    Cerebro<span style="color: var(--muted); font-weight: 400;">/CRM</span>
+    Cerebro<span style="color: var(--muted); font-weight: 400;">/CRM</span><span style="margin-left: 8px; padding: 2px 7px; background: var(--coral-l); color: var(--accent); border-radius: 999px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;">v2 · Claude</span>
     <span class="crumbs" style="margin-left: 14px;">Deals <span style="color: var(--muted); margin: 0 6px;">›</span> <span class="cur">New deal</span></span>
   </div>
   <a href="#" onclick="window.history.back();return false;" class="topbar-back">
