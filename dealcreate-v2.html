@@ -194,11 +194,21 @@
   .inv-pick .cat { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
   .inv-pick .price { font-weight: 700; font-size: 14px; color: var(--ink); font-feature-settings: "tnum"; }
   .inv-pick .price-sub { font-size: 10.5px; color: var(--muted); font-weight: 400; }
-  .inv-pick .qty-row { display: none; align-items: center; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .inv-pick .qty-row { display: none; gap: 12px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); align-items: flex-end; flex-wrap: wrap; }
   .inv-pick.selected .qty-row { display: flex; }
-  .inv-pick .qty-row label { font-size: 11px; color: var(--muted); flex: 1; }
-  .inv-pick .qty-row input { width: 56px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 5px; font-size: 12px; text-align: right; font-feature-settings: "tnum"; }
-  .inv-pick .qty-row .ln-total { font-size: 12px; font-weight: 700; color: var(--ink); }
+  .qty-field { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .qty-lbl { font-size: 9px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .qty-input-wrap { position: relative; }
+  .qty-pre, .qty-suf { position: absolute; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 11px; pointer-events: none; }
+  .qty-pre { left: 7px; } .qty-suf { right: 7px; }
+  .inv-pick .qty-row input { width: 64px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 5px; font-size: 12px; text-align: right; font-feature-settings: "tnum"; outline: none; font-family: inherit; background: white; }
+  .inv-pick .qty-row input.with-pre { padding-left: 18px; width: 84px; }
+  .inv-pick .qty-row input.with-suf { padding-right: 20px; width: 70px; }
+  .inv-pick .qty-row input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(217,119,87,0.15); }
+  .qty-totals { margin-left: auto; text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+  .qty-totals .ln-orig { font-size: 10px; color: var(--muted); text-decoration: line-through; font-feature-settings: "tnum"; }
+  .qty-totals .ln-total { font-size: 13.5px; font-weight: 700; color: var(--ink); font-feature-settings: "tnum"; line-height: 1.15; }
+  .qty-totals .ln-saving { font-size: 9.5px; color: var(--sage); font-weight: 600; font-feature-settings: "tnum"; }
 
   /* ─── Inventory filters (clickable chips, not dropdowns) ─── */
   .inv-filters { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; padding: 10px 12px; background: var(--line-soft); border-radius: 10px; border: 1px solid var(--line); }
@@ -1581,10 +1591,21 @@ function renderInventoryGrid(propKey) {
     return;
   }
 
+  // Capture focus so typing into Qty / Price / Discount doesn't bounce on re-render
+  const _focusedId = document.activeElement && document.activeElement.id;
+  const _cursorPos = document.activeElement && typeof document.activeElement.selectionStart === 'number'
+    ? document.activeElement.selectionStart : null;
+
   document.getElementById('invGrid').innerHTML = filteredItems.map(it => {
     const sel = !!selectedInventory[it.id];
-    const qty = sel ? selectedInventory[it.id].qty : 1;
-    const lineTotal = qty * it.price;
+    const rec = selectedInventory[it.id];
+    const qty = sel ? rec.qty : 1;
+    const customPrice = sel ? (rec.customPrice != null ? rec.customPrice : it.price) : it.price;
+    const discount = sel ? (rec.discount || 0) : 0;
+    const eff = customPrice * (1 - discount / 100);
+    const origLine = qty * customPrice;
+    const lineTotal = qty * eff;
+    const saving = origLine - lineTotal;
     return `<div class="inv-pick ${sel?'selected':''}" onclick="toggleInv('${it.id}')">
       <div class="top">
         <div>
@@ -1597,19 +1618,50 @@ function renderInventoryGrid(propKey) {
         </div>
       </div>
       <div class="qty-row" onclick="event.stopPropagation();">
-        <label>Qty</label>
-        <input type="number" min="1" value="${qty}" oninput="updateInvQty('${it.id}', this.value)" />
-        <span class="ln-total">${fmt(lineTotal)}</span>
+        <div class="qty-field">
+          <span class="qty-lbl">Qty</span>
+          <input id="${it.id}-qty" type="number" min="1" value="${qty}" oninput="updateInvQty('${it.id}', this.value)" />
+        </div>
+        <div class="qty-field">
+          <span class="qty-lbl">Unit price</span>
+          <div class="qty-input-wrap">
+            <span class="qty-pre">${esc((CUR_SYMBOL[document.getElementById('dCurrency').value]||'£'))}</span>
+            <input id="${it.id}-price" type="number" min="0" step="0.01" value="${customPrice.toFixed(2)}" class="with-pre" oninput="updateInvPrice('${it.id}', this.value)" />
+          </div>
+        </div>
+        <div class="qty-field">
+          <span class="qty-lbl">Discount</span>
+          <div class="qty-input-wrap">
+            <input id="${it.id}-disc" type="number" min="0" max="100" value="${discount}" class="with-suf" oninput="updateInvDiscount('${it.id}', this.value)" />
+            <span class="qty-suf">%</span>
+          </div>
+        </div>
+        <div class="qty-totals">
+          ${discount > 0 ? `<span class="ln-orig">${fmt(origLine)}</span>` : ''}
+          <span class="ln-total">${fmt(lineTotal)}</span>
+          ${discount > 0 ? `<span class="ln-saving">−${fmt(saving)} (${discount.toFixed(0)}% off)</span>` : ''}
+        </div>
       </div>
     </div>`;
   }).join('');
+
+  // Restore focus + cursor position after re-render
+  if (_focusedId) {
+    const el = document.getElementById(_focusedId);
+    if (el && typeof el.focus === 'function') {
+      el.focus();
+      if (_cursorPos !== null && typeof el.setSelectionRange === 'function') {
+        try { el.setSelectionRange(_cursorPos, _cursorPos); } catch (e) {}
+      }
+    }
+  }
 }
 function toggleInv(id) {
   const propKey = document.getElementById('dProperty').value;
   const item = (INVENTORY[propKey]||[]).find(x => x.id === id);
   if (!item) return;
   if (selectedInventory[id]) delete selectedInventory[id];
-  else selectedInventory[id] = { ...item, qty: 1 };
+  else selectedInventory[id] = { ...item, qty: 1, customPrice: item.price, discount: 0 };
   renderInventoryGrid(propKey);
   syncPaymentTotal();
   updateAll();
@@ -1617,17 +1669,36 @@ function toggleInv(id) {
 function updateInvQty(id, v) {
   if (!selectedInventory[id]) return;
   selectedInventory[id].qty = Math.max(1, parseInt(v) || 1);
-  // Update only the affected line totals — inline patch via re-render of grid
   renderInventoryGrid(document.getElementById('dProperty').value);
   syncPaymentTotal();
   updateAll();
+}
+function updateInvPrice(id, v) {
+  if (!selectedInventory[id]) return;
+  selectedInventory[id].customPrice = Math.max(0, parseFloat(v) || 0);
+  renderInventoryGrid(document.getElementById('dProperty').value);
+  syncPaymentTotal();
+  updateAll();
+}
+function updateInvDiscount(id, v) {
+  if (!selectedInventory[id]) return;
+  let n = parseFloat(v); if (isNaN(n)) n = 0;
+  selectedInventory[id].discount = Math.max(0, Math.min(100, n));
+  renderInventoryGrid(document.getElementById('dProperty').value);
+  syncPaymentTotal();
+  updateAll();
+}
+function effectiveLinePrice(it) {
+  const cp = (it.customPrice != null) ? it.customPrice : it.price;
+  const d = it.discount || 0;
+  return cp * (1 - d / 100);
 }
 
 // ============================
 // Payment rows
 // ============================
 function syncPaymentTotal() {
-  const total = Object.values(selectedInventory).reduce((s, it) => s + it.qty * it.price, 0);
+  const total = Object.values(selectedInventory).reduce((s, it) => s + it.qty * effectiveLinePrice(it), 0);
   const amt = document.getElementById('pay-row-1-amount');
   const cur = document.getElementById('pay-row-1-currency');
   if (amt) amt.value = total.toFixed(2);
@@ -1680,7 +1751,7 @@ function updateAutoName() {
 }
 
 function totalAmount() {
-  return Object.values(selectedInventory).reduce((s, it) => s + it.qty * it.price, 0);
+  return Object.values(selectedInventory).reduce((s, it) => s + it.qty * effectiveLinePrice(it), 0);
 }
 
 
