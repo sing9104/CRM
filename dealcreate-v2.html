@@ -3,36 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>New Deal · Claude | CerebroCRM (V2)</title>
+<title>New Deal · CerebroCRM (V2)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
-  /* Claude-style palette — warm cream + coral, inspired by anthropic.com */
+  /* Monochrome palette — black, white, shades of grey only */
   :root {
-    --bg:        #F8F5F0;
+    --bg:        #FAFAFA;
     --card:      #FFFFFF;
     --ink:       #1F1F1E;
-    --ink-soft:  #4B4A47;
-    --muted:     #87837C;
-    --line:      #E8E3D8;
-    --line-soft: #F0EBE0;
-    --accent:    #D97757; /* primary action — Claude coral */
-    --accent-d:  #C56644;
-    /* Coral aliased through --violet so existing rules keep working without rewrite */
-    --violet:    #D97757;
-    --violet-d:  #C56644;
-    --violet-l:  #FBE7DD;
-    --coral:     #D97757;
-    --coral-d:   #C56644;
-    --coral-l:   #FBE7DD;
-    --sage:      #6B8E73;
-    --sage-l:    #E5EFE7;
-    --warn:      #C06A35;
-    --warn-l:    #FCEFD8;
-    --rose:      #C4524A;
+    --ink-soft:  #404040;
+    --muted:     #737373;
+    --line:      #E5E5E5;
+    --line-soft: #F5F5F5;
+    --accent:    #1F1F1E;   /* primary action — pure dark */
+    --accent-d:  #0A0A0A;
+    /* Aliases kept so existing rules referencing them stay valid */
+    --violet:    #1F1F1E;
+    --violet-d:  #0A0A0A;
+    --violet-l:  #F0F0F0;
+    --coral:     #1F1F1E;
+    --coral-d:   #0A0A0A;
+    --coral-l:   #F0F0F0;
+    --sage:      #404040;
+    --sage-l:    #F0F0F0;
+    /* Form-helper accent — only colour permitted on the page so auto-fill
+       hints, "Inherited from account" badges and other light advisory
+       messages POP against the monochrome layout. */
+    --helper:    #1D4ED8;
+    --helper-bg: #EFF6FF;
+    --helper-bd: #BFDBFE;
+    --warn:      #404040;
+    --warn-l:    #F0F0F0;
+    --rose:      #1F1F1E;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   * { font-family: 'Inter', system-ui, -apple-system, sans-serif; font-feature-settings: "ss01", "cv11"; }
@@ -74,7 +80,7 @@
   .form-actions-right { display: flex; gap: 8px; align-items: center; }
 
   /* Main layout */
-  .page { max-width: 1280px; margin: 0 auto; padding: 32px; display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 32px; }
+  .page { max-width: 1280px; margin: 0; padding: 32px; display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 32px; }
   @media (max-width: 1100px) { .page { grid-template-columns: 1fr; } }
 
   /* Hero deal-name input */
@@ -87,7 +93,7 @@
     border: none; background: transparent; outline: none;
     padding: 4px 0;
   }
-  .hero .name-input::placeholder { color: #C9C2B5; font-weight: 500; }
+  .hero .name-input::placeholder { color: #A3A3A3; font-weight: 500; }
   .hero .auto-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--muted); margin-top: 6px; }
   .hero .auto-tag .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--sage); }
 
@@ -107,7 +113,7 @@
   /* Focus shift — when the user advances past a step we briefly highlight the next card */
   .card.focus-now {
     border-color: var(--violet);
-    box-shadow: 0 0 0 4px rgba(217,119,87,0.12);
+    box-shadow: 0 0 0 4px rgba(0,0,0,0.08);
   }
   .card.focus-now .card-head h3 .step { background: var(--violet-l); color: var(--violet); }
   .card-head .meta { font-size: 11.5px; color: var(--muted); }
@@ -125,7 +131,7 @@
     background: var(--card); color: var(--ink);
     transition: all .15s; outline: none; font-family: inherit;
   }
-  .ipt:hover, .sel:hover { border-color: #D8D1C2; }
+  .ipt:hover, .sel:hover { border-color: #D4D4D4; }
   .ipt:focus, .sel:focus { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(17,24,39,0.10); }
   .ipt::placeholder { color: #B8B3A8; }
   .with-prefix { position: relative; }
@@ -133,21 +139,22 @@
   .with-prefix .ipt { padding-left: 32px; }
   .suf { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 12px; }
 
-  .hint { font-size: 11px; color: var(--sage); margin-top: 5px; display: none; align-items: center; gap: 4px; font-weight: 500; }
+  .hint { font-size: 11px; color: var(--helper); margin-top: 5px; display: none; align-items: center; gap: 5px; font-weight: 600; background: var(--helper-bg); border: 1px solid var(--helper-bd); border-radius: 999px; padding: 3px 9px; line-height: 1.3; width: max-content; max-width: 100%; }
+  .hint i { width: 11px; height: 11px; flex-shrink: 0; }
   .hint.show { display: inline-flex; }
   .hint i { width: 11px; height: 11px; }
 
   /* Account picker */
   .acct-box { position: relative; }
   .acct-search { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); cursor: text; transition: all .15s; }
-  .acct-search:hover { border-color: #D8D1C2; }
+  .acct-search:hover { border-color: #D4D4D4; }
   .acct-search:focus-within { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(17,24,39,0.10); }
   .acct-search input { border: none; outline: none; flex: 1; font-size: 14px; background: transparent; font-family: inherit; }
   .acct-dd { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: white; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(31,31,30,0.08); z-index: 30; max-height: 260px; overflow-y: auto; display: none; }
   .acct-dd.open { display: block; }
   .acct-dd-item { padding: 6px 11px; display: flex; align-items: center; gap: 9px; cursor: pointer; border-bottom: 1px solid var(--line-soft); }
   .acct-dd-item:last-child { border-bottom: none; }
-  .acct-dd-item:hover { background: #FAF7F1; }
+  .acct-dd-item:hover { background: #F5F5F5; }
   .acct-avatar { width: 24px; height: 24px; border-radius: 6px; background: var(--ink); color: white; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; letter-spacing: 0; }
   .acct-info { flex: 1; min-width: 0; }
   .acct-info .nm { font-size: 12.5px; font-weight: 600; color: var(--ink); line-height: 1.25; }
@@ -187,7 +194,7 @@
   /* Inventory cards */
   .inv-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .inv-pick { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: all .15s; }
-  .inv-pick:hover { border-color: #D8D1C2; }
+  .inv-pick:hover { border-color: #D4D4D4; }
   .inv-pick.selected { border-color: var(--ink); background: var(--line-soft); }
   .inv-pick .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
   .inv-pick .nm { font-weight: 600; font-size: 13px; color: var(--ink); }
@@ -204,7 +211,7 @@
   .inv-pick .qty-row input { width: 64px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 5px; font-size: 12px; text-align: right; font-feature-settings: "tnum"; outline: none; font-family: inherit; background: white; }
   .inv-pick .qty-row input.with-pre { padding-left: 18px; width: 84px; }
   .inv-pick .qty-row input.with-suf { padding-right: 20px; width: 70px; }
-  .inv-pick .qty-row input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(217,119,87,0.15); }
+  .inv-pick .qty-row input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0,0,0,0.10); }
   .qty-totals { margin-left: auto; text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
   .qty-totals .ln-orig { font-size: 10px; color: var(--muted); text-decoration: line-through; font-feature-settings: "tnum"; }
   .qty-totals .ln-total { font-size: 13.5px; font-weight: 700; color: var(--ink); font-feature-settings: "tnum"; line-height: 1.15; }
@@ -328,7 +335,7 @@
     text-align: left; cursor: pointer;
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
   }
-  .sel-button:hover { border-color: #D8D1C2; }
+  .sel-button:hover { border-color: #D4D4D4; }
   .sel-button:focus { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(17,24,39,0.10); }
   .sel-button.empty .sel-val { color: var(--muted); font-weight: 400; }
   .sel-button .sel-val { font-weight: 500; }
@@ -367,6 +374,37 @@
   .contact-dd-create:hover { filter: brightness(1.08); }
   .contact-dd-create i { color: white; flex-shrink: 0; }
   .contact-dd-create .sub { font-size: 11px; color: rgba(255,255,255,0.85); font-weight: 500; }
+  /* ─── Property searchable dropdown ─── */
+  .prop-picker { position: relative; }
+  .prop-dropdown {
+    display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+    background: white; border: 1px solid var(--line); border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08); z-index: 30;
+    max-height: 300px; overflow-y: auto;
+  }
+  .prop-dropdown.open { display: block; }
+  .prop-search {
+    position: sticky; top: 0; background: white;
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border-bottom: 1px solid var(--line);
+  }
+  .prop-search i { color: var(--muted); flex-shrink: 0; }
+  .prop-search input {
+    flex: 1; border: none; outline: none; background: transparent;
+    font-size: 12.5px; font-family: inherit; color: var(--ink);
+  }
+  .prop-item {
+    padding: 8px 14px; cursor: pointer; border-bottom: 1px solid var(--line-soft);
+    font-size: 12.5px; color: var(--ink);
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .prop-item:last-child { border-bottom: none; }
+  .prop-item:hover { background: var(--line-soft); }
+  .prop-item.selected { background: var(--line-soft); font-weight: 600; }
+  .prop-item .check { color: var(--accent); opacity: 0; }
+  .prop-item.selected .check { opacity: 1; }
+  .prop-empty { padding: 14px; text-align: center; color: var(--muted); font-size: 12px; font-style: italic; }
+
 
   /* New-contact modal — context cards (read-only) */
   .ctx-card { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px; }
@@ -492,9 +530,12 @@
   }
   .mc-use-acct-addr input { margin: 0; }
   .mc-address-hint {
-    display: none; font-size: 10.5px; font-weight: 600; color: var(--sage);
-    align-items: center; gap: 4px;
+    display: none; font-size: 10.5px; font-weight: 600; color: var(--helper);
+    background: var(--helper-bg); border: 1px solid var(--helper-bd);
+    border-radius: 999px; padding: 2px 8px;
+    align-items: center; gap: 4px; line-height: 1.3;
   }
+  .mc-address-hint i { width: 10px; height: 10px; flex-shrink: 0; }
   .mc-address-hint.show { display: inline-flex; }
   .mc-address input:disabled, .mc-address input.inherited {
     background: var(--line-soft); color: var(--muted); cursor: not-allowed;
@@ -535,8 +576,8 @@
 
   /* ─── Mari AI card (violet, matches account-create) ─── */
   .ai-card {
-    background: linear-gradient(135deg, #FFF7F1 0%, #FCE9DD 100%);
-    border: 1px solid rgba(217,119,87,0.25);
+    background: linear-gradient(135deg, #FAFAFA 0%, #EFEFEF 100%);
+    border: 1px solid rgba(0,0,0,0.15);
     border-radius: 24px; margin-bottom: 16px;
     position: relative; overflow: hidden;
   }
@@ -559,7 +600,7 @@
   .ai-tag {
     font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
     text-transform: uppercase; padding: 2px 7px; border-radius: 999px;
-    background: white; color: var(--violet-d); border: 1px solid rgba(217,119,87,0.3);
+    background: white; color: var(--violet-d); border: 1px solid rgba(0,0,0,0.18);
   }
   .ai-collapsed-sub { display: block; font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
   .ai-card:not(.collapsed) .ai-collapsed-sub { display: none; }
@@ -579,32 +620,32 @@
   .ai-card .ai-sub { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 14px; line-height: 1.5; }
   .ai-textarea {
     width: 100%; padding: 12px 14px; font-size: 13.5px; line-height: 1.55;
-    border: 1px solid rgba(217,119,87,0.3); border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.18); border-radius: 12px;
     background: rgba(255,255,255,0.8); color: var(--ink);
     transition: all .15s; outline: none; resize: vertical; min-height: 90px;
     font-family: inherit;
   }
-  .ai-textarea:hover { border-color: rgba(217,119,87,0.4); }
-  .ai-textarea:focus { border-color: var(--violet); background: white; box-shadow: 0 0 0 3px rgba(217,119,87,0.15); }
-  .ai-textarea::placeholder { color: #B89A87; }
+  .ai-textarea:hover { border-color: rgba(0,0,0,0.25); }
+  .ai-textarea:focus { border-color: var(--violet); background: white; box-shadow: 0 0 0 3px rgba(0,0,0,0.10); }
+  .ai-textarea::placeholder { color: #A3A3A3; }
   .ai-actions { display: flex; gap: 10px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
   .ai-actions .btn-prim { background: var(--violet); }
   .ai-actions .btn-prim:hover { background: var(--violet-d); }
   .ai-chip {
     font-size: 11px; padding: 5px 10px; border-radius: 14px; cursor: pointer;
-    background: rgba(255,255,255,0.7); border: 1px solid rgba(217,119,87,0.25);
+    background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.15);
     color: var(--ink-soft); font-weight: 500; transition: all .15s;
   }
   .ai-chip:hover { background: white; border-color: var(--violet); color: var(--violet-d); }
   .ai-banner {
     display: none; align-items: center; gap: 9px; margin-top: 12px;
     padding: 10px 14px; border-radius: 9px;
-    background: var(--sage-l); border: 1px solid #A7E3C2;
-    font-size: 12.5px; color: #065F46; font-weight: 500;
+    background: var(--helper-bg); border: 1px solid var(--helper-bd);
+    font-size: 12.5px; color: var(--helper); font-weight: 600;
   }
   .ai-banner.show { display: flex; }
   .ai-banner .x { margin-left: auto; background: transparent; border: none; cursor: pointer; color: var(--sage); padding: 2px 6px; font-size: 14px; }
-  .ai-banner .x:hover { color: #355243; }
+  .ai-banner .x:hover { color: #1F1F1E; }
   @keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
   .spin { animation: spin .9s linear infinite; }
 
@@ -632,7 +673,7 @@
     border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em;
     flex-shrink: 0; line-height: 1.4;
   }
-  .pd-stat.signed     { background: var(--sage-l);          color: #355243; }
+  .pd-stat.signed     { background: var(--sage-l);          color: #1F1F1E; }
   .pd-stat.contracted { background: #DBEAFE;                color: #1E40AF; }
   .pd-stat.in-play    { background: rgba(212,129,62,0.18);  color: var(--warn); }
   .pd-stat.lost       { background: rgba(196,82,74,0.12);   color: #8B3A36; }
@@ -651,7 +692,7 @@
 <div class="topbar">
   <div class="brand">
     <span class="brand-mark">C</span>
-    Cerebro<span style="color: var(--muted); font-weight: 400;">/CRM</span><span style="margin-left: 8px; padding: 2px 7px; background: var(--coral-l); color: var(--accent); border-radius: 999px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;">v2 · Claude</span>
+    Cerebro<span style="color: var(--muted); font-weight: 400;">/CRM</span><span style="margin-left: 8px; padding: 2px 7px; background: var(--coral-l); color: var(--accent); border-radius: 999px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;">v2</span>
     <span class="crumbs" style="margin-left: 14px;">Deals <span style="color: var(--muted); margin: 0 6px;">›</span> <span class="cur">New deal</span></span>
   </div>
   <a href="#" onclick="window.history.back();return false;" class="topbar-back">
@@ -712,7 +753,7 @@
         <span class="ai-chip" onclick="useAiSample(1)">BMW · Frieze 26 entrance sponsor</span>
       </div>
       <div id="aiBanner" class="ai-banner">
-        <i data-lucide="check-circle-2" style="width:15px;height:15px;color:var(--sage);flex-shrink:0;"></i>
+        <i data-lucide="check-circle-2" style="width:15px;height:15px;color:var(--helper);flex-shrink:0;"></i>
         <span id="aiBannerText">Mari AI prefilled the form. Review and adjust the details below.</span>
         <button class="x" onclick="dismissAiBanner()">×</button>
       </div>
@@ -786,15 +827,20 @@
     <div class="field-row">
       <div class="field">
         <label class="lbl">Property <span class="req">*</span></label>
-        <select id="dProperty" class="sel" onchange="onPropertyChange()">
-          <option value="">Choose a property</option>
-          <option value="taste">Taste of London</option>
-          <option value="frieze">Frieze London</option>
-          <option value="hyde">Hyde Park Winter Wonderland</option>
-          <option value="summit">Summer Summit</option>
-          <option value="gala">Gala London</option>
-          <option value="hampton">Hampton Court Palace Festival</option>
-        </select>
+        <div class="prop-picker">
+          <button type="button" id="dPropertyBtn" class="sel-button empty" onclick="togglePropDropdown(event)">
+            <span class="sel-val">Choose a property</span>
+            <i data-lucide="chevron-down" style="width:14px;height:14px;"></i>
+          </button>
+          <input id="dProperty" type="hidden" />
+          <div id="dPropertyDropdown" class="prop-dropdown">
+            <div class="prop-search">
+              <i data-lucide="search" style="width:13px;height:13px;"></i>
+              <input id="dPropertySearch" type="text" placeholder="Search properties…" oninput="renderPropDropdown()" autocomplete="off" />
+            </div>
+            <div id="dPropertyList"></div>
+          </div>
+        </div>
       </div>
       <div class="field">
         <label class="lbl">Contract type <span class="req">*</span></label>
@@ -886,7 +932,7 @@
         <tr id="pay-row-1">
           <td><input id="pay-row-1-label" type="text" value="Payment #1" /></td>
           <td><input id="pay-row-1-date" type="date" /></td>
-          <td><select id="pay-row-1-type"><option value="">Type</option><option value="bank">Bank Transfer</option><option value="card">Card Payment</option></select></td>
+          <td><select id="pay-row-1-type"><option value="">Type</option><option value="bank">Bank Transfer</option><option value="card">Card Payment</option><option value="do-not-invoice">Do not Invoice</option></select></td>
           <td><select id="pay-row-1-currency"><option value="GBP">GBP — £</option><option value="USD">USD — $</option><option value="EUR">EUR — €</option><option value="AUD">AUD — A$</option></select></td>
           <td class="amt"><input id="pay-row-1-amount" type="number" step="0.01" min="0" value="0.00" style="text-align:right; font-weight:600;"/></td>
           <td><button class="trash" onclick="removePaymentRow('pay-row-1')"><i data-lucide="trash-2" style="width:13px;height:13px;"></i></button></td>
@@ -1716,7 +1762,7 @@ function addPaymentRow() {
   tr.innerHTML = `
     <td><input id="${rowId}-label" type="text" value="Payment #${labelN}"></td>
     <td><input id="${rowId}-date" type="date"></td>
-    <td><select id="${rowId}-type"><option value="">Type</option><option value="bank">Bank Transfer</option><option value="card">Card Payment</option></select></td>
+    <td><select id="${rowId}-type"><option value="">Type</option><option value="bank">Bank Transfer</option><option value="card">Card Payment</option><option value="do-not-invoice">Do not Invoice</option></select></td>
     <td><select id="${rowId}-currency">${['GBP','USD','EUR','AUD'].map(c => `<option value="${c}" ${c===cur?'selected':''}>${c} — ${CUR_SYMBOL[c]}</option>`).join('')}</select></td>
     <td class="amt"><input id="${rowId}-amount" type="number" step="0.01" min="0" value="0.00" style="text-align:right; font-weight:600;"></td>
     <td><button class="trash" onclick="removePaymentRow('${rowId}')"><i data-lucide="trash-2" style="width:13px;height:13px;"></i></button></td>`;
@@ -1947,6 +1993,76 @@ function updateAddrLines() {
     }
   });
 }
+
+
+// ============================
+// Property searchable dropdown
+// ============================
+const PROPERTY_OPTIONS = [
+  { value: 'taste',   label: 'Taste of London' },
+  { value: 'frieze',  label: 'Frieze London' },
+  { value: 'hyde',    label: 'Hyde Park Winter Wonderland' },
+  { value: 'summit',  label: 'Summer Summit' },
+  { value: 'gala',    label: 'Gala London' },
+  { value: 'hampton', label: 'Hampton Court Palace Festival' },
+];
+function togglePropDropdown(ev) {
+  if (ev) ev.stopPropagation();
+  const dd = document.getElementById('dPropertyDropdown');
+  const btn = document.getElementById('dPropertyBtn');
+  if (!dd) return;
+  if (dd.classList.contains('open')) {
+    dd.classList.remove('open');
+    btn?.classList.remove('open');
+  } else {
+    document.getElementById('dPropertySearch').value = '';
+    renderPropDropdown();
+    dd.classList.add('open');
+    btn?.classList.add('open');
+    setTimeout(() => document.getElementById('dPropertySearch')?.focus(), 30);
+  }
+}
+function renderPropDropdown() {
+  const list = document.getElementById('dPropertyList');
+  if (!list) return;
+  const q = (document.getElementById('dPropertySearch').value || '').trim().toLowerCase();
+  const cur = (document.getElementById('dProperty').value || '').trim();
+  const matches = PROPERTY_OPTIONS.filter(p => !q || p.label.toLowerCase().includes(q));
+  if (matches.length === 0) {
+    list.innerHTML = `<div class="prop-empty">No properties match "${esc(q)}".</div>`;
+    return;
+  }
+  list.innerHTML = matches.map(p => `
+    <div class="prop-item ${p.value === cur ? 'selected' : ''}" onclick="selectProperty('${p.value}')">
+      <span>${esc(p.label)}</span>
+      <i data-lucide="check" class="check" style="width:12px;height:12px;"></i>
+    </div>`).join('');
+  if (window.lucide) lucide.createIcons();
+}
+function selectProperty(value) {
+  const input = document.getElementById('dProperty');
+  const btn = document.getElementById('dPropertyBtn');
+  input.value = value;
+  const opt = PROPERTY_OPTIONS.find(p => p.value === value);
+  if (btn) {
+    const valEl = btn.querySelector('.sel-val');
+    if (opt) {
+      valEl.textContent = opt.label;
+      btn.classList.remove('empty');
+    }
+  }
+  document.getElementById('dPropertyDropdown')?.classList.remove('open');
+  document.getElementById('dPropertyBtn')?.classList.remove('open');
+  onPropertyChange();
+}
+// Click outside the property picker closes it
+document.addEventListener('click', (e) => {
+  const wrap = document.getElementById('dPropertyBtn')?.parentElement;
+  if (wrap && !wrap.contains(e.target)) {
+    document.getElementById('dPropertyDropdown')?.classList.remove('open');
+    document.getElementById('dPropertyBtn')?.classList.remove('open');
+  }
+});
 
 // ============================
 // Mari AI quick-create
@@ -2470,7 +2586,7 @@ function createNewAccount(query) {
 function showToast(message) {
   const t = document.createElement('div');
   t.className = 'toast';
-  t.innerHTML = '<i data-lucide="check-circle-2" style="width:15px;height:15px;color:#34d399;"></i><span>' + esc(message) + '</span>';
+  t.innerHTML = '<i data-lucide="check-circle-2" style="width:15px;height:15px;color:#FFFFFF;"></i><span>' + esc(message) + '</span>';
   document.body.appendChild(t);
   if (window.lucide) lucide.createIcons();
   setTimeout(() => { t.classList.add('fade-out'); setTimeout(() => t.remove(), 350); }, 2800);
