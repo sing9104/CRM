@@ -1936,7 +1936,9 @@ function setCardLocked(cardId, locked, hint) {
   if (locked && window.lucide) lucide.createIcons();
 }
 function saveDeal() {
-  alert('Mock: deal would be created and the user would be redirected to the deal detail page.');
+  // Mock save → straight to the deal detail page (real save would POST to the
+  // backend first and then route to /deals/:id once the new id is returned).
+  window.location.href = 'deal-detail.html';
 }
 
 
